@@ -81,12 +81,24 @@
             <div {{ block.shopify_attributes }}>
               <div class="flt-footer__col-title">{{ block.settings.title }}</div>
 
-              {/% assign menu_obj = block.settings.menu %/}
+<div class="flt-footer__col-title">{{ block.settings.title }}</div>
 
-              
-              {% assign menu_obj = linklists[block.settings.menu] %}              
-              {% if menu_obj and menu_obj.links.size > 0 %}
-                {% for link in menu_obj.links %}
+{% comment %} 
+  In Section Settings, 'link_list' type returns the object. 
+  We assign it directly. 
+{% endcomment %}
+{% assign menu_obj = block.settings.menu %}
+
+{% comment %} VISUAL DEBUGGER - Only shows if menu is missing {% endcomment %}
+{% if menu_obj == blank or menu_obj.links.size == 0 %}
+  <div style="border: 1px dashed #f00; padding: 5px; font-size: 10px; color: #ff8a8a; margin-bottom: 10px;">
+    ⚠️ Menu "{{ block.settings.title }}" is empty or not selected.<br>
+    Setting ID: {{ block.settings.menu }}
+  </div>
+{% endif %}
+
+{% if menu_obj != blank and menu_obj.links.size > 0 %}
+  {% for link in menu_obj.links %}
 
                   {% comment %} Detect anchor links {% endcomment %}
                   {% assign anchor_id = '' %}
