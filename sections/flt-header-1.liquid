@@ -50,8 +50,10 @@
     cursor: pointer; padding: 8px 18px;
     transition: all 0.3s ease; text-decoration: none; display: inline-block;
   }
-  .flt-nav__link:hover,
+  .flt-nav__link:hover { background: rgba(11,37,69,0.08); color: #0B2545; }
+  .flt-nav__link--active,
   .flt-nav__link[aria-current] { background: rgba(11,37,69,0.08); color: #0B2545; }
+  button.flt-nav__logo { background: none; border: none; padding: 0; cursor: pointer; }
   .flt-nav__cart {
     background: linear-gradient(135deg, #0B2545, #1E3A5F);
     border: none; color: #fff; padding: 10px 24px; border-radius: 30px;
@@ -161,20 +163,42 @@
 <nav class="flt-nav" id="flt-nav" role="navigation" aria-label="Main navigation">
   <div class="flt-nav__inner">
 
-    <a href="{{ routes.root_url }}" class="flt-nav__logo" aria-label="{{ shop.name }}">
-      {% render 'flt-plane-icon-1', size: 36, color: '#0B2545' %}
-      <div>
-        <div class="flt-nav__logo-name">FLT</div>
-        <div class="flt-nav__logo-sub">Hemp Provisions</div>
-      </div>
-    </a>
+    {% comment %} Logo: scroll to #home on home page; link elsewhere {% endcomment %}
+    {% if template.name == 'index' %}
+      <button class="flt-nav__logo" data-anchor="home" aria-label="{{ shop.name }}">
+        {% render 'flt-plane-icon-1', size: 36, color: '#0B2545' %}
+        <div>
+          <div class="flt-nav__logo-name">FLT</div>
+          <div class="flt-nav__logo-sub">Hemp Provisions</div>
+        </div>
+      </button>
+    {% else %}
+      <a href="{{ routes.root_url }}" class="flt-nav__logo" aria-label="{{ shop.name }}">
+        {% render 'flt-plane-icon-1', size: 36, color: '#0B2545' %}
+        <div>
+          <div class="flt-nav__logo-name">FLT</div>
+          <div class="flt-nav__logo-sub">Hemp Provisions</div>
+        </div>
+      </a>
+    {% endif %}
 
     <div class="flt-nav__links">
       {% for link in section.settings.menu.links %}
-        <a href="{{ link.url }}" class="flt-nav__link"
-           {% if link.active %}aria-current="page"{% endif %}>
-          {{ link.title }}
-        </a>
+        {% assign anchor_id = '' %}
+        {% if link.url contains '#' %}
+          {% assign anchor_id = link.url | split: '#' | last %}
+        {% endif %}
+
+        {% if template.name == 'index' and anchor_id != '' %}
+          <button class="flt-nav__link" data-anchor="{{ anchor_id }}">
+            {{ link.title }}
+          </button>
+        {% else %}
+          <a href="{{ link.url }}" class="flt-nav__link"
+             {% if link.active %}aria-current="page"{% endif %}>
+            {{ link.title }}
+          </a>
+        {% endif %}
       {% endfor %}
       <button
         class="flt-nav__cart"
@@ -195,9 +219,60 @@
   (function () {
     var nav = document.getElementById('flt-nav');
     if (!nav) return;
+
+    /* ── 1. Scroll glass effect (unchanged) ─────────────────────────── */
     function tick() { nav.classList.toggle('scrolled', window.scrollY > 60); }
     window.addEventListener('scroll', tick, { passive: true });
     tick();
+
+    /* ── 2. Collect anchor elements ─────────────────────────────────── */
+    var anchorEls = Array.prototype.slice.call(nav.querySelectorAll('[data-anchor]'));
+    if (!anchorEls.length) return;
+
+    /* ── 3. Smooth scroll on click ───────────────────────────────────── */
+    anchorEls.forEach(function (el) {
+      el.addEventListener('click', function () {
+        var id = el.dataset.anchor;
+        var target = document.getElementById(id);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    /* ── 4. Active section tracking (matches React logic exactly) ────── */
+    var sectionIds = [];
+    anchorEls.forEach(function (el) {
+      if (el.dataset.anchor && sectionIds.indexOf(el.dataset.anchor) === -1) {
+        sectionIds.push(el.dataset.anchor);
+      }
+    });
+
+    function setActive(id) {
+      anchorEls.forEach(function (el) {
+        el.classList.toggle('flt-nav__link--active', el.dataset.anchor === id);
+      });
+    }
+
+    function onScroll() {
+      for (var i = 0; i < sectionIds.length; i++) {
+        var el = document.getElementById(sectionIds[i]);
+        if (el) {
+          var rect = el.getBoundingClientRect();
+          if (rect.top <= 200 && rect.bottom > 200) {
+            setActive(sectionIds[i]);
+            return;
+          }
+        }
+      }
+      /* Before first section or after last: highlight first if near top */
+      if (window.scrollY < 100 && sectionIds.length) {
+        setActive(sectionIds[0]);
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); /* run once on load */
   })();
 </script>
 
