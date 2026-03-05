@@ -1,0 +1,14 @@
+{%- assign anchor_id = '' -%}
+{%- if link.url contains '#' -%}
+  {%- assign anchor_id = link.url | split: '#' | last -%}
+{%- endif -%}
+
+{%- if template.name == 'index' and anchor_id != '' -%}
+  <button class="flt-footer__col-link" data-anchor="{{ anchor_id }}">
+    {{ link.title }}
+  </button>
+{%- else -%}
+  <a href="{{ link.url }}" class="flt-footer__col-link" {% if link.active %}aria-current="page"{% endif %}>
+    {{ link.title }}
+  </a>
+{%- endif -%}
