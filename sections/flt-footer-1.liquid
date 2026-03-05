@@ -72,6 +72,7 @@
         </div>
         <p class="flt-footer__brand-desc">{{ section.settings.brand_desc }}</p>
       </div>
+      
 
       <!-- DxB treat anchors in the page to scroll -->
       {% for block in section.blocks %}
@@ -80,7 +81,10 @@
             <div {{ block.shopify_attributes }}>
               <div class="flt-footer__col-title">{{ block.settings.title }}</div>
 
-              {% assign menu_obj = block.settings.menu %}
+              {/% assign menu_obj = block.settings.menu %/}
+
+              
+              {% assign menu_obj = linklists[block.settings.menu] %}              
               {% if menu_obj and menu_obj.links.size > 0 %}
                 {% for link in menu_obj.links %}
 
