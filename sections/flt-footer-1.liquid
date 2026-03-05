@@ -73,25 +73,45 @@
         <p class="flt-footer__brand-desc">{{ section.settings.brand_desc }}</p>
       </div>
 
+      <!-- DxB treat anchors in the page to scroll -->
       {% for block in section.blocks %}
         {% case block.type %}
           {% when 'link_column' %}
             <div {{ block.shopify_attributes }}>
               <div class="flt-footer__col-title">{{ block.settings.title }}</div>
-                <!-- DxB modification -->
-                {% assign menu_obj = block.settings.menu %}
-                {% if menu_obj and menu_obj.links.size > 0 %}
-                  {% for link in menu_obj.links %}
-                    <a href="{{ link.url }}" class="flt-footer__col-link">{{ link.title }}</a>
-                  {% endfor %}
-                {% else %}
-                  <!-- fallback if menu is missing -->
-                  <a href="{{ routes.root_url }}" class="flt-footer__col-link">Home</a>
-                {% endif %}
+
+              {% assign menu_obj = block.settings.menu %}
+              {% if menu_obj and menu_obj.links.size > 0 %}
+                {% for link in menu_obj.links %}
+
+                  {% comment %} Detect anchor links {% endcomment %}
+                  {% assign anchor_id = '' %}
+                  {% if link.url contains '#' %}
+                    {% assign anchor_id = link.url | split: '#' | last %}
+                  {% endif %}
+
+                  {% comment %} Render as button if it's an anchor on the home page {% endcomment %}
+                  {% if template.name == 'index' and anchor_id != '' %}
+                    <button class="flt-footer__col-link" data-anchor="{{ anchor_id }}">
+                      {{ link.title }}
+                    </button>
+                  {% else %}
+                    <a href="{{ link.url }}" class="flt-footer__col-link"
+                      {% if link.active %}aria-current="page"{% endif %}>
+                      {{ link.title }}
+                    </a>
+                  {% endif %}
+
+                {% endfor %}
+              {% else %}
+                <!-- fallback if menu is missing -->
+                <a href="{{ routes.root_url }}" class="flt-footer__col-link">Home</a>
+              {% endif %}
 
             </div>
         {% endcase %}
       {% endfor %}
+
     </div>
 
     <div class="flt-footer__bottom">
