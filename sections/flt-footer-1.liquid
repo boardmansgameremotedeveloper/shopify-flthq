@@ -78,9 +78,17 @@
           {% when 'link_column' %}
             <div {{ block.shopify_attributes }}>
               <div class="flt-footer__col-title">{{ block.settings.title }}</div>
-              {% for link in linklists[block.settings.menu].links %}
-                <a href="{{ link.url }}" class="flt-footer__col-link">{{ link.title }}</a>
-              {% endfor %}
+                <!-- DxB modification -->
+                {% assign menu_obj = block.settings.menu %}
+                {% if menu_obj and menu_obj.links.size > 0 %}
+                  {% for link in menu_obj.links %}
+                    <a href="{{ link.url }}" class="flt-footer__col-link">{{ link.title }}</a>
+                  {% endfor %}
+                {% else %}
+                  <!-- fallback if menu is missing -->
+                  <a href="{{ routes.root_url }}" class="flt-footer__col-link">Home</a>
+                {% endif %}
+
             </div>
         {% endcase %}
       {% endfor %}
