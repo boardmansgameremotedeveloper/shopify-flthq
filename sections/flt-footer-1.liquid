@@ -130,6 +130,25 @@
   </div>
 </footer>
 
+<script>
+  (function() {
+    var footer = document.querySelector('.flt-footer');
+    if (!footer) return;
+
+    var anchorEls = Array.prototype.slice.call(footer.querySelectorAll('[data-anchor]'));
+    if (!anchorEls.length) return;
+
+    anchorEls.forEach(function(el) {
+      el.addEventListener('click', function() {
+        var id = el.dataset.anchor;
+        var target = document.getElementById(id);
+        if(target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  })();
+</script>
+
+
 {% schema %}
 {
   "name": "Footer",
