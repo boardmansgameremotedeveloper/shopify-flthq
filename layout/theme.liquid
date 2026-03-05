@@ -129,73 +129,8 @@
 
     {% render 'search-modal' %}
 
-    {% comment %} FLT: Cart drawer — moved here from header-actions.liquid (native header disabled) {% endcomment %}
-    {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
-      <script src="{{ 'cart-drawer.js' | asset_url }}" type="module" fetchpriority="low"></script>
-
-      {% capture flt_empty_cart %}
-        <div class="cart-drawer__header">
-          <button
-            class="button close-button cart-drawer__close-button button-unstyled"
-            aria-label="{{ 'actions.close_dialog' | t }}"
-            onclick="var d=document.querySelector('cart-drawer-component');if(d&&d.close){d.close();}return false;"
-          >
-            <span class="svg-wrapper">{{ 'icon-close.svg' | inline_asset_content }}</span>
-          </button>
-        </div>
-        <div class="cart-drawer__content" aria-label="{{ 'accessibility.cart' | t }}">
-          <h2 class="cart-drawer__heading h4 cart-drawer__heading--empty" id="cart-drawer-heading-empty">
-            {{ 'content.your_cart_is_empty' | t }}
-          </h2>
-          <div class="cart-drawer__items">{% render 'cart-products', force_empty: true %}</div>
-        </div>
-      {% endcapture %}
-
-      <cart-drawer-component
-        class="cart-drawer"
-        {% if settings.auto_open_cart_drawer %}auto-open{% endif %}
-      >
-        <template id="empty-cart-template">{{ flt_empty_cart }}</template>
-
-        <dialog
-          ref="dialog"
-          class="cart-drawer__dialog dialog-modal dialog-drawer color-{{ settings.drawer_color_scheme }}{% if cart.empty? %} cart-drawer--empty{% endif %}"
-          aria-labelledby="{% if cart.empty? %}cart-drawer-heading-empty{% else %}cart-drawer-heading{% endif %}"
-          scroll-lock
-          cart-summary-sticky="true"
-        >
-          <div class="cart-drawer__inner" data-hydration-key="cart-drawer-inner">
-            <cart-items-component class="cart-items-component" data-drawer data-section-id="">
-              {%- if cart.empty? -%}
-                {{ flt_empty_cart }}
-              {%- else -%}
-                <div class="cart-drawer__header" id="cart-drawer-header">
-                  <h2 class="cart-drawer__heading h4" id="cart-drawer-heading">
-                    {{ 'content.cart_title' | t }}
-                    {% render 'cart-bubble' %}
-                  </h2>
-                  <button
-                    class="button close-button cart-drawer__close-button button-unstyled"
-                    aria-label="{{ 'actions.close_dialog' | t }}"
-                    onclick="var d=document.querySelector('cart-drawer-component');if(d&&d.close){d.close();}return false;"
-                  >
-                    <span class="svg-wrapper">{{ 'icon-close.svg' | inline_asset_content }}</span>
-                  </button>
-                </div>
-                <scroll-hint class="cart-drawer__content" aria-label="{{ 'accessibility.cart' | t }}" style="--header-height:60px;">
-                  <scroll-hint class="cart-drawer__items">
-                    {% render 'cart-products', drawer_context: 'drawer' %}
-                  </scroll-hint>
-                  <div class="cart-drawer__summary">
-                    {% render 'cart-summary', section_id: 'flt-cart' %}
-                  </div>
-                </scroll-hint>
-              {%- endif -%}
-            </cart-items-component>
-          </div>
-        </dialog>
-      </cart-drawer-component>
-    {% endif %}
+    {% comment %} FLT: Cart drawer — rendered via flt-cart-1 section in cart-group (gives cart-items-component a valid section.id for AJAX refresh) {% endcomment %}
+    {% sections 'cart-group' %}
 
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
