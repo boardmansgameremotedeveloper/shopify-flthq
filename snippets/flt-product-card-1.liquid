@@ -1,0 +1,49 @@
+{% comment %}
+  snippets/product-card.liquid
+  FLT Hemp Provisions — Product card
+  Source: frontend/src/App.jsx → ProductCard
+  Usage: {% render 'product-card', product: product %}
+
+  Metafields expected:
+    product.metafields.custom.badge.value    → badge label (Bestseller, New, etc.)
+    product.metafields.custom.tagline.value  → tagline below description
+    product.metafields.reviews.rating.value  → numeric rating 0–5
+{% endcomment %}
+<div class="flt-product-card" data-type="{{ product.type | downcase }}">
+
+  {% assign badge = product.metafields.custom.badge %}
+  {% if badge %}
+    <div class="flt-product-card__badge">{{ badge }}</div>
+  {% endif %}
+
+  <div class="flt-product-card__image-wrap">
+    {% if product.featured_image %}
+      {{ product.featured_image | image_url: width: 500 | image_tag: 
+        class: 'flt-product-card__img', 
+        loading: 'lazy', 
+        alt: product.featured_image.alt | default: product.title 
+      }}
+    {% endif %}
+  </div>
+
+  <div class="flt-product-card__body">
+    <h3 class="flt-product-card__name">{{ product.title }}</h3>
+    <p class="flt-product-card__desc">{{ product.description | strip_html | truncate: 120 }}</p>
+
+    {% assign tagline = product.metafields.custom.tagline %}
+    {% if tagline %}
+      <p class="flt-product-card__tagline">{{ tagline }}</p>
+    {% endif %}
+
+    {% assign rating = product.metafields.reviews.rating.value | plus: 0 %}
+    {% if rating > 0 %}
+      {% render 'flt-star-rating-1', rating: rating %}
+    {% endif %}
+
+    <div class="flt-product-card__footer">
+      <div class="flt-product-card__price">{{ product.price | money }}</div>
+      <a href="{{ product.url }}" class="flt-product-card__btn">Add to Cart</a>
+    </div>
+  </div>
+
+</div>

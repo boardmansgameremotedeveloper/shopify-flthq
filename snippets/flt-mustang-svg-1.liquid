@@ -1,0 +1,33 @@
+{% comment %}
+  snippets/mustang-svg.liquid
+  FLT Hemp Provisions — Detailed P-51 Mustang SVG
+  Source: frontend/src/components.jsx → MustangSVG
+  Usage: {% render 'mustang-svg', width: 320, color: '#0B2545', opacity: 0.1 %}
+{% endcomment %}
+{% assign svg_width  = width   | default: 320 %}
+{% assign svg_color  = color   | default: '#0B2545' %}
+{% assign svg_opacity = opacity | default: 1 %}
+{% assign svg_height = svg_width | times: 0.32 | round %}
+<svg width="{{ svg_width }}" height="{{ svg_height }}" viewBox="0 0 600 190" fill="none" style="opacity:{{ svg_opacity }}" aria-hidden="true">
+  <path d="M42 95 Q42 82 58 78 L130 72 Q160 68 190 66 L380 62 Q420 60 450 62 L510 68 Q540 72 555 80 Q568 88 570 95 Q568 104 555 112 Q540 120 510 124 L450 130 Q420 132 380 130 L190 126 Q160 124 130 120 L58 114 Q42 110 42 95Z" fill="{{ svg_color }}"/>
+  <ellipse cx="38" cy="95" rx="14" ry="16" fill="{{ svg_color }}"/>
+  <ellipse cx="26" cy="95" rx="5" ry="8" fill="{{ svg_color }}" opacity="0.8"/>
+  <line x1="21" y1="95" x2="16" y2="95" stroke="{{ svg_color }}" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="18" cy="95" rx="3" ry="38" fill="{{ svg_color }}" opacity="0.45" transform="rotate(25, 18, 95)"/>
+  <ellipse cx="18" cy="95" rx="3" ry="38" fill="{{ svg_color }}" opacity="0.35" transform="rotate(-35, 18, 95)"/>
+  <circle cx="18" cy="95" r="5" fill="{{ svg_color }}" opacity="0.7"/>
+  <path d="M265 62 Q270 42 290 38 Q310 35 330 38 Q350 42 360 50 Q365 56 365 62" fill="{{ svg_color }}" opacity="0.5"/>
+  <path d="M272 62 Q276 46 292 42 Q310 40 328 42 Q346 46 352 54 Q356 58 356 62" fill="white" opacity="0.15"/>
+  <path d="M200 90 L165 130 Q158 142 148 155 L130 178 Q128 182 132 183 L142 183 Q148 182 155 172 L190 130 L340 130 L375 172 Q382 182 388 183 L398 183 Q402 182 400 178 L382 155 Q372 142 365 130 L330 90Z" fill="{{ svg_color }}"/>
+  <path d="M180 120 L170 135 L185 135 L195 120Z" fill="white" opacity="0.12"/>
+  <path d="M350 120 L360 135 L345 135 L335 120Z" fill="white" opacity="0.12"/>
+  <path d="M530 68 L540 25 Q542 18 548 16 L560 14 Q565 14 566 18 L568 28 Q565 40 558 55 L555 62" fill="{{ svg_color }}"/>
+  <path d="M520 92 L555 80 L582 60 Q586 58 588 60 L590 65 Q588 70 582 76 L555 92 L582 110 Q588 116 590 121 L588 126 Q586 128 582 126 L555 112 L520 100Z" fill="{{ svg_color }}"/>
+  <rect x="540" y="20" width="4" height="50" rx="1" fill="white" opacity="0.15" transform="rotate(8, 542, 45)"/>
+  <ellipse cx="210" cy="128" rx="12" ry="5" fill="{{ svg_color }}" opacity="0.5"/>
+  <path d="M240 130 Q260 140 300 142 Q340 140 360 130" fill="{{ svg_color }}" opacity="0.4"/>
+  <circle cx="430" cy="95" r="16" fill="none" stroke="white" stroke-width="1.5" opacity="0.2"/>
+  <circle cx="430" cy="95" r="9" fill="white" opacity="0.1"/>
+  <ellipse cx="135" cy="180" rx="10" ry="4" fill="{{ svg_color }}" opacity="0.4"/>
+  <ellipse cx="395" cy="180" rx="10" ry="4" fill="{{ svg_color }}" opacity="0.4"/>
+</svg>

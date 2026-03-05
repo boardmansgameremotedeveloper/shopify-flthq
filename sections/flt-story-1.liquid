@@ -1,0 +1,169 @@
+{% comment %}
+  sections/story.liquid
+  FLT Hemp Provisions — Our Story
+  Source: frontend/src/App.jsx → StorySection
+  Stats are schema blocks (configurable in theme editor).
+{% endcomment %}
+
+<style>
+  .flt-story {
+    padding: 120px 40px;
+    background: linear-gradient(180deg, #0B2545 0%, #13315C 50%, #0B2545 100%);
+    position: relative; overflow: hidden;
+  }
+  .flt-story__bg-mustang {
+    position: absolute; top: 10%; right: -5%;
+    transform: rotate(-5deg); pointer-events: none;
+  }
+  .flt-story__inner {
+    max-width: 1300px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: center; position: relative; z-index: 1;
+  }
+  .flt-story__stats-card {
+    background: rgba(255,255,255,0.04); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px; padding: 56px;
+    position: relative; overflow: hidden;
+  }
+  .flt-story__stats-bg { position: absolute; top: -30px; right: -30px; }
+  .flt-story__stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 28px;
+  }
+  .flt-story__stat-num {
+    font-family: var(--head); font-size: 42px; color: #93C5FD;
+  }
+  .flt-story__stat-label {
+    font-family: var(--body); font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .flt-story__eyebrow {
+    font-family: var(--body); font-size: 13px; color: #93C5FD;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    margin-top: 12px; margin-bottom: 12px; font-weight: 600;
+  }
+  .flt-story__heading {
+    font-family: var(--head);
+    font-size: clamp(36px, 4vw, 56px);
+    color: #fff; margin: 0 0 24px; line-height: 1.1;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .flt-story__body {
+    font-family: var(--body); font-size: 16px;
+    color: rgba(255,255,255,0.6); line-height: 1.85;
+  }
+  .flt-story__body p { margin: 0 0 18px; }
+  .flt-story__body p:last-child { margin: 0; }
+  .flt-story__tags { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+  .flt-story__tag {
+    font-family: var(--body); font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.05);
+    padding: 7px 16px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .flt-reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .flt-reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    .flt-story__inner { grid-template-columns: 1fr; gap: 40px; }
+    .flt-story { padding: 80px 20px; }
+  }
+</style>
+
+<section class="flt-story" id="story">
+
+  <div class="flt-story__bg-mustang">
+    {% render 'flt-mustang-svg-1', width: 600, color: '#ffffff', opacity: 0.04 %}
+  </div>
+
+  <div class="flt-story__inner">
+
+    <div class="flt-reveal">
+      <div class="flt-story__stats-card">
+        <div class="flt-story__stats-bg">
+          {% render 'flt-mustang-svg-1', width: 280, color: '#ffffff', opacity: 0.06 %}
+        </div>
+        {% render 'flt-plane-icon-1', size: 40, color: '#93C5FD' %}
+        <div class="flt-story__stats-grid">
+          {% for block in section.blocks %}
+            {% if block.type == 'stat' %}
+              <div {{ block.shopify_attributes }}>
+                <div class="flt-story__stat-num">{{ block.settings.value }}</div>
+                <div class="flt-story__stat-label">{{ block.settings.label }}</div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="flt-reveal" style="transition-delay:0.2s">
+      {% render 'flt-plane-icon-1', size: 28, color: '#93C5FD' %}
+      <div class="flt-story__eyebrow">Our Story</div>
+      <h2 class="flt-story__heading">{{ section.settings.heading }}</h2>
+      <div class="flt-story__body">{{ section.settings.body_html }}</div>
+      <div class="flt-story__tags">
+        {% assign tags = section.settings.tags | split: ',' %}
+        {% for tag in tags %}
+          <span class="flt-story__tag">{{ tag | strip }}</span>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  (function () {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.flt-reveal').forEach(function (el) { el.classList.add('in-view'); });
+      return;
+    }
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in-view'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.flt-reveal').forEach(function (el) { obs.observe(el); });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Story",
+  "tag": "section",
+  "class": "flt-story-section",
+  "settings": [
+    { "type": "text",     "id": "heading",   "label": "Heading",   "default": "Built for Those Who Soar" },
+    { "type": "richtext", "id": "body_html", "label": "Body text", "default": "<p>FLT was born from a belief that wellness shouldn't weigh you down. Our founders — athletes, entrepreneurs, and wellness enthusiasts — wanted something better: clean, effective, and enjoyable hemp-derived products.</p><p>Using nanosized THC technology, our beverages and gummies deliver rapid, consistent absorption. No added sugar. No artificial junk. Just premium hemp, functional mushrooms, adaptogens, and real fruit.</p><p>Every product is vegan friendly, lab tested, and made with clean ingredients you can trust. Welcome aboard.</p>" },
+    { "type": "text",     "id": "tags",      "label": "Attribute tags (comma-separated)", "default": "🌿 Vegan, 🧪 Lab Tested, ⚡ Rapid Release, ❤️ Sugar Free" }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        { "type": "text", "id": "value", "label": "Value", "default": "2023" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Founded" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FLT Story",
+      "blocks": [
+        { "type": "stat", "settings": { "value": "2023",  "label": "Founded" } },
+        { "type": "stat", "settings": { "value": "10K+",  "label": "Happy Customers" } },
+        { "type": "stat", "settings": { "value": "100%",  "label": "Clean Ingredients" } },
+        { "type": "stat", "settings": { "value": "0g",    "label": "Added Sugar" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

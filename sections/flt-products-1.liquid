@@ -1,0 +1,348 @@
+{% comment %}
+  sections/products.liquid
+  FLT Hemp Provisions — Products Grid
+  Source: frontend/src/App.jsx → ProductsSection + ProductCard
+  Requires: snippets/product-card.liquid, snippets/mustang-svg.liquid
+  Products pulled from a Shopify collection. JS handles type-based filter client-side.
+{% endcomment %}
+
+<style>
+  .flt-products {
+    padding: 120px 40px;
+    background: #fff;
+    position: relative; overflow: hidden;
+  }
+  .flt-products__bg-mustang {
+    position: absolute; top: 60px; left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .flt-products__inner {
+    max-width: 1300px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  .flt-products__heading-wrap { text-align: center; margin-bottom: 56px; }
+  .flt-products__eyebrow {
+    font-family: var(--body); font-size: 13px; color: #64748B;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    margin-bottom: 12px; font-weight: 600;
+  }
+  .flt-products__title {
+    font-family: var(--head);
+    font-size: clamp(40px, 5vw, 68px);
+    color: #0B2545; margin: 0; line-height: 1;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .flt-products__filters {
+    display: flex; justify-content: center; gap: 8px;
+    margin-bottom: 48px; flex-wrap: wrap;
+  }
+
+  /* DxB - added per suggestion: gives horizontal scroll filter chips */
+  @media (max-width:768px){
+    .flt-products__filters{
+      overflow-x:auto;
+      flex-wrap:nowrap;
+      padding-bottom:6px;
+    }
+
+    .flt-products__filter{
+      flex:0 0 auto;
+    }
+  }
+
+  .flt-products__filter {
+    background: #F8FAFC; border: 1px solid #E2E8F0;
+    color: #64748B; padding: 10px 30px; border-radius: 30px;
+    font-family: var(--body); font-size: 13px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.06em; text-transform: uppercase;
+    transition: all 0.3s ease;
+  }
+  .flt-products__filter.active {
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    border-color: transparent; color: #fff;
+  }
+
+  .flt-products__collection{
+    display:none;
+  }
+
+  .flt-products__collection.active{
+    display:block;
+  }
+
+  .flt-products__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 28px;
+  }
+
+  /* Product card */
+  .flt-product-card {
+    background: #fff; border-radius: 20px;
+    border: 1px solid #E2E8F0; overflow: hidden;
+    cursor: pointer; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+  .flt-product-card:hover {
+    border-color: #93C5FD;
+    transform: translateY(-12px);
+    box-shadow: 0 28px 60px rgba(11,37,69,0.15);
+  }
+  .flt-product-card__badge {
+    position: absolute; top: 16px; left: 16px; z-index: 5;
+    background: linear-gradient(135deg, #0B2545, #1B3A5C);
+    color: #fff; font-size: 10px; font-family: var(--body);
+    font-weight: 700; padding: 5px 14px; border-radius: 20px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .flt-product-card__image-wrap {
+    display: flex; justify-content: center; align-items: center;
+    padding: 36px 24px 16px; min-height: 280px;
+    background: linear-gradient(180deg, #F0F7FF 0%, #fff 100%);
+  }
+  .flt-product-card__img {
+    max-height: 250px; max-width: 80%; object-fit: contain;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: drop-shadow(0 4px 12px rgba(11,37,69,0.08));
+  }
+  .flt-product-card:hover .flt-product-card__img {
+    filter: drop-shadow(0 12px 30px rgba(11,37,69,0.18));
+    transform: scale(1.06) rotate(-1deg);
+  }
+  .flt-product-card__body { padding: 8px 24px 24px; }
+  .flt-product-card__name {
+    font-family: var(--head); font-size: 22px;
+    color: #0B2545; margin: 0 0 6px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .flt-product-card__desc {
+    font-family: var(--body); font-size: 13px; color: #64748B;
+    margin: 0 0 4px; line-height: 1.5;
+  }
+  .flt-product-card__tagline {
+    font-family: var(--body); font-size: 11px; color: #94A3B8;
+    margin: 0 0 12px; letter-spacing: 0.04em;
+  }
+  .flt-product-card__footer {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-top: 16px;
+  }
+  .flt-product-card__price {
+    font-family: var(--head); font-size: 28px; color: #0B2545;
+  }
+  .flt-product-card__btn {
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    border: none; color: #fff; padding: 10px 24px; border-radius: 30px;
+    font-family: var(--body); font-size: 13px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase;
+    transition: all 0.3s ease; text-decoration: none; display: inline-block;
+  }
+
+  /* scroll reveal */
+  .flt-reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .flt-reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    .flt-products { padding: 80px 20px; }
+    .flt-products__grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<section class="flt-products" id="products">
+
+  <div class="flt-products__bg-mustang">
+    {% render 'flt-mustang-svg-1', width: 900, color: '#0B2545', opacity: 0.035 %}
+  </div>
+
+  <div class="flt-products__inner">
+
+    <div class="flt-reveal flt-products__heading-wrap">
+      {% render 'flt-mustang-svg-1', width: 200, color: '#0B2545', opacity: 0.12 %}
+      <div class="flt-products__eyebrow">The Collection</div>
+      <h2 class="flt-products__title">Our Products</h2>
+    </div>
+
+    <!-- DxB edit one to dynamically show collections of products -->
+    <div class="flt-reveal flt-products__filters" id="flt-product-filters">
+
+      <!-- Always show -->
+      <button class="flt-products__filter active" data-filter="all">
+        All Products
+      </button>
+
+      {% for collection in collections %}
+        {% if collection.products_count > 0 and collection.handle != 'frontpage' and collection.handle != 'all' %}
+          <button
+            class="flt-products__filter"
+            data-filter="{{ collection.handle }}">
+            {{ collection.title }}
+          </button>
+        {% endif %}
+      {% endfor %}
+
+    </div>
+
+
+<!-- ALL PRODUCTS GRID -->
+
+<div class="flt-products__collection active" data-collection="all">
+
+<div class="flt-products__grid">
+
+{% for product in collections.all.products limit:50 %}
+<div class="flt-reveal">
+{% render 'flt-product-card-1', product: product %}
+</div>
+{% endfor %}
+
+</div>
+</div>
+
+
+<!-- COLLECTION GRIDS -->
+
+{% for collection in collections %}
+{% if collection.products_count > 0 and collection.handle != 'all' %}
+
+<div class="flt-products__collection" data-collection="{{ collection.handle }}">
+
+<div class="flt-products__grid">
+
+{% for product in collection.products limit:50 %}
+<div class="flt-reveal">
+{% render 'flt-product-card-1', product: product %}
+</div>
+{% endfor %}
+
+</div>
+</div>
+
+{% endif %}
+{% endfor %}
+
+<!-- not working 
+    <div class="flt-products__grid" id="flt-product-grid">
+      {% assign col = collections[section.settings.collection] %}
+      {% if col and col.products.size > 0 %}
+        {% for product in col.products %}
+          <div class="flt-reveal" data-collections="{{ product.collections | map: 'handle' | join: ',' }}"
+               style="transition-delay: {{ forloop.index0 | times: 0.12 }}s">
+            {% render 'flt-product-card-1', product: product %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <p style="font-family:var(--body);color:#64748B;grid-column:1/-1;">
+          No collection selected — set one in the theme editor.
+        </p>
+      {% endif %}
+    </div>
+-->
+
+  </div>
+</section>
+<script>
+(function () {
+
+  function initFltProducts(section) {
+
+    var scope = section || document;
+
+    var filters = scope.querySelectorAll('.flt-products__filter');
+    var sections = scope.querySelectorAll('.flt-products__collection');
+
+    /* COLLECTION FILTER */
+    if (filters.length) {
+
+      filters.forEach(function (btn) {
+
+        btn.addEventListener('click', function () {
+
+          var filter = btn.dataset.filter;
+
+          filters.forEach(function (b) {
+            b.classList.remove('active');
+          });
+
+          btn.classList.add('active');
+
+          sections.forEach(function (section) {
+
+            if (section.dataset.collection === filter) {
+              section.classList.add('active');
+            } else {
+              section.classList.remove('active');
+            }
+
+          });
+
+        });
+
+      });
+
+    }
+
+    /* SCROLL REVEAL */
+    var reveals = scope.querySelectorAll('.flt-reveal');
+
+    if ('IntersectionObserver' in window) {
+
+      var obs = new IntersectionObserver(function (entries) {
+
+        entries.forEach(function (e) {
+
+          if (e.isIntersecting) {
+            e.target.classList.add('in-view');
+            obs.unobserve(e.target);
+          }
+
+        });
+
+      }, { threshold: 0.12 });
+
+      reveals.forEach(function (el) {
+        obs.observe(el);
+      });
+
+    } else {
+
+      reveals.forEach(function (el) {
+        el.classList.add('in-view');
+      });
+
+    }
+
+  }
+
+  /* INITIAL PAGE LOAD */
+  document.addEventListener('DOMContentLoaded', function () {
+    initFltProducts(document);
+  });
+
+  /* SHOPIFY THEME EDITOR SECTION RELOAD */
+  document.addEventListener('shopify:section:load', function (e) {
+    initFltProducts(e.target);
+  });
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Products",
+  "tag": "section",
+  "class": "flt-products-section",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Product collection",
+      "info": "Products are filtered client-side by product type (drinks / gummies)."
+    }
+  ],
+  "presets": [{ "name": "FLT Products" }]
+}
+{% endschema %}

@@ -1,0 +1,381 @@
+{% comment %}
+  DxB Header Advanced v5-1
+  Updates:
+  - Heading: text or logo image
+  - Account & Cart buttons with toggle & placement
+  - Simple SVG icons (Lucide-style) for account & cart
+{% endcomment %}
+
+{% assign palette = 
+  section.settings.color_0 | append: ',' |
+  append: section.settings.color_1 | append: ',' |
+  append: section.settings.color_2 | append: ',' |
+  append: section.settings.color_3 | append: ',' |
+  append: section.settings.color_4 | append: ',' |
+  append: section.settings.color_5 | append: ',' |
+  append: section.settings.color_6 | append: ',' |
+  append: section.settings.color_7 
+  | split: ','
+%}
+
+{% assign bg_style = "" %}
+
+{% if section.settings.background_mode == "transparent" %}
+  {% assign bg_style = "background: transparent;" %}
+{% elsif section.settings.background_mode == "solid" %}
+  {% assign bg_style = "background:" | append: palette[section.settings.background_color_index] | append: ";" %}
+{% elsif section.settings.background_mode == "gradient" %}
+  {% assign bg_style = "background: linear-gradient(" 
+    | append: section.settings.gradient_angle 
+    | append: "deg, "
+    | append: palette[section.settings.gradient_color_1] 
+    | append: ", "
+    | append: palette[section.settings.gradient_color_2] 
+    | append: ");" %}
+{% endif %}
+
+<section
+  class="learning-header"
+  style=" {{ bg_style }} color: {{ palette[section.settings.text_color_index] }};
+        padding-top: {{ section.settings.header_padding_top }}px;
+        padding-bottom: {{ section.settings.header_padding_bottom }}px;"
+>
+  <div class="header-grid placement-{{ section.settings.placement }}">
+
+    {% if section.settings.heading_image_position == 'left' %}
+    {% assign is_heading_left = true %}
+    {% else %}
+    {% assign is_heading_left = false %}
+    {% endif %}
+
+    {% if section.settings.heading_image_position == 'right' %}
+    {% assign is_heading_right = true %}
+    {% else %}
+    {% assign is_heading_right = false %}
+    {% endif %}
+
+    {% if section.settings.heading_image_position == 'above' %}
+    {% assign is_heading_above = true %}
+    {% else %}
+    {% assign is_heading_above = false %}
+    {% endif %}
+
+    {% if section.settings.heading_image_position == 'below' %}
+    {% assign is_heading_below = true %}
+    {% else %}
+    {% assign is_heading_below = false %}
+    {% endif %}
+
+
+    {% comment %} Heading above menu {% endcomment %}
+    {% if is_heading_above %}
+      <div class="header-brand">
+        {% if section.settings.heading_type == "text" %}
+          <h1>{{ section.settings.heading }}</h1>
+        {% elsif section.settings.heading_type == "image" and section.settings.heading_image != blank %}
+          <img src="{{ section.settings.heading_image | image_url: width: section.settings.logo_max_width, height: section.settings.logo_max_height }}" alt="Logo" class="header-logo"/>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <nav class="header-menu layout-{{ section.settings.desktop_layout }} mobile-{{ section.settings.mobile_layout }}">
+
+      {% if is_heading_left or is_heading_right %}
+        <div class="header-brand header-brand-inline">
+          {% if section.settings.heading_type == "text" %}
+            <h1>{{ section.settings.heading }}</h1>
+          {% elsif section.settings.heading_type == "image" and section.settings.heading_image != blank %}
+            <img src="{{ section.settings.heading_image | image_url: width: section.settings.logo_max_width, height: section.settings.logo_max_height }}" alt="Logo" class="header-logo"/>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if section.settings.utility_position == "left" %}
+        <div class="header-utilities">
+          {% if section.settings.show_search and section.settings.search_position == 'left' %}
+            <a href="/search" class="utility-item search">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </a>
+          {% endif %}
+          {% if section.settings.show_account %}
+            <a href="{% if customer %}/account{% else %}/account/login{% endif %}" class="utility-item account">
+              <!-- user icon svg -->
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/>
+    <path d="M4 20v-1c0-2.21 3.58-4 8-4s8 1.79 8 4v1"/>
+  </svg>
+            </a>
+          {% endif %}
+          {% if section.settings.show_cart %}
+            <a href="/cart" class="utility-item cart">
+              <!-- cart icon svg -->
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="19" r="2"></circle>
+    <circle cx="20" cy="19" r="2"></circle>
+    <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 001.95-1.59L23 6H6"></path>
+  </svg>
+
+              {% if cart.item_count > 0 %}<span class="cart-count">{{ cart.item_count }}</span>{% endif %}
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <ul>
+        {% for link in section.settings.menu.links %}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {% endfor %}
+      </ul>
+
+      {% if section.settings.utility_position == "right" %}
+        <div class="header-utilities">
+          {% if section.settings.show_search and section.settings.search_position == 'right' %}
+            <a href="/search" class="utility-item search">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </a>
+          {% endif %}
+          {% if section.settings.show_account %}
+            <a href="{% if customer %}/account{% else %}/account/login{% endif %}" class="utility-item account">
+              <!-- user icon svg -->
+            </a>
+          {% endif %}
+          {% if section.settings.show_cart %}
+            <a href="/cart" class="utility-item cart">
+              <!-- cart icon svg -->
+              {% if cart.item_count > 0 %}<span class="cart-count">{{ cart.item_count }}</span>{% endif %}
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+
+    </nav>
+
+    {% comment %} Heading below menu {% endcomment %}
+    {% if is_heading_below %}
+      <div class="header-brand">
+        {% if section.settings.heading_type == "text" %}
+          <h1>{{ section.settings.heading }}</h1>
+        {% elsif section.settings.heading_type == "image" and section.settings.heading_image != blank %}
+          <img src="{{ section.settings.heading_image | image_url: width: section.settings.logo_max_width, height: section.settings.logo_max_height }}" alt="Logo" class="header-logo"/>
+        {% endif %}
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+
+<style>
+.header-brand-inline {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}    
+.learning-header { padding: 20px; }
+.header-grid { display: grid; width: 100%; height: 120px; align-items: center; gap: 10px; }
+.header-brand h1 { margin: 0; font-size: 1.8rem; }
+.header-logo {
+  max-height: 60px; /* fits header height */
+  max-width: 200px; /* optional, maintain aspect ratio */
+  object-fit: contain; /* preserves logo aspect ratio */
+  display: block;
+}
+
+/* 9-Quadrant Placement */
+.placement-top-left    { justify-items: start; align-content: start; }
+.placement-top-center  { justify-items: center; align-content: start; }
+.placement-top-right   { justify-items: end; align-content: start; }
+
+.placement-middle-left   { justify-items: start; align-content: center; }
+.placement-middle-center { justify-items: center; align-content: center; }
+.placement-middle-right  { justify-items: end; align-content: center; }
+
+.placement-bottom-left   { justify-items: start; align-content: end; }
+.placement-bottom-center { justify-items: center; align-content: end; }
+.placement-bottom-right  { justify-items: end; align-content: end; }
+
+/* Menu base */
+.header-menu { display: flex; align-items: center; justify-content: space-between; gap: 20px;   width: 100%; padding-right: 10px;}
+.header-menu > .header-utilities {
+  flex: 0 0 auto;   /* DO NOT let utilities shrink */
+}
+
+.header-menu > ul {
+  flex: 1 1 auto;   /* Let menu take remaining space */
+  display: flex;
+  justify-content: center; /* center menu */
+  gap: 20px;
+}
+.
+/* header-menu-deprecated ul { display: flex; list-style: none; padding: 0; margin: 0; gap: 20px; } */
+
+.header-menu a { text-decoration: none; color: inherit; }
+
+/* Utilities */
+.header-utilities { display: flex; gap: 12px; align-items: center; }
+.utility-item svg { display: inline-block; vertical-align: middle; }
+.utility-item.cart {
+  position: relative;
+}
+.cart-count { position: absolute; top: -6px; right: -10px; font-size: 0.7rem; background: red; color: white; border-radius: 50%; padding: 2px 6px; }
+
+/* Desktop Layout Options */
+.layout-horizontal ul { flex-direction: row; }
+.layout-vertical ul { flex-direction: column; }
+
+/* Mobile */
+@media(max-width: 768px) {
+  .header-grid { grid-template-columns: 1fr; grid-template-rows: auto; gap: 10px; }
+  .mobile-horizontal ul { flex-direction: row; justify-content: center; }
+  .mobile-vertical ul { flex-direction: column; align-items: center; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "DxB Header Advanced v4",
+  "settings": [
+
+    {
+        "type": "range",
+        "id": "header_padding_top",
+        "label": "Top Padding (px)",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 20
+    },
+    {
+        "type": "range",
+        "id": "header_padding_bottom",
+        "label": "Bottom Padding (px)",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 20
+    },
+
+    { "type": "text", "id": "heading", "label": "Heading Text", "default": "Header Experiment" },
+    { "type": "image_picker", "id": "heading_image", "label": "Heading Image / Logo" },
+    { "type": "select", "id": "heading_type", "label": "Heading Type", "options": [
+        { "value": "text", "label": "Text" },
+        { "value": "image", "label": "Image" }
+      ],
+      "default": "text"
+    },
+
+    { "type": "link_list", "id": "menu", "label": "Select Menu" },
+    { "type": "select", "id": "desktop_layout", "label": "Desktop Menu Layout",
+      "options": [ { "value": "horizontal", "label": "Horizontal" }, { "value": "vertical", "label": "Vertical" } ],
+      "default": "horizontal"
+    },
+    { "type": "select", "id": "mobile_layout", "label": "Mobile Menu Layout",
+      "options": [ { "value": "horizontal", "label": "Horizontal" }, { "value": "vertical", "label": "Vertical" } ],
+      "default": "vertical"
+    },
+
+    {
+        "type": "range",
+        "id": "logo_max_height",
+        "label": "Logo Max Height (px)",
+        "min": 20,
+        "max": 200,
+        "step": 5,
+        "default": 60
+    },
+    {
+        "type": "range",
+        "id": "logo_max_width",
+        "label": "Logo Max Width (px)",
+        "min": 50,
+        "max": 500,
+        "step": 10,
+        "default": 200
+    },
+
+    {
+      "type": "select",
+      "id": "heading_image_position",
+      "label": "Heading Image Position",
+      "options": [
+        { "value": "above", "label": "Above Menu" },
+        { "value": "below", "label": "Below Menu" },
+        { "value": "left", "label": "Left of Menu" },
+        { "value": "right", "label": "Right of Menu" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show Search Icon",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "search_position",
+      "label": "Search Icon Position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "right"
+    },
+
+    { "type": "select", "id": "placement", "label": "Content Placement (9 Quadrants)",
+      "options": [
+        { "value": "top-left", "label": "Top Left" },
+        { "value": "top-center", "label": "Top Center" },
+        { "value": "top-right", "label": "Top Right" },
+        { "value": "middle-left", "label": "Middle Left" },
+        { "value": "middle-center", "label": "Middle Center" },
+        { "value": "middle-right", "label": "Middle Right" },
+        { "value": "bottom-left", "label": "Bottom Left" },
+        { "value": "bottom-center", "label": "Bottom Center" },
+        { "value": "bottom-right", "label": "Bottom Right" }
+      ],
+      "default": "middle-center"
+    },
+
+    { "type": "checkbox", "id": "show_account", "label": "Show Account Button", "default": true },
+    { "type": "checkbox", "id": "show_cart", "label": "Show Cart Button", "default": true },
+    { "type": "select", "id": "utility_position", "label": "Utility Buttons Placement",
+      "options": [
+        { "value": "left", "label": "Left of Menu" },
+        { "value": "right", "label": "Right of Menu" }
+      ],
+      "default": "right"
+    },
+
+    { "type": "select", "id": "background_mode", "label": "Background Mode",
+      "options": [
+        { "value": "transparent", "label": "Transparent" },
+        { "value": "solid", "label": "Solid" },
+        { "value": "gradient", "label": "Gradient" }
+      ],
+      "default": "solid"
+    },
+    { "type": "range", "id": "background_color_index", "label": "Solid Background Index", "min": 0, "max": 7, "step": 1, "default": 0 },
+    { "type": "range", "id": "text_color_index", "label": "Text Color Index", "min": 0, "max": 7, "step": 1, "default": 1 },
+    { "type": "range", "id": "gradient_angle", "label": "Gradient Angle", "min": 0, "max": 360, "step": 5, "default": 90 },
+    { "type": "range", "id": "gradient_color_1", "label": "Gradient Color 1 Index", "min": 0, "max": 7, "step": 1, "default": 0 },
+    { "type": "range", "id": "gradient_color_2", "label": "Gradient Color 2 Index", "min": 0, "max": 7, "step": 1, "default": 1 },
+
+    { "type": "header", "content": "Define 8-Color Palette" },
+{ "type": "color", "id": "color_0", "label": "Purple – Deep", "default": "#5A189A" },
+{ "type": "color", "id": "color_1", "label": "Purple – Electric", "default": "#9D4EDD" },
+
+{ "type": "color", "id": "color_2", "label": "Yellow – Bright", "default": "#FFBE0B" },
+{ "type": "color", "id": "color_3", "label": "Yellow – Soft", "default": "#FFD166" },
+
+{ "type": "color", "id": "color_4", "label": "Green – Emerald", "default": "#2ECC71" },
+{ "type": "color", "id": "color_5", "label": "Green – Mint", "default": "#06D6A0" },
+
+{ "type": "color", "id": "color_6", "label": "Pink – Hot", "default": "#FF006E" },
+{ "type": "color", "id": "color_7", "label": "Pink – Soft", "default": "#FF70A6" }
+
+
+  ],
+  "presets": [ { "name": "DxB Header Advanced v5-1" } ]
+}
+{% endschema %}

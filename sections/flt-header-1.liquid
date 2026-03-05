@@ -1,0 +1,136 @@
+{% comment %}
+  flt-header-1 CUSTOM
+  FLT Hemp Provisions — Storefront Header
+  Source: frontend/src/App.jsx → Navbar
+  Shopify vars: shop.name, linklists, cart.item_count, routes.*
+{% endcomment %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --head: 'Bebas Neue', sans-serif;
+    --body: 'Source Sans 3', sans-serif;
+  }
+  .flt-nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: transparent;
+    transition: all 0.5s ease;
+    padding: 16px 0;
+  }
+  .flt-nav.scrolled {
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(11,37,69,0.08);
+    padding: 8px 0;
+  }
+  .flt-nav__inner {
+    max-width: 1300px; margin: 0 auto;
+    padding: 0 40px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .flt-nav__logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none;
+  }
+  .flt-nav__logo-name {
+    font-family: var(--head); font-size: 28px;
+    color: #0B2545; letter-spacing: 0.15em; line-height: 1;
+    transition: font-size 0.4s ease;
+  }
+  .flt-nav.scrolled .flt-nav__logo-name { font-size: 24px; }
+  .flt-nav__logo-sub {
+    font-family: var(--body); font-size: 8px;
+    color: #64748B; letter-spacing: 0.25em; text-transform: uppercase;
+  }
+  .flt-nav__links { display: flex; gap: 4px; align-items: center; }
+  .flt-nav__link {
+    background: none; border: none; border-radius: 24px;
+    color: #64748B; font-family: var(--body); font-size: 14px; font-weight: 600;
+    cursor: pointer; padding: 8px 18px;
+    transition: all 0.3s ease; text-decoration: none; display: inline-block;
+  }
+  .flt-nav__link:hover,
+  .flt-nav__link[aria-current] { background: rgba(11,37,69,0.08); color: #0B2545; }
+  .flt-nav__cart {
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    border: none; color: #fff; padding: 10px 24px; border-radius: 30px;
+    margin-left: 8px; font-family: var(--body); font-size: 13px; font-weight: 700;
+    cursor: pointer; position: relative; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .flt-nav__cart-badge {
+    position: absolute; top: -4px; right: -4px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #EF4444; border: 2px solid #fff;
+  }
+  @media (max-width: 768px) {
+    .flt-nav__inner { padding: 0 20px; }
+    .flt-nav__link { display: none; }
+    .flt-nav__logo-name { font-size: 22px; }
+  }
+</style>
+
+<nav class="flt-nav" id="flt-nav" role="navigation" aria-label="Main navigation">
+  <div class="flt-nav__inner">
+
+    <a href="{{ routes.root_url }}" class="flt-nav__logo" aria-label="{{ shop.name }}">
+      {% render 'flt-plane-icon-1', size: 36, color: '#0B2545' %}
+      <div>
+        <div class="flt-nav__logo-name">FLT</div>
+        <div class="flt-nav__logo-sub">Hemp Provisions</div>
+      </div>
+    </a>
+
+    <div class="flt-nav__links">
+      {% for link in section.settings.menu.links %}
+        <a href="{{ link.url }}" class="flt-nav__link"
+           {% if link.active %}aria-current="page"{% endif %}>
+          {{ link.title }}
+        </a>
+      {% endfor %}
+      <a href="{{ routes.cart_url }}" class="flt-nav__cart">
+        Cart ({{ cart.item_count }})
+        {% if cart.item_count > 0 %}
+          <span class="flt-nav__cart-badge" aria-hidden="true"></span>
+        {% endif %}
+      </a>
+    </div>
+
+  </div>
+</nav>
+
+<script>
+  (function () {
+    var nav = document.getElementById('flt-nav');
+    if (!nav) return;
+    function tick() { nav.classList.toggle('scrolled', window.scrollY > 60); }
+    window.addEventListener('scroll', tick, { passive: true });
+    tick();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "tag": "section",
+  "class": "flt-header-section",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Navigation menu",
+      "default": "main-menu"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FLT Header"
+    }
+  ]
+}
+{% endschema %}

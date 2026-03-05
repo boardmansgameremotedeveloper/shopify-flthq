@@ -1,0 +1,246 @@
+{% comment %}
+  sections/contact.liquid
+  FLT Hemp Provisions — Contact
+  Source: frontend/src/App.jsx → ContactSection
+  Uses Shopify native {% form 'contact' %} — replaces React state form.
+{% endcomment %}
+
+<style>
+  .flt-contact {
+    padding: 120px 40px;
+    background: linear-gradient(180deg, #F0F7FF 0%, #DCEEFB 50%, #B4DFF7 100%);
+    position: relative; overflow: hidden;
+  }
+  .flt-contact__inner {
+    max-width: 1300px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: start; position: relative; z-index: 1;
+  }
+  .flt-contact__eyebrow {
+    font-family: var(--body); font-size: 13px; color: #0B2545;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    margin-top: 12px; margin-bottom: 12px; font-weight: 600; opacity: 0.5;
+  }
+  .flt-contact__heading {
+    font-family: var(--head);
+    font-size: clamp(36px, 4vw, 56px);
+    color: #0B2545; margin: 0 0 20px; line-height: 1.1;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .flt-contact__body {
+    font-family: var(--body); font-size: 16px;
+    color: #64748B; line-height: 1.7; margin-bottom: 36px;
+  }
+  .flt-contact__info-list { display: flex; flex-direction: column; gap: 22px; }
+  .flt-contact__info-row { display: flex; gap: 14px; align-items: flex-start; }
+  .flt-contact__info-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: rgba(11,37,69,0.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .flt-contact__info-label {
+    font-family: var(--body); font-size: 11px; color: #0B2545;
+    margin-bottom: 2px; letter-spacing: 0.08em; text-transform: uppercase;
+    font-weight: 700; opacity: 0.5;
+  }
+  .flt-contact__info-val { font-family: var(--body); font-size: 15px; color: #334155; }
+  .flt-contact__trust {
+    margin-top: 36px; padding: 20px; border-radius: 16px;
+    background: rgba(255,255,255,0.6); backdrop-filter: blur(8px);
+    border: 1px solid rgba(11,37,69,0.08);
+    display: flex; align-items: center; gap: 16px;
+  }
+  .flt-contact__trust-badge {
+    width: 52px; height: 52px; border-radius: 10px;
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: #fff; font-weight: 800;
+    font-family: var(--body); text-align: center; line-height: 1.1; flex-shrink: 0;
+  }
+  .flt-contact__trust-name {
+    font-family: var(--body); font-size: 13px;
+    color: #0B2545; font-weight: 700; margin-bottom: 3px;
+  }
+  .flt-contact__trust-sub { font-family: var(--body); font-size: 11px; color: #64748B; line-height: 1.5; }
+
+  .flt-contact__form-wrap {
+    background: rgba(255,255,255,0.75); backdrop-filter: blur(16px);
+    border: 1px solid rgba(11,37,69,0.08); border-radius: 24px;
+    padding: 36px; box-shadow: 0 20px 60px rgba(11,37,69,0.08);
+  }
+  .flt-contact__success {
+    background: rgba(5,150,105,0.08); border: 1px solid rgba(5,150,105,0.2);
+    border-radius: 12px; padding: 12px 18px; margin-bottom: 20px;
+    font-family: var(--body); font-size: 13px; color: #059669;
+  }
+  .flt-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .flt-form-group { margin-bottom: 14px; }
+  .flt-form-label {
+    font-family: var(--body); font-size: 11px; color: #64748B;
+    margin-bottom: 5px; display: block;
+    letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700;
+  }
+  .flt-form-input,
+  .flt-form-select,
+  .flt-form-textarea {
+    width: 100%; padding: 14px 18px; border-radius: 12px;
+    border: 1px solid #E2E8F0; background: #F8FAFC;
+    color: #0B2545; font-family: var(--body); font-size: 14px;
+    outline: none; transition: all 0.3s ease; box-sizing: border-box;
+  }
+  .flt-form-input:focus,
+  .flt-form-select:focus,
+  .flt-form-textarea:focus {
+    border-color: #93C5FD;
+    box-shadow: 0 0 0 3px rgba(147,197,253,0.2);
+  }
+  .flt-form-textarea { min-height: 130px; resize: vertical; }
+  .flt-form-submit {
+    width: 100%;
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    border: none; color: #fff; padding: 15px; border-radius: 14px;
+    font-family: var(--head); font-size: 17px; letter-spacing: 0.1em;
+    cursor: pointer; text-transform: uppercase;
+    box-shadow: 0 8px 30px rgba(11,37,69,0.2);
+  }
+  .flt-form-privacy {
+    font-family: var(--body); font-size: 11px; color: #94A3B8;
+    text-align: center; margin-top: 14px;
+  }
+
+  .flt-reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .flt-reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    .flt-contact__inner { grid-template-columns: 1fr; gap: 40px; }
+    .flt-contact { padding: 80px 20px; }
+    .flt-form-row { grid-template-columns: 1fr; }
+  }
+</style>
+
+<section class="flt-contact" id="contact">
+  <div class="flt-contact__inner">
+
+    <div class="flt-reveal">
+      {% render 'flt-plane-icon-1', size: 28, color: '#0B2545' %}
+      <div class="flt-contact__eyebrow">Contact</div>
+      <h2 class="flt-contact__heading">{{ section.settings.heading }}</h2>
+      <p class="flt-contact__body">{{ section.settings.subtext }}</p>
+
+      <div class="flt-contact__info-list">
+        <div class="flt-contact__info-row">
+          <div class="flt-contact__info-icon">📍</div>
+          <div>
+            <div class="flt-contact__info-label">Base Camp</div>
+            <div class="flt-contact__info-val">{{ section.settings.address }}</div>
+          </div>
+        </div>
+        <div class="flt-contact__info-row">
+          <div class="flt-contact__info-icon">✉️</div>
+          <div>
+            <div class="flt-contact__info-label">Email</div>
+            <div class="flt-contact__info-val">{{ section.settings.email }}</div>
+          </div>
+        </div>
+        <div class="flt-contact__info-row">
+          <div class="flt-contact__info-icon">📱</div>
+          <div>
+            <div class="flt-contact__info-label">Call</div>
+            <div class="flt-contact__info-val">{{ section.settings.phone }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flt-contact__trust">
+        <div class="flt-contact__trust-badge">AUTH<br>NET</div>
+        <div>
+          <div class="flt-contact__trust-name">Secure Payments by Authorize.net</div>
+          <div class="flt-contact__trust-sub">All transactions encrypted. Visa, Mastercard, Amex, Discover.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flt-reveal" style="transition-delay:0.2s">
+      <div class="flt-contact__form-wrap">
+        {% form 'contact', contact %}
+
+          {% if form.posted_successfully? %}
+            <div class="flt-contact__success">✓ Message sent! Our crew will be in touch shortly.</div>
+          {% endif %}
+
+          <div class="flt-form-row">
+            <div>
+              <label class="flt-form-label" for="ContactName">Name</label>
+              <input class="flt-form-input" type="text" id="ContactName"
+                     name="contact[name]" placeholder="Your name"
+                     value="{{ contact.name }}" autocomplete="name">
+            </div>
+            <div>
+              <label class="flt-form-label" for="ContactEmail">Email</label>
+              <input class="flt-form-input" type="email" id="ContactEmail"
+                     name="contact[email]" placeholder="you@email.com"
+                     value="{{ contact.email }}" autocomplete="email">
+            </div>
+          </div>
+
+          <div class="flt-form-group">
+            <label class="flt-form-label" for="ContactSubject">Subject</label>
+            <select class="flt-form-select" id="ContactSubject" name="contact[subject]">
+              <option value="General Inquiry">General Inquiry</option>
+              <option value="Order Support">Order Support</option>
+              <option value="Wholesale / B2B">Wholesale / B2B</option>
+              <option value="Press &amp; Media">Press &amp; Media</option>
+            </select>
+          </div>
+
+          <div class="flt-form-group">
+            <label class="flt-form-label" for="ContactMessage">Message</label>
+            <textarea class="flt-form-textarea" id="ContactMessage"
+                      name="contact[body]"
+                      placeholder="How can we help?">{{ contact.body }}</textarea>
+          </div>
+
+          <button type="submit" class="flt-form-submit">Send Message</button>
+          <div class="flt-form-privacy">🔒 Your information is secure and never shared.</div>
+
+        {% endform %}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  (function () {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.flt-reveal').forEach(function (el) { el.classList.add('in-view'); });
+      return;
+    }
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in-view'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.flt-reveal').forEach(function (el) { obs.observe(el); });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Contact",
+  "tag": "section",
+  "class": "flt-contact-section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Ready for Takeoff?" },
+    { "type": "text", "id": "subtext", "label": "Subtext",  "default": "Questions, wholesale inquiries, or just want to connect? Our crew will respond within 24 hours." },
+    { "type": "text", "id": "address", "label": "Address",  "default": "Seattle, WA" },
+    { "type": "text", "id": "email",   "label": "Email",    "default": "hello@drinkflt.com" },
+    { "type": "text", "id": "phone",   "label": "Phone",    "default": "(206) 555-0FLT" }
+  ],
+  "presets": [{ "name": "FLT Contact" }]
+}
+{% endschema %}

@@ -1,0 +1,12 @@
+{% comment %}
+  snippets/plane-icon.liquid
+  FLT Hemp Provisions — Inline plane SVG icon
+  Source: frontend/src/components.jsx → PlaneIcon
+  Usage: {% render 'plane-icon', size: 36, color: '#0B2545' %}
+{% endcomment %}
+{% assign icon_size   = size  | default: 28 %}
+{% assign icon_color  = color | default: '#0B2545' %}
+{% assign icon_height = icon_size | divided_by: 2 %}
+<svg width="{{ icon_size }}" height="{{ icon_height }}" viewBox="0 0 56 28" fill="{{ icon_color }}" aria-hidden="true">
+  <path d="M2 14.5 L14 13 L18 7 L21 7.5 L19 13 L42 11.5 L46 6 L49 7 L45.5 13 L53 13.5 L53 15 L45.5 15.5 L49 21.5 L46 22.5 L42 17 L19 15.5 L21 21 L18 21.5 L14 15.5 L2 14.5Z"/>
+</svg>

@@ -1,0 +1,168 @@
+{% comment %}
+  sections/hero.liquid
+  FLT Hemp Provisions — Hero / Landing Section
+  Source: frontend/src/App.jsx → Hero
+{% endcomment %}
+
+<style>
+  .flt-hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    background: linear-gradient(180deg, #87CEEB 0%, #B4DFF7 30%, #DCEEFB 60%, #F0F7FF 100%);
+  }
+  .flt-hero__cloud {
+    position: absolute; border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    opacity: 0; transition: opacity 2s ease;
+  }
+  .flt-hero--loaded .flt-hero__cloud { opacity: 1; }
+  .flt-hero__content {
+    text-align: center; padding: 0 40px;
+    position: relative; z-index: 1; max-width: 1000px;
+  }
+  .flt-hero__eyebrow {
+    font-family: var(--body); font-size: 13px; color: #0B2545;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    margin-bottom: 16px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    opacity: 0.7;
+  }
+  .flt-hero__rule { width: 50px; height: 1.5px; background: #0B2545; opacity: 0.3; }
+  .flt-hero__heading {
+    font-family: var(--head);
+    font-size: clamp(60px, 10vw, 130px);
+    color: #0B2545; line-height: 0.92;
+    margin: 0 0 20px; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .flt-hero__heading span { color: #1E3A5F; }
+  .flt-hero__body {
+    font-family: var(--body); font-size: 19px; color: #334155;
+    max-width: 560px; margin: 0 auto 40px; line-height: 1.7;
+  }
+  .flt-hero__ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .flt-hero__cta-primary {
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    border: none; color: #fff; padding: 16px 48px; border-radius: 40px;
+    font-family: var(--head); font-size: 17px; letter-spacing: 0.12em;
+    cursor: pointer; text-transform: uppercase;
+    box-shadow: 0 8px 30px rgba(11,37,69,0.25);
+    text-decoration: none; display: inline-block;
+  }
+  .flt-hero__cta-secondary {
+    background: rgba(255,255,255,0.6); backdrop-filter: blur(8px);
+    border: 2px solid #0B2545; color: #0B2545;
+    padding: 14px 48px; border-radius: 40px;
+    font-family: var(--head); font-size: 17px; letter-spacing: 0.12em;
+    cursor: pointer; text-transform: uppercase;
+    text-decoration: none; display: inline-block;
+  }
+  .flt-hero__pills {
+    display: flex; gap: 32px; justify-content: center;
+    margin-top: 56px; flex-wrap: wrap;
+  }
+  .flt-hero__pill {
+    font-family: var(--body); font-size: 11px; color: #0B2545;
+    letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;
+    border-bottom: 2px solid rgba(11,37,69,0.2); padding-bottom: 4px; opacity: 0.6;
+  }
+  .flt-hero__announcement {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    padding: 12px 20px; text-align: center;
+    font-family: var(--body); font-size: 13px; color: #fff;
+    font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+
+  /* entrance animation */
+  .flt-hero__content > * {
+    opacity: 0; transform: translateY(30px);
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .flt-hero--loaded .flt-hero__content > * { opacity: 1; transform: translateY(0); }
+  .flt-hero--loaded .flt-hero__content > *:nth-child(1) { transition-delay: 0.3s; }
+  .flt-hero--loaded .flt-hero__content > *:nth-child(2) { transition-delay: 0.6s; }
+  .flt-hero--loaded .flt-hero__content > *:nth-child(3) { transition-delay: 0.8s; }
+  .flt-hero--loaded .flt-hero__content > *:nth-child(4) { transition-delay: 1.0s; }
+  .flt-hero--loaded .flt-hero__content > *:nth-child(5) { transition-delay: 1.2s; }
+
+  @media (max-width: 768px) {
+    .flt-hero__content { padding: 0 20px; }
+    .flt-hero__pills { gap: 16px; }
+    .flt-hero__cta-primary,
+    .flt-hero__cta-secondary { padding: 14px 32px; font-size: 15px; }
+  }
+</style>
+
+<section class="flt-hero" id="home" id="flt-hero-section">
+
+  <div class="flt-hero__cloud" style="top:12%;left:5%;width:280px;height:70px;filter:blur(30px);transition-delay:0.5s;"></div>
+  <div class="flt-hero__cloud" style="top:22%;right:10%;width:200px;height:50px;filter:blur(25px);transition-delay:0.8s;"></div>
+  <div class="flt-hero__cloud" style="top:8%;right:30%;width:350px;height:80px;filter:blur(35px);transition-delay:1.0s;"></div>
+  <div class="flt-hero__cloud" style="bottom:30%;left:15%;width:250px;height:60px;filter:blur(28px);transition-delay:1.2s;"></div>
+
+  <div class="flt-hero__content">
+    <div class="flt-hero__eyebrow">
+      <span class="flt-hero__rule"></span>
+      {{ section.settings.eyebrow }}
+      <span class="flt-hero__rule"></span>
+    </div>
+
+    <h1 class="flt-hero__heading">
+      {{ section.settings.heading_line1 }}<br>
+      <span>{{ section.settings.heading_line2 }}</span>
+    </h1>
+
+    <p class="flt-hero__body">{{ section.settings.subtext }}</p>
+
+    <div class="flt-hero__ctas">
+      <a href="{{ section.settings.cta_primary_url }}" class="flt-hero__cta-primary">
+        {{ section.settings.cta_primary_label }}
+      </a>
+      <a href="{{ section.settings.cta_secondary_url }}" class="flt-hero__cta-secondary">
+        {{ section.settings.cta_secondary_label }}
+      </a>
+    </div>
+
+    <div class="flt-hero__pills">
+      {% assign pills = section.settings.pills | split: ',' %}
+      {% for pill in pills %}
+        <span class="flt-hero__pill">{{ pill | strip }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="flt-hero__announcement">
+    {{ section.settings.announcement_text }}
+  </div>
+
+</section>
+
+<script>
+  (function () {
+    var hero = document.querySelector('.flt-hero');
+    if (!hero) return;
+    setTimeout(function () { hero.classList.add('flt-hero--loaded'); }, 150);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Hero",
+  "tag": "section",
+  "class": "flt-hero-section",
+  "settings": [
+    { "type": "text",     "id": "eyebrow",             "label": "Eyebrow text",                     "default": "Hemp-Derived · Nanosized THC" },
+    { "type": "text",     "id": "heading_line1",        "label": "Heading line 1",                   "default": "Elevate Your" },
+    { "type": "text",     "id": "heading_line2",        "label": "Heading line 2 (accent colour)",   "default": "Flight" },
+    { "type": "textarea", "id": "subtext",              "label": "Body text",                        "default": "Premium hemp-derived beverages & wellness gummies. Zero sugar. Clean ingredients. Nanosized for rapid absorption." },
+    { "type": "text",     "id": "cta_primary_label",   "label": "Primary CTA label",                "default": "Shop Now" },
+    { "type": "url",      "id": "cta_primary_url",     "label": "Primary CTA link" },
+    { "type": "text",     "id": "cta_secondary_label", "label": "Secondary CTA label",              "default": "Our Story" },
+    { "type": "url",      "id": "cta_secondary_url",   "label": "Secondary CTA link" },
+    { "type": "text",     "id": "pills",               "label": "Attribute pills (comma-separated)", "default": "No Added Sugar, Vegan Friendly, Clean Ingredients, Rapid Release" },
+    { "type": "text",     "id": "announcement_text",   "label": "Announcement bar text",            "default": "✈ First Class Deal — 20% OFF with Code FLT20 — Free Shipping $50+" }
+  ],
+  "presets": [{ "name": "FLT Hero" }]
+}
+{% endschema %}
