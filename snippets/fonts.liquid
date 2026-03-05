@@ -1,3 +1,8 @@
+{% comment %} FLT: Google Fonts — loaded here so every page gets them (moved from flt-header-1) {% endcomment %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 {% # theme-check-disable %}
 {%- unless settings.type_body_font.system? -%}
   <link
@@ -40,3 +45,17 @@
   >
 {%- endunless -%}
 {% # theme-check-enable %}
+
+{% comment %} FLT: Override Horizon CSS font vars so native sections use FLT typography {% endcomment %}
+<style>
+  :root {
+    --font-heading--family: 'Bebas Neue', sans-serif;
+    --font-heading--weight: 400;
+    --font-subheading--family: 'Source Sans 3', sans-serif;
+    --font-subheading--weight: 600;
+    --font-body--family: 'Source Sans 3', sans-serif;
+    --font-body--weight: 400;
+    --font-accent--family: 'Source Sans 3', sans-serif;
+    --font-accent--weight: 700;
+  }
+</style>

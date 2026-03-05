@@ -5,10 +5,6 @@
   Shopify vars: shop.name, linklists, cart.item_count, routes.*
 {% endcomment %}
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
   :root {
     --head: 'Bebas Neue', sans-serif;
@@ -73,6 +69,93 @@
     .flt-nav__link { display: none; }
     .flt-nav__logo-name { font-size: 22px; }
   }
+
+  /* ── Cart Drawer — base structural styles ──────────────────────────── */
+  /* These live here because header-actions.liquid is disabled (native header off). */
+  .cart-drawer {
+    --cart-drawer-padding: 24px;
+    --cart-drawer-padding-desktop: 24px 32px;
+  }
+  .cart-drawer__dialog {
+    position: fixed; overflow: hidden; border-radius: 0;
+    width: 100%; height: 100%; margin: 0 0 0 auto; padding: 0;
+    background-color: var(--color-background, #fff);
+    border-left: 1px solid rgba(11,37,69,0.08);
+    box-shadow: -8px 0 40px rgba(11,37,69,0.12);
+  }
+  .cart-drawer__dialog:modal { max-height: 100dvh; overflow-y: hidden; }
+  @media screen and (min-width: 750px) {
+    .cart-drawer__dialog { width: var(--sidebar-width, 420px); max-width: 95vw; }
+  }
+  .cart-drawer__inner { height: 100%; overflow: hidden; }
+  .cart-drawer__content {
+    height: calc(100% - 72px); display: flex; flex-direction: column;
+    padding: 0; flex-grow: 1; overflow-y: auto;
+    background-color: var(--color-background, #fff);
+  }
+  .cart-drawer__header {
+    background-color: var(--color-background, #fff);
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; padding: var(--cart-drawer-padding);
+    border-bottom: 1px solid rgba(11,37,69,0.08);
+    position: sticky; top: 0; z-index: 1;
+  }
+  @media screen and (min-width: 750px) {
+    .cart-drawer__header { padding-inline: var(--cart-drawer-padding-desktop); }
+  }
+  .cart-drawer__heading {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 0;
+  }
+  .cart-drawer__items {
+    display: flex; flex-direction: column;
+    padding-inline: var(--cart-drawer-padding); overflow-y: auto;
+  }
+  @media screen and (min-width: 750px) {
+    .cart-drawer__items { padding-inline: var(--cart-drawer-padding-desktop); }
+  }
+  .cart-drawer__items .cart-items__table-row {
+    padding-bottom: 24px; border-bottom: 1px solid rgba(11,37,69,0.06);
+    margin-bottom: 24px;
+  }
+  .cart-drawer__items .cart-items__table-row:last-child {
+    border-bottom: none; padding-bottom: 0; margin-bottom: 0;
+  }
+  .cart-drawer__summary {
+    position: sticky; bottom: 0; z-index: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    padding: var(--cart-drawer-padding); margin-top: auto;
+    background-color: var(--color-background, #fff);
+    border-top: 1px solid rgba(11,37,69,0.08);
+  }
+  @media screen and (min-width: 750px) {
+    .cart-drawer__summary { padding: var(--cart-drawer-padding-desktop); }
+  }
+  .cart-drawer--empty .cart-drawer__inner {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; height: 100dvh;
+  }
+  .cart-drawer--empty .cart-drawer__heading { text-align: center; }
+
+  /* ── Cart Drawer — FLT brand overrides ─────────────────────────────── */
+  .cart-drawer__heading {
+    font-family: var(--head, 'Bebas Neue', sans-serif);
+    font-size: 28px; color: #0B2545;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .cart-drawer__close-button {
+    color: #64748B; background: none; border: none;
+    cursor: pointer; padding: 8px; border-radius: 8px;
+    transition: background 0.2s ease;
+  }
+  .cart-drawer__close-button:hover { background: rgba(11,37,69,0.06); color: #0B2545; }
+  .cart-drawer .cart__checkout-button,
+  .cart-drawer .cart__checkout-button[type="submit"] {
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    border: none; color: #fff; border-radius: 14px;
+    font-family: var(--head, 'Bebas Neue', sans-serif);
+    font-size: 18px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 14px 24px; width: 100%; cursor: pointer;
+  }
 </style>
 
 <nav class="flt-nav" id="flt-nav" role="navigation" aria-label="Main navigation">
@@ -93,12 +176,16 @@
           {{ link.title }}
         </a>
       {% endfor %}
-      <a href="{{ routes.cart_url }}" class="flt-nav__cart">
+      <button
+        class="flt-nav__cart"
+        onclick="var d=document.querySelector('cart-drawer-component');if(d&&d.showDialog){d.showDialog();}else{window.location.href='{{ routes.cart_url }}';}return false;"
+        aria-label="Open cart, {{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }}"
+      >
         Cart ({{ cart.item_count }})
         {% if cart.item_count > 0 %}
           <span class="flt-nav__cart-badge" aria-hidden="true"></span>
         {% endif %}
-      </a>
+      </button>
     </div>
 
   </div>

@@ -99,7 +99,8 @@
     </div>
   {% endif %}
 
-  {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
+  {% comment %} FLT iter-14: cart drawer moved to layout/theme.liquid — guarded here to prevent double-render {% endcomment %}
+  {% if false and settings.cart_type == 'drawer' and template.name != 'cart' %}
     <script
       src="{{ 'cart-drawer.js' | asset_url }}"
       type="module"
