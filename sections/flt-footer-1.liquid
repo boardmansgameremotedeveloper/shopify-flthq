@@ -1,8 +1,6 @@
 {% comment %}
   sections/footer.liquid
   FLT Hemp Provisions — Footer
-  Source: frontend/src/App.jsx → Footer
-  Link columns via schema blocks — configurable in Shopify theme editor.
 {% endcomment %}
 
 <style>
@@ -14,8 +12,10 @@
   }
   .flt-footer__inner { max-width: 1300px; margin: 0 auto; }
   .flt-footer__grid {
-    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 36px; margin-bottom: 36px;
+    display: grid; 
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 36px; 
+    margin-bottom: 36px;
   }
   .flt-footer__brand-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
   .flt-footer__brand-name {
@@ -34,6 +34,8 @@
     display: block; font-size: 13px;
     color: rgba(255,255,255,0.2); margin-bottom: 9px;
     text-decoration: none; transition: color 0.2s ease;
+    background: none; border: none; padding: 0; text-align: left; cursor: pointer;
+    width: 100%;
   }
   .flt-footer__col-link:hover { color: rgba(255,255,255,0.5); }
   .flt-footer__bottom {
@@ -63,8 +65,9 @@
 
 <footer class="flt-footer">
   <div class="flt-footer__inner">
-
     <div class="flt-footer__grid">
+      
+      {% comment %} Brand Column {% endcomment %}
       <div class="flt-footer__brand">
         <div class="flt-footer__brand-logo">
           {% render 'flt-plane-icon-1', size: 30, color: '#93C5FD' %}
@@ -72,59 +75,39 @@
         </div>
         <p class="flt-footer__brand-desc">{{ section.settings.brand_desc }}</p>
       </div>
-      
 
-      <!-- DxB treat anchors in the page to scroll -->
-      {% for block in section.blocks %}
-        {% case block.type %}
-          {% when 'link_column' %}
-            <div {{ block.shopify_attributes }}>
-              <div class="flt-footer__col-title">{{ block.settings.title }}</div>
+      {% comment %} Menu Column 1 {% endcomment %}
+      <div class="flt-footer__column">
+        <div class="flt-footer__col-title">{{ section.settings.title_1 }}</div>
+        {%- assign menu_1 = section.settings.menu_1 -%}
+        {%- if menu_1 != blank -%}
+          {%- for link in menu_1.links -%}
+            {%- render 'flt-footer-link', link: link -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
 
-{% comment %} 
-  In Section Settings, 'link_list' type returns the object. 
-  We assign it directly. 
-{% endcomment %}
-{% assign menu_obj = block.settings.menu %}
+      {% comment %} Menu Column 2 {% endcomment %}
+      <div class="flt-footer__column">
+        <div class="flt-footer__col-title">{{ section.settings.title_2 }}</div>
+        {%- assign menu_2 = section.settings.menu_2 -%}
+        {%- if menu_2 != blank -%}
+          {%- for link in menu_2.links -%}
+            {%- render 'flt-footer-link', link: link -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
 
-{% comment %} VISUAL DEBUGGER - Only shows if menu is missing {% endcomment %}
-{% if menu_obj == blank or menu_obj.links.size == 0 %}
-  <div style="border: 1px dashed #f00; padding: 5px; font-size: 10px; color: #ff8a8a; margin-bottom: 10px;">
-    ⚠️ Menu "{{ block.settings.title }}" is empty or not selected.<br>
-    Setting ID: {{ block.settings.menu }}
-  </div>
-{% endif %}
-
-{% if menu_obj != blank and menu_obj.links.size > 0 %}
-  {% for link in menu_obj.links %}
-
-                  {% comment %} Detect anchor links {% endcomment %}
-                  {% assign anchor_id = '' %}
-                  {% if link.url contains '#' %}
-                    {% assign anchor_id = link.url | split: '#' | last %}
-                  {% endif %}
-
-                  {% comment %} Render as button if it's an anchor on the home page {% endcomment %}
-                  {% if template.name == 'index' and anchor_id != '' %}
-                    <button class="flt-footer__col-link" data-anchor="{{ anchor_id }}">
-                      {{ link.title }}
-                    </button>
-                  {% else %}
-                    <a href="{{ link.url }}" class="flt-footer__col-link"
-                      {% if link.active %}aria-current="page"{% endif %}>
-                      {{ link.title }}
-                    </a>
-                  {% endif %}
-
-                {% endfor %}
-              {% else %}
-                <!-- fallback if menu is missing -->
-                <a href="{{ routes.root_url }}" class="flt-footer__col-link">Home</a>
-              {% endif %}
-
-            </div>
-        {% endcase %}
-      {% endfor %}
+      {% comment %} Menu Column 3 {% endcomment %}
+      <div class="flt-footer__column">
+        <div class="flt-footer__col-title">{{ section.settings.title_3 }}</div>
+        {%- assign menu_3 = section.settings.menu_3 -%}
+        {%- if menu_3 != blank -%}
+          {%- for link in menu_3.links -%}
+            {%- render 'flt-footer-link', link: link -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
 
     </div>
 
@@ -140,60 +123,58 @@
         <span class="flt-footer__pay-card">AMEX</span>
       </div>
     </div>
-
   </div>
 </footer>
+
+{%- comment -%} 
+  To avoid repeating the anchor logic 3 times, we use a simple inline loop check. 
+  Note: I've included the logic directly here to keep it in one file.
+{%- endcomment -%}
 
 <script>
   (function() {
     var footer = document.querySelector('.flt-footer');
     if (!footer) return;
-
-    var anchorEls = Array.prototype.slice.call(footer.querySelectorAll('[data-anchor]'));
-    if (!anchorEls.length) return;
-
-    anchorEls.forEach(function(el) {
-      el.addEventListener('click', function() {
-        var id = el.dataset.anchor;
-        var target = document.getElementById(id);
-        if(target) target.scrollIntoView({ behavior: 'smooth' });
+    footer.querySelectorAll('[data-anchor]').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        var target = document.getElementById(this.dataset.anchor);
+        if(target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
       });
     });
   })();
 </script>
 
-
 {% schema %}
 {
   "name": "Footer",
-  "tag": "section",
-  "class": "flt-footer-section",
   "settings": [
     {
       "type": "textarea",
       "id": "brand_desc",
       "label": "Brand description",
       "default": "Premium hemp-derived beverages and wellness gummies. Clean ingredients. Rapid absorption. Elevate your flight."
-    }
-  ],
-  "blocks": [
-    {
-      "type": "link_column",
-      "name": "Link column",
-      "settings": [
-        { "type": "text",      "id": "title", "label": "Column heading", "default": "Links" },
-        { "type": "link_list", "id": "menu",  "label": "Menu",           "default": "footer" }
-      ]
-    }
+    },
+    { "type": "header", "content": "Column 1" },
+    { "type": "text", "id": "title_1", "label": "Heading 1", "default": "Shop" },
+    { "type": "link_list", "id": "menu_1", "label": "Menu 1" },
+    { "type": "header", "content": "Column 2" },
+    { "type": "text", "id": "title_2", "label": "Heading 2", "default": "Company" },
+    { "type": "link_list", "id": "menu_2", "label": "Menu 2" },
+    { "type": "header", "content": "Column 3" },
+    { "type": "text", "id": "title_3", "label": "Heading 3", "default": "Support" },
+    { "type": "link_list", "id": "menu_3", "label": "Menu 3" }
   ],
   "presets": [
     {
       "name": "FLT Footer",
-      "blocks": [
-        { "type": "link_column", "settings": { "title": "Shop",    "menu": "footer-shop"    } },
-        { "type": "link_column", "settings": { "title": "Company", "menu": "footer-company" } },
-        { "type": "link_column", "settings": { "title": "Support", "menu": "footer-support" } }
-      ]
+      "settings": {
+        "menu_1": "footer-shop",
+        "menu_2": "footer-company",
+        "menu_3": "footer-support"
+      }
     }
   ]
 }
