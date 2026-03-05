@@ -1342,6 +1342,64 @@ results-list[initialized] {
   animation: var(--dialog-drawer-closing-animation) var(--animation-speed) var(--animation-easing);
 }
 
+/* Position dialog drawers */
+.dialog-modal.dialog-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: auto;
+  width: var(--cart-drawer-width, 400px);
+  max-width: 100vw;
+  height: 100vh;
+  margin: 0;
+  border-radius: 0;
+  transform: translateX(100%);
+  /* Override dialog-modal centering */
+  margin-block: 0;
+  margin-inline: 0;
+}
+
+.dialog-modal.dialog-drawer--right {
+  left: 0;
+  right: auto;
+  transform: translateX(-100%);
+}
+
+/* Cart drawer inner content */
+.cart-drawer__inner {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: var(--padding-lg);
+}
+
+.cart-drawer__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--margin-lg);
+}
+
+.cart-drawer__heading {
+  margin: 0;
+}
+
+.cart-drawer__close-button {
+  padding: var(--padding-sm);
+}
+
+.cart-drawer__content {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: var(--margin-lg);
+}
+
+.cart-drawer__summary {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--padding-lg);
+}
+
 /* Buttons */
 .button,
 .button-secondary,

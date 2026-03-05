@@ -93,6 +93,7 @@
     },
     "product_list_fa6P9H": {
       "type": "product-list",
+      "disabled": true,
       "blocks": {
         "static-header": {
           "type": "_product-list-content",

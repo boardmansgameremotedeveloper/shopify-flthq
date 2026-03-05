@@ -202,7 +202,7 @@
       {% endfor %}
       <button
         class="flt-nav__cart"
-        onclick="var d=document.querySelector('cart-drawer-component');if(d&&d.showDialog){d.showDialog();}else{window.location.href='{{ routes.cart_url }}';}return false;"
+        onclick="var d=document.querySelector('cart-drawer-component');if(d&&d.showDialog){d.showDialog();}else{console.log('Cart drawer not found or showDialog not available', d);window.location.href='{{ routes.cart_url }}';}return false;"
         aria-label="Open cart, {{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }}"
       >
         Cart ({{ cart.item_count }})
