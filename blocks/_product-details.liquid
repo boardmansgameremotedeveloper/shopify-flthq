@@ -46,6 +46,9 @@
     display: flex;
     align-self: start;
     justify-content: center;
+    /* This ensures it doesn't hide behind the header when sticky */
+    top: var(--header-group-height, 0); 
+    position: relative;    
   }
 
   @media screen and (min-width: 750px) {
@@ -53,6 +56,13 @@
       height: min-content;
     }
 
+    /* DxB - add something for positioning under the header */
+    .sticky-content--desktop {
+      position: sticky;
+      top: var(--header-group-height, 20px); /* 20px is a fallback buffer */
+      z-index: 2;
+    }
+    
     .full-height--desktop {
       height: 100%;
       max-height: calc(100vh - var(--header-group-height, 0));
