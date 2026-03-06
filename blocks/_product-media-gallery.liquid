@@ -1,3 +1,11 @@
+<div style="background: #fff3cd; color: #856404; padding: 10px; border: 1px solid #ffeeba; font-family: monospace; font-size: 12px; z-index: 9999; position: relative;">
+  <b>Debug Info:</b><br>
+  - Global Product Title: {{ product.title | default: 'NOT FOUND' }}<br>
+  - Closest Product Title: {{ closest.product.title | default: 'NOT FOUND' }}<br>
+  - Media Count: {{ closest.product.media.size | default: 0 }}
+</div>
+
+
 {%- if closest.product.selected_or_first_available_variant.featured_media != null -%}
   {%- assign featured_media = closest.product.selected_or_first_available_variant.featured_media -%}
 {%- else -%}
