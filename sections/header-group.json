@@ -121,7 +121,7 @@
       "type": "flt-header-1",
       "name": "FLT Header",
       "settings": {
-        "menu": "main-menu"
+        "menu": "flt-header-menu-for-pages"
       }
     }
   },
