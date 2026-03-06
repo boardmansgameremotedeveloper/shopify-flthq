@@ -121,7 +121,7 @@
       "type": "flt-header-1",
       "name": "FLT Header",
       "settings": {
-        "menu": "flt-header-menu-for-pages"
+        "menu": "flt-header-menu"
       }
     },
     "divider_AfDtai": {
