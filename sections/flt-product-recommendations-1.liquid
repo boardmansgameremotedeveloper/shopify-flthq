@@ -67,28 +67,35 @@
     }
   }
 </style>
+
 <product-recommendations
   id="flt-product-recommendations-{{ section.id }}"
   class="flt-recs-component"
-  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit=4"
 >
-  <!-- Debug output to see what Shopify is returning -->
-  <pre>{{ recommendations | json }}</pre>
-
   <section class="flt-recs">
     <div class="flt-recs__inner">
 
-      <!-- Heading always visible -->
+      <!-- Heading -->
       <div class="flt-recs__heading-wrap flt-reveal">
         <div class="flt-recs__eyebrow">Handpicked for you</div>
         <h2 class="flt-recs__title">Related Products</h2>
       </div>
 
-      {% if recommendations.performed and recommendations.products_count > 0 %}
+      {% assign related_products = recommendations.products %}
+      
+      {% comment %}
+        If Shopify recommendations returned nothing, fallback to products in the same collection
+      {% endcomment %}
+      {% if related_products == empty and product.collections.size > 0 %}
+        {% assign first_collection = product.collections.first %}
+        {% assign related_products = first_collection.products | where: "id", "!=" , product.id | slice: 0, 4 %}
+      {% endif %}
+
+      {% if related_products.size > 0 %}
         <div class="flt-recs__grid">
-          {% for product in recommendations.products %}
+          {% for related_product in related_products %}
             <div class="flt-reveal" style="transition-delay: {{ forloop.index0 | times: 0.1 }}s">
-              {% render 'flt-product-card-1', product: product %}
+              {% render 'flt-product-card-1', product: related_product %}
             </div>
           {% endfor %}
         </div>
@@ -101,7 +108,6 @@
     </div>
   </section>
 
-  <!-- Scroll reveal JS -->
   <script>
     (function() {
       var scope = document.querySelector('#flt-product-recommendations-{{ section.id }}');
