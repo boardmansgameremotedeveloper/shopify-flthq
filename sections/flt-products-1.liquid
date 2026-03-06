@@ -77,68 +77,6 @@
     gap: 28px;
   }
 
-  /* Product card */
-  .flt-product-card {
-    background: #fff; border-radius: 20px;
-    border: 1px solid #E2E8F0; overflow: hidden;
-    cursor: pointer; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-  }
-  .flt-product-card:hover {
-    border-color: #93C5FD;
-    transform: translateY(-12px);
-    box-shadow: 0 28px 60px rgba(11,37,69,0.15);
-  }
-  .flt-product-card__badge {
-    position: absolute; top: 16px; left: 16px; z-index: 5;
-    background: linear-gradient(135deg, #0B2545, #1B3A5C);
-    color: #fff; font-size: 10px; font-family: var(--body);
-    font-weight: 700; padding: 5px 14px; border-radius: 20px;
-    letter-spacing: 0.12em; text-transform: uppercase;
-  }
-  .flt-product-card__image-wrap {
-    display: flex; justify-content: center; align-items: center;
-    padding: 36px 24px 16px; min-height: 280px;
-    background: linear-gradient(180deg, #F0F7FF 0%, #fff 100%);
-  }
-  .flt-product-card__img {
-    max-height: 250px; max-width: 80%; object-fit: contain;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    filter: drop-shadow(0 4px 12px rgba(11,37,69,0.08));
-  }
-  .flt-product-card:hover .flt-product-card__img {
-    filter: drop-shadow(0 12px 30px rgba(11,37,69,0.18));
-    transform: scale(1.06) rotate(-1deg);
-  }
-  .flt-product-card__body { padding: 8px 24px 24px; }
-  .flt-product-card__name {
-    font-family: var(--head); font-size: 22px;
-    color: #0B2545; margin: 0 0 6px;
-    letter-spacing: 0.04em; text-transform: uppercase;
-  }
-  .flt-product-card__desc {
-    font-family: var(--body); font-size: 13px; color: #64748B;
-    margin: 0 0 4px; line-height: 1.5;
-  }
-  .flt-product-card__tagline {
-    font-family: var(--body); font-size: 11px; color: #94A3B8;
-    margin: 0 0 12px; letter-spacing: 0.04em;
-  }
-  .flt-product-card__footer {
-    display: flex; justify-content: space-between;
-    align-items: center; margin-top: 16px;
-  }
-  .flt-product-card__price {
-    font-family: var(--head); font-size: 28px; color: #0B2545;
-  }
-  .flt-product-card__btn {
-    background: linear-gradient(135deg, #0B2545, #1E3A5F);
-    border: none; color: #fff; padding: 10px 24px; border-radius: 30px;
-    font-family: var(--body); font-size: 13px; font-weight: 700;
-    cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase;
-    transition: all 0.3s ease; text-decoration: none; display: inline-block;
-  }
-
   /* scroll reveal */
   .flt-reveal {
     opacity: 0; transform: translateY(40px);
