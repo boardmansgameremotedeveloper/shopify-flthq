@@ -1,0 +1,442 @@
+{% comment %}
+  sections/flt-product-popup-content-1.liquid
+  FLT Product Detail Popup — Content Layout
+  Fetched by flt-product-popup-1.js via Section Rendering API:
+    /products/<handle>?section_id=flt-product-popup-content-1
+  Full Liquid product context available: product, product.variants, product.metafields.
+  HTML + CSS only — NO inline executable scripts. All JS is in assets/flt-product-popup-1.js.
+  Variants data embedded as JSON in a <script type="application/json"> tag (data only, not executed).
+{% endcomment %}
+
+{% assign current_variant = product.selected_or_first_available_variant %}
+
+<style>
+  .flt-pdc {
+    display: flex;
+    gap: 40px;
+    padding: 48px 40px;
+    align-items: flex-start;
+  }
+
+  /* ── Media ── */
+  .flt-pdc__media {
+    flex: 0 0 44%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+  }
+
+  .flt-pdc__main-img-wrap {
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #F0F7FF 0%, #fff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    padding: 28px;
+  }
+
+  .flt-pdc__main-img {
+    max-height: 340px;
+    width: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 24px rgba(11,37,69,0.12));
+    transition: opacity 0.25s ease;
+  }
+
+  .flt-pdc__thumbs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .flt-pdc__thumb {
+    border: 2px solid #E2E8F0;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    width: 58px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F8FAFC;
+    padding: 4px;
+    transition: border-color 0.18s ease;
+  }
+
+  .flt-pdc__thumb:hover,
+  .flt-pdc__thumb[aria-selected="true"] {
+    border-color: #0B2545;
+  }
+
+  .flt-pdc__thumb img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  /* ── Details ── */
+  .flt-pdc__details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    max-height: calc(88vh - 96px);
+    padding-right: 4px;
+  }
+
+  .flt-pdc__badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #0B2545, #1B3A5C);
+    color: #fff;
+    font-size: 10px;
+    font-family: var(--body);
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    width: fit-content;
+  }
+
+  .flt-pdc__title {
+    font-family: var(--head);
+    font-size: clamp(22px, 2.8vw, 34px);
+    color: #0B2545;
+    margin: 0;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+
+  .flt-pdc__price-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .flt-pdc__price {
+    font-family: var(--head);
+    font-size: 28px;
+    color: #0B2545;
+  }
+
+  .flt-pdc__compare {
+    font-family: var(--body);
+    font-size: 16px;
+    color: #94A3B8;
+    text-decoration: line-through;
+  }
+
+  /* Variant options */
+  .flt-pdc__option { display: flex; flex-direction: column; gap: 8px; }
+
+  .flt-pdc__option-label {
+    font-family: var(--body);
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748B;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .flt-pdc__option-value { color: #0B2545; }
+
+  .flt-pdc__option-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .flt-pdc__opt-btn {
+    border: 2px solid #E2E8F0;
+    background: #F8FAFC;
+    color: #0B2545;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-family: var(--body);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    letter-spacing: 0.04em;
+  }
+
+  .flt-pdc__opt-btn:hover,
+  .flt-pdc__opt-btn[aria-pressed="true"] {
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    border-color: transparent;
+    color: #fff;
+  }
+
+  /* Actions row */
+  .flt-pdc__actions {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .flt-pdc__qty {
+    display: flex;
+    align-items: center;
+    border: 2px solid #E2E8F0;
+    border-radius: 30px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .flt-pdc__qty-btn {
+    background: none;
+    border: none;
+    padding: 10px 16px;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #0B2545;
+    line-height: 1;
+    transition: background 0.18s ease;
+    font-family: var(--body);
+  }
+
+  .flt-pdc__qty-btn:hover { background: #F0F7FF; }
+
+  .flt-pdc__qty-input {
+    width: 36px;
+    border: none;
+    text-align: center;
+    font-family: var(--body);
+    font-size: 14px;
+    font-weight: 700;
+    color: #0B2545;
+    background: none;
+    -moz-appearance: textfield;
+  }
+
+  .flt-pdc__qty-input::-webkit-outer-spin-button,
+  .flt-pdc__qty-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .flt-pdc__atc {
+    flex: 1;
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    border: none;
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-family: var(--body);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .flt-pdc__atc:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+  .flt-pdc__atc:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+  .flt-pdc__atc[data-loading="true"] { opacity: 0.65; }
+
+  .flt-pdc__atc-msg {
+    font-family: var(--body);
+    font-size: 13px;
+    min-height: 18px;
+    transition: opacity 0.3s ease;
+  }
+
+  .flt-pdc__atc-msg--success { color: #059669; }
+  .flt-pdc__atc-msg--error   { color: #DC2626; }
+
+  /* Divider */
+  .flt-pdc__divider {
+    height: 1px;
+    background: #E2E8F0;
+    margin: 0;
+    border: none;
+  }
+
+  /* Description */
+  .flt-pdc__description {
+    font-family: var(--body);
+    font-size: 15px;
+    color: #475569;
+    line-height: 1.7;
+  }
+
+  .flt-pdc__description p { margin: 0 0 0.8em; }
+  .flt-pdc__description p:last-child { margin-bottom: 0; }
+
+  /* Full page link */
+  .flt-pdc__full-link {
+    font-family: var(--body);
+    font-size: 13px;
+    color: #94A3B8;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.18s ease;
+    display: inline-block;
+  }
+
+  .flt-pdc__full-link:hover { color: #0B2545; }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .flt-pdc {
+      flex-direction: column;
+      padding: 24px 20px 40px;
+      gap: 24px;
+    }
+
+    .flt-pdc__media { flex: none; position: static; }
+
+    .flt-pdc__details {
+      max-height: none;
+      overflow-y: visible;
+    }
+
+    .flt-pdc__main-img-wrap { min-height: 220px; padding: 20px; }
+    .flt-pdc__title { font-size: 22px; }
+    .flt-pdc__price { font-size: 24px; }
+
+    .flt-pdc__actions { flex-wrap: wrap; }
+    .flt-pdc__atc { min-width: 100%; }
+  }
+</style>
+
+<div class="flt-pdc" id="flt-pdc-root">
+
+  {%- comment -%} ── Media ── {%- endcomment -%}
+  <div class="flt-pdc__media">
+    <div class="flt-pdc__main-img-wrap">
+      {% if product.featured_image %}
+        {{ product.featured_image
+          | image_url: width: 800
+          | image_tag:
+            class: 'flt-pdc__main-img',
+            id: 'flt-pdc-main-img',
+            loading: 'eager',
+            alt: product.featured_image.alt | default: product.title
+        }}
+      {% endif %}
+    </div>
+
+    {% if product.images.size > 1 %}
+      <div class="flt-pdc__thumbs" id="flt-pdc-thumbs">
+        {% for image in product.images limit: 6 %}
+          <button
+            class="flt-pdc__thumb"
+            data-src="{{ image | image_url: width: 800 }}"
+            data-alt="{{ image.alt | default: product.title | escape }}"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            aria-label="{{ image.alt | default: product.title | escape }}"
+            type="button"
+          >
+            {{ image | image_url: width: 100 | image_tag: loading: 'lazy', alt: image.alt | default: product.title }}
+          </button>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  {%- comment -%} ── Details ── {%- endcomment -%}
+  <div class="flt-pdc__details">
+
+    {% assign badge = product.metafields.custom.badge %}
+    {% if badge %}
+      <div class="flt-pdc__badge">{{ badge }}</div>
+    {% endif %}
+
+    <h2 class="flt-pdc__title">{{ product.title }}</h2>
+
+    <div class="flt-pdc__price-wrap" id="flt-pdc-price">
+      <span class="flt-pdc__price">{{ current_variant.price | money }}</span>
+      {% if current_variant.compare_at_price > current_variant.price %}
+        <s class="flt-pdc__compare">{{ current_variant.compare_at_price | money }}</s>
+      {% endif %}
+    </div>
+
+    {%- comment -%} Variant picker {%- endcomment -%}
+    {% unless product.has_only_default_variant %}
+      <div class="flt-pdc__variants" id="flt-pdc-variants">
+        {% for option in product.options_with_values %}
+          <div class="flt-pdc__option">
+            <div class="flt-pdc__option-label">
+              {{ option.name }}:
+              <span class="flt-pdc__option-value" data-option-index="{{ forloop.index0 }}">{{ option.selected_value }}</span>
+            </div>
+            <div class="flt-pdc__option-btns" data-option-index="{{ forloop.index0 }}">
+              {% for value in option.values %}
+                <button
+                  class="flt-pdc__opt-btn"
+                  type="button"
+                  data-option-index="{{ forloop.parentloop.index0 }}"
+                  data-value="{{ value | escape }}"
+                  aria-pressed="{% if value == option.selected_value %}true{% else %}false{% endif %}"
+                >{{ value }}</button>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endunless %}
+
+    {%- comment -%} ATC form {%- endcomment -%}
+    <div class="flt-pdc__form" id="flt-pdc-form">
+      <input type="hidden" id="flt-pdc-variant-id" value="{{ current_variant.id }}">
+
+      <div class="flt-pdc__actions">
+        <div class="flt-pdc__qty">
+          <button class="flt-pdc__qty-btn" type="button" data-delta="-1" aria-label="Decrease quantity">−</button>
+          <input
+            class="flt-pdc__qty-input"
+            id="flt-pdc-qty"
+            type="number"
+            value="1"
+            min="1"
+            max="99"
+            aria-label="Quantity"
+          >
+          <button class="flt-pdc__qty-btn" type="button" data-delta="1" aria-label="Increase quantity">+</button>
+        </div>
+
+        <button
+          class="flt-pdc__atc"
+          id="flt-pdc-atc"
+          type="button"
+          {% unless current_variant.available %}disabled{% endunless %}
+        >
+          {% if current_variant.available %}Add to Cart{% else %}Sold Out{% endif %}
+        </button>
+      </div>
+
+      <div class="flt-pdc__atc-msg" id="flt-pdc-msg" aria-live="polite"></div>
+    </div>
+
+    {% if product.description != blank %}
+      <hr class="flt-pdc__divider">
+      <div class="flt-pdc__description">{{ product.description }}</div>
+    {% endif %}
+
+    <a href="{{ product.url }}" class="flt-pdc__full-link">View full product page →</a>
+
+  </div>
+</div>
+
+{%- comment -%}
+  Variants data for JS — <script type="application/json"> is NOT executed,
+  it is a data node only. Safe to inject via innerHTML.
+{%- endcomment -%}
+<script type="application/json" id="flt-pdc-variants-json">
+  {{ product.variants | json }}
+</script>
+
+{% schema %}
+{
+  "name": "FLT Product Popup Content",
+  "tag": "div",
+  "class": "flt-pdc-section"
+}
+{% endschema %}

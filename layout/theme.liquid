@@ -132,6 +132,10 @@
     {% comment %} FLT: Cart drawer — static section ({% section %} tag → registered for Cart Change API sections= re-render) {% endcomment %}
     {% section 'flt-cart-1' %}
 
+    {% comment %} FLT: Product detail popup — shell rendered once, content loaded dynamically via Section Rendering API {% endcomment %}
+    {% render 'flt-product-popup-1' %}
+    <script src="{{ 'flt-product-popup-1.js' | asset_url }}" defer></script>
+
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}

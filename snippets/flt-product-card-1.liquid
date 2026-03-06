@@ -9,7 +9,7 @@
     product.metafields.custom.tagline.value  → tagline below description
     product.metafields.reviews.rating.value  → numeric rating 0–5
 {% endcomment %}
-<div class="flt-product-card" data-type="{{ product.type | downcase }}">
+<div class="flt-product-card" data-type="{{ product.type | downcase }}" data-product-handle="{{ product.handle }}">
 
   {% assign badge = product.metafields.custom.badge %}
   {% if badge %}
@@ -42,7 +42,7 @@
 
     <div class="flt-product-card__footer">
       <div class="flt-product-card__price">{{ product.price | money }}</div>
-      <a href="{{ product.url }}" class="flt-product-card__btn">Add to Cart</a>
+      <a href="{{ product.url }}" class="flt-product-card__btn">View Details</a>
     </div>
   </div>
 

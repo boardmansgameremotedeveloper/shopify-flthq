@@ -1,0 +1,159 @@
+{% comment %}
+  snippets/flt-product-popup-1.liquid
+  FLT Product Detail Popup — Dialog Shell
+  Rendered once in layout/theme.liquid near </body>.
+  No product data here — purely structural.
+  Content is injected dynamically via assets/flt-product-popup-1.js
+  using the Section Rendering API: /products/<handle>?section_id=flt-product-popup-content-1
+{% endcomment %}
+
+<style>
+  .flt-popup {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(92vw, 1080px);
+    max-height: 88vh;
+    border: none;
+    border-radius: 20px;
+    padding: 0;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 40px 120px rgba(11,37,69,0.28);
+    opacity: 0;
+    transform: scale(0.97) translateY(8px);
+    transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  .flt-popup[open] {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  .flt-popup::backdrop {
+    background: rgba(11,37,69,0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .flt-popup__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 20;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid #E2E8F0;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    padding: 0;
+    line-height: 1;
+  }
+
+  .flt-popup__close:hover {
+    background: #0B2545;
+    border-color: #0B2545;
+    color: #fff;
+  }
+
+  .flt-popup__close .svg-wrapper { display: flex; align-items: center; }
+  .flt-popup__close .svg-wrapper svg { width: 14px; height: 14px; }
+
+  /* Loading skeleton */
+  .flt-popup__loading {
+    display: flex;
+    gap: 36px;
+    padding: 48px 40px;
+    min-height: 440px;
+  }
+
+  .flt-popup__loading[hidden] { display: none; }
+
+  .flt-popup__skel {
+    background: linear-gradient(90deg, #F0F7FF 25%, #E2E8F0 50%, #F0F7FF 75%);
+    background-size: 200% 100%;
+    animation: flt-shimmer 1.4s infinite;
+    border-radius: 12px;
+  }
+
+  @keyframes flt-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .flt-popup__skel-image {
+    flex: 0 0 44%;
+    min-height: 320px;
+  }
+
+  .flt-popup__skel-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 8px;
+  }
+
+  .flt-popup__skel-title  { height: 40px; width: 68%; }
+  .flt-popup__skel-price  { height: 28px; width: 28%; }
+  .flt-popup__skel-line   { height: 14px; }
+  .flt-popup__skel-line:last-child { width: 75%; }
+  .flt-popup__skel-btn    { height: 48px; width: 60%; border-radius: 30px; margin-top: 8px; }
+
+  /* Content area */
+  .flt-popup__content {
+    overflow-y: auto;
+    max-height: 88vh;
+    overscroll-behavior: contain;
+  }
+
+  /* Mobile: bottom sheet */
+  @media (max-width: 768px) {
+    .flt-popup {
+      position: fixed;
+      inset: auto 0 0 0;
+      margin: 0;
+      width: 100%;
+      max-height: 94vh;
+      border-radius: 20px 20px 0 0;
+      transform: translateY(24px);
+    }
+
+    .flt-popup[open] { transform: translateY(0); }
+
+    .flt-popup__loading { flex-direction: column; padding: 28px 24px; gap: 24px; }
+    .flt-popup__skel-image { flex: none; min-height: 220px; }
+  }
+</style>
+
+<dialog
+  id="flt-product-popup"
+  class="flt-popup"
+  aria-label="Product details"
+>
+  <button
+    class="flt-popup__close"
+    aria-label="{{ 'actions.close_dialog' | t }}"
+  >
+    <span class="svg-wrapper">{{ 'icon-close.svg' | inline_asset_content }}</span>
+  </button>
+
+  <div class="flt-popup__loading" id="flt-popup-loading" hidden>
+    <div class="flt-popup__skel flt-popup__skel-image"></div>
+    <div class="flt-popup__skel-details">
+      <div class="flt-popup__skel flt-popup__skel-title"></div>
+      <div class="flt-popup__skel flt-popup__skel-price"></div>
+      <div class="flt-popup__skel flt-popup__skel-line"></div>
+      <div class="flt-popup__skel flt-popup__skel-line"></div>
+      <div class="flt-popup__skel flt-popup__skel-line"></div>
+      <div class="flt-popup__skel flt-popup__skel-btn"></div>
+    </div>
+  </div>
+
+  <div class="flt-popup__content" id="flt-popup-content" aria-live="polite"></div>
+</dialog>
