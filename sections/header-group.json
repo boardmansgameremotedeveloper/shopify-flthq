@@ -117,13 +117,6 @@
         "collection_color_scheme": "default"
       }
     },
-    "flt_header_1_hFYDid": {
-      "type": "flt-header-1",
-      "name": "FLT Header",
-      "settings": {
-        "menu": "flt-header-menu"
-      }
-    },
     "divider_AfDtai": {
       "type": "divider",
       "name": "t:names.divider_section",
@@ -142,7 +135,6 @@
   "order": [
     "header_announcements_9jGBFp",
     "header_section",
-    "flt_header_1_hFYDid",
     "divider_AfDtai"
   ]
 }
