@@ -117,24 +117,17 @@
         "collection_color_scheme": "default"
       }
     },
-    "divider_AfDtai": {
-      "type": "divider",
-      "name": "t:names.divider_section",
+    "flt_header_1_RmhCkd": {
+      "type": "flt-header-1",
+      "name": "FLT Header",
       "settings": {
-        "color_scheme": "",
-        "section_width": "full-width",
-        "thickness": 1,
-        "corner_radius": "square",
-        "width_percent": 100,
-        "alignment_horizontal": "center",
-        "padding-block-start": 16,
-        "padding-block-end": 16
+        "menu": "main-menu"
       }
     }
   },
   "order": [
     "header_announcements_9jGBFp",
     "header_section",
-    "divider_AfDtai"
+    "flt_header_1_RmhCkd"
   ]
 }
