@@ -1,151 +1,107 @@
 {%- assign block_settings = block.settings -%}
 
-<div
-  id="ProductInformation-{{ section.id }}"
-  class="
-    product-details
-    {% if block_settings.sticky_details_desktop %} sticky-content--desktop{% endif %}
-    {% if block_settings.height == 'fill' -%} full-height--desktop{% endif -%}
-  "
-  style="
-    --details-position: {{ block_settings.details_position }};
-    --product-details-padding-top: {{ block_settings.padding-block-start }}px;
-  "
-  data-testid="product-information-details"
-  {% if settings.transition_to_main_product %}
-    data-view-transition-type="product-details"
-  {% endif %}
->
+<div class="flt-product-layout">
   
-  {% capture children %}
-
-    <!-- Featured Product Image & Thumbnails -->
+  <div class="flt-product-media">
     <div class="product-images-wrapper">
-
-{% if closest.product.featured_image %}
+      {% if closest.product.featured_image %}
         <div class="product__media-main">
-          {{ closest.product.featured_image | img_tag: closest.product.title, 'featured-product-image', 'lazy' }}
+          <img 
+            id="MainProductImage-{{ section.id }}" 
+            src="{{ closest.product.featured_image | image_url: width: 1000 }}" 
+            alt="{{ closest.product.title }}"
+            loading="eager"
+          >
         </div>
       {% endif %}
 
-{% if closest.product.images.size > 1 %}
+      {% if closest.product.images.size > 1 %}
         <div class="product__media-grid">
           {% for image in closest.product.images %}
-            <div class="product__media-item {% if image == closest.product.featured_image %}is-active{% endif %}">
-              {% assign alt_text = closest.product.title | append: " - view " | append: forloop.index %}
-              {{ image | img_tag: alt_text, 'gallery-thumb-image', 'lazy' }}
+            <div class="product__media-item {% if image == closest.product.featured_image %}is-active{% endif %}" 
+                 onclick="swapProductImage(this, '{{ image | image_url: width: 1000 }}')">
+              <img src="{{ image | image_url: width: 200 }}" alt="Thumbnail {{ forloop.index }}" loading="lazy">
             </div>
           {% endfor %}
         </div>
       {% endif %}
-
     </div>
+  </div>
 
-    <!-- Product Title & Details -->
-    <div class="view-product-title">
-      <a
-        href="{{ closest.product.selected_or_first_available_variant.url }}"
-        class="link"
-      >
-        {{- closest.product.title }}
-      </a>
-    </div>
+  <div
+    id="ProductInformation-{{ section.id }}"
+    class="product-details {% if block_settings.sticky_details_desktop %} sticky-content--desktop{% endif %}"
+    style="--product-details-padding-top: {{ block_settings.gap }}px;"
+  >
+    {% capture children %}
+      <div class="view-product-title">
+        <h1 class="h2">{{ closest.product.title }}</h1>
+      </div>
+      {% content_for 'blocks' %}
+    {% endcapture %}
 
-    {% content_for 'blocks' %}
-
-  {% endcapture %}
-
-  {% render 'group', children: children, settings: block_settings, shopify_attributes: block.shopify_attributes %}
+    {% render 'group', children: children, settings: block_settings, shopify_attributes: block.shopify_attributes %}
+  </div>
 </div>
 
+<script>
+  function swapProductImage(element, newSrc) {
+    // 1. Update the Main Image
+    const mainImg = document.getElementById('MainProductImage-{{ section.id }}');
+    if(mainImg) mainImg.src = newSrc;
+
+    // 2. Update Active Thumbnail Styling
+    const allThumbs = element.parentElement.querySelectorAll('.product__media-item');
+    allThumbs.forEach(thumb => thumb.classList.remove('is-active'));
+    element.classList.add('is-active');
+  }
+</script>
+
 {% stylesheet %}
-/* Clear padding on mobile if not full-width */
-@media screen and (max-width: 749px) {
-  .product-information.section--page-width .product-details > .group-block {
-    padding-inline: 0;
-  }
+/* 1. Layout Structure: Side-by-Side */
+.flt-product-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr; /* Media takes slightly more room than text */
+  gap: 60px;
+  align-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
 }
 
-/* Hide default title if needed */
-.view-product-title {
-  display: none;
-}
-
-/* General product details container */
-.product-details {
-  padding-top: var(--product-details-padding-top, 20px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  position: relative;
-}
-
-/* Sticky / full height adjustments */
-@media screen and (min-width: 750px) {
-  .product-details > .group-block {
-    height: min-content;
-  }
-
-  .sticky-content--desktop {
-    position: sticky;
-    top: calc(var(--header-group-height, 80px) + 20px);
-    z-index: 2;
-    height: fit-content;
-  }
-
-  .full-height--desktop {
-    height: 100%;
-    max-height: calc(100vh - var(--header-group-height, 0));
-    min-height: fit-content;
-  }
-
-  .full-height--desktop .group-block {
-    align-self: var(--details-position, 'flex-start');
-  }
-}
-
-/* Featured Image Styling */
-.product-images-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 32px;
+/* 2. Media Styles (Left Side) */
+.flt-product-media {
   width: 100%;
 }
 
-/* Main Image */
 .product__media-main {
   width: 100%;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-  margin-bottom: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  margin-bottom: 16px;
+  background: #f8f8f8;
 }
 
 .product__media-main img {
   width: 100%;
   height: auto;
   display: block;
-  object-fit: cover;
 }
 
-/* The Thumb Grid */
 .product__media-grid {
   display: grid;
-  /* Adjust the '80px' below to make thumbs bigger or smaller */
-  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 12px;
 }
 
 .product__media-item {
   aspect-ratio: 1 / 1;
-  border-radius: 6px;
+  border-radius: 8px;
   overflow: hidden;
   border: 2px solid transparent;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: #f9f9f9;
 }
 
 .product__media-item img {
@@ -154,129 +110,49 @@
   object-fit: cover;
 }
 
-.product__media-item:hover {
-  transform: translateY(-2px);
-  border-color: #0B2545;
-}
-
-/* Highlight the thumb that matches the main image */
 .product__media-item.is-active {
   border-color: #0B2545;
-  opacity: 0.7;
 }
 
-
-/* DxB - v1 styling below */
-
-.product__media {
-  width: 100%;
-  max-width: 500px;
-  overflow: hidden;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  margin-bottom: 16px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.product__media img {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-}
-
-.product__media:hover img {
-  transform: scale(1.05);
-}
-
-/* Thumbnails */
-.product__thumbnails {
+/* 3. Details Styles (Right Side) */
+.product-details {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
-  width: 100%;
-  max-width: 500px;
+  flex-direction: column;
 }
 
-.product__thumbnail {
-  flex: 1 0 60px;
-  max-width: 80px;
-  cursor: pointer;
-  overflow: hidden;
-  border-radius: 8px;
-  border: 1px solid rgba(0,0,0,0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+.sticky-content--desktop {
+  position: sticky;
+  top: calc(var(--header-group-height, 80px) + 20px);
 }
 
-.product__thumbnail img {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-}
-
-.product__thumbnail:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-/* Mobile responsiveness */
-@media screen and (max-width: 749px) {
-  .product__media {
-    max-width: 100%;
-    margin-bottom: 12px;
-    border-radius: 8px;
+/* 4. Mobile Responsiveness */
+@media screen and (max-width: 989px) {
+  .flt-product-layout {
+    grid-template-columns: 1fr; /* Stack on tablet/mobile */
+    gap: 32px;
+    padding: 0 20px;
   }
-  .product__thumbnails {
-    gap: 8px;
-  }
-  .product__thumbnail {
-    max-width: 60px;
+  
+  .product__media-grid {
+    grid-template-columns: repeat(5, 1fr); /* 5 thumbs across on mobile */
   }
 }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:names.details",
+  "name": "FLT Product Details",
   "blocks": [
     { "type": "@theme" },
-    { "type": "@app" },
-    { "type": "text" },
-    { "type": "icon" },
-    { "type": "image" },
-    { "type": "button" },
-    { "type": "video" },
-    { "type": "group" },
-    { "type": "spacer" },
-    { "type": "accordion" },
-    { "type": "product-recommendations" },
     { "type": "price" },
     { "type": "variant-picker" },
     { "type": "buy-buttons" },
     { "type": "product-description" },
-    { "type": "review" },
-    { "type": "accelerated-checkout" },
-    { "type": "_divider" },
-    { "type": "product-inventory" },
-    { "type": "product-custom-property" }
+    { "type": "group" }
   ],
-  "tag": null,
   "settings": [
-    { "type": "header", "content": "t:content.size" },
-    { "type": "select", "id": "width", "label": "t:settings.width",
-      "options": [
-        { "value": "fit-content", "label": "t:options.fit_content" },
-        { "value": "fill", "label": "t:options.fill" },
-        { "value": "custom", "label": "t:options.custom" }
-      ], "default": "fill"
-    },
-    { "type": "range", "id": "custom_width", "label": "t:settings.custom_width", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 100, "visible_if": "{{ block.settings.width == 'custom' }}" },
-    { "type": "select", "id": "height", "label": "t:settings.height", "options": [ { "value": "fit", "label": "t:options.fit_content" }, { "value": "fill", "label": "t:options.fill" } ], "default": "fit" },
-    { "type": "select", "id": "details_position", "label": "t:settings.position", "options": [ { "value": "flex-start", "label": "t:options.top" }, { "value": "center", "label": "t:options.center" }, { "value": "flex-end", "label": "t:options.bottom" } ], "default": "flex-start", "visible_if": "{{ block.settings.height == \"fill\" }}" },
-    { "type": "range", "id": "gap", "label": "t:settings.gap", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 12 },
-    { "type": "checkbox", "id": "sticky_details_desktop", "label": "t:settings.make_details_sticky_desktop", "default": false }
+    { "type": "checkbox", "id": "sticky_details_desktop", "label": "Sticky Details on Desktop", "default": true },
+    { "type": "range", "id": "gap", "label": "Top Padding", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 20 }
   ]
 }
 {% endschema %}
