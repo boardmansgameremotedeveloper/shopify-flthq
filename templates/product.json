@@ -231,7 +231,7 @@
       }
     },
     "flt_product_recommendations_1_qbykDY": {
-      "type": "flt-product-recommendations-3",
+      "type": "flt-product-recommendations-4",
       "blocks": {
         "text_flt_header": {
           "type": "text",
