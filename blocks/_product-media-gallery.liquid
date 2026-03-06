@@ -1,5 +1,8 @@
-{%- assign featured_media = closest.product.selected_or_first_available_variant.featured_media
-    | default: closest.product.featured_media -%}
+{%- if closest.product.selected_or_first_available_variant.featured_media != null -%}
+  {%- assign featured_media = closest.product.selected_or_first_available_variant.featured_media -%}
+{%- else -%}
+  {%- assign featured_media = closest.product.featured_media -%}
+{%- endif -%}
 
 <div class="flt-media-gallery" id="flt-media-gallery-{{ section.id }}" {{ block.shopify_attributes }}>
 
@@ -22,8 +25,8 @@
           type="button"
           class="flt-media__thumb{% if media == featured_media %} is-active{% endif %}"
           data-media-id="{{ media.id }}"
-          data-large-src="{{ media | image_url: width: 1200 }}"
-          aria-label="{{ 'products.thumbnail_loop' | t: number: forloop.index }}"
+          data-large-src="{{ media.preview_image | image_url: width: 1200 }}"
+          aria-label="Product image {{ forloop.index }}"
           onclick="fltSwapImage(this)"
           role="listitem"
         >
