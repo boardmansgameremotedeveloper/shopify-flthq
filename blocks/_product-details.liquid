@@ -2,31 +2,37 @@
 
 <div class="flt-product-layout">
   
-  <div class="flt-product-media">
-    <div class="product-images-wrapper">
-      {% if closest.product.featured_image %}
-        <div class="product__media-main">
-          <img 
-            id="MainProductImage-{{ section.id }}" 
-            src="{{ closest.product.featured_image | image_url: width: 1000 }}" 
-            alt="{{ closest.product.title }}"
-            loading="eager"
-          >
-        </div>
-      {% endif %}
+<div class="flt-product-media">
+  <div class="product-images-wrapper">
+    {% if closest.product.featured_image %}
+      <div class="product__media-main">
+        <img 
+          id="MainProductImage-{{ section.id }}" 
+          src="{{ closest.product.featured_image | image_url: width: 800 }}" 
+          alt="{{ closest.product.title | escape }}"
+          class="main-img-element"
+          loading="eager"
+        >
+      </div>
+    {% endif %}
 
-      {% if closest.product.images.size > 1 %}
-        <div class="product__media-grid">
-          {% for image in closest.product.images %}
-            <div class="product__media-item {% if image == closest.product.featured_image %}is-active{% endif %}" 
-                 onclick="swapProductImage(this, '{{ image | image_url: width: 1000 }}')">
-              <img src="{{ image | image_url: width: 200 }}" alt="Thumbnail {{ forloop.index }}" loading="lazy">
-            </div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    </div>
+    {% if closest.product.images.size > 1 %}
+      <div class="product__media-grid">
+        {% for image in closest.product.images %}
+          <button 
+            type="button"
+            class="product__media-item {% if image == closest.product.featured_image %}is-active{% endif %}" 
+            data-large-src="{{ image | image_url: width: 800 }}"
+            aria-label="View product image {{ forloop.index }}"
+            onclick="swapProductImage(this)"
+          >
+            <img src="{{ image | image_url: width: 150 }}" alt="Thumbnail" loading="lazy">
+          </button>
+        {% endfor %}
+      </div>
+    {% endif %}
   </div>
+</div>
 
   <div
     id="ProductInformation-{{ section.id }}"
