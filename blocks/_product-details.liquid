@@ -45,7 +45,11 @@
 }
 
 @media screen and (max-width: 989px) {
-  .flt-product-details-panel { padding: 0 0 32px; }
+  .flt-product-details-panel { 
+    padding: 0 0 32px; 
+    /* Ensure the panel doesn't try to sit side-by-side with anything on small screens */
+    flex: 1 1 100%;
+  }
 }
 {% endstylesheet %}
 
