@@ -351,6 +351,7 @@
       "block_order": [
         "text_cbcgyb"
       ],
+      "disabled": true,
       "name": "t:names.product_recommendations",
       "settings": {
         "product": "{{ closest.product }}",
@@ -370,10 +371,16 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "flt_product_recommendations_1_reX9K4": {
+      "type": "flt-product-recommendations-1",
+      "name": "FLT Related Products",
+      "settings": {}
     }
   },
   "order": [
     "main",
-    "product_recommendations_qggXJq"
+    "product_recommendations_qggXJq",
+    "flt_product_recommendations_1_reX9K4"
   ]
 }
