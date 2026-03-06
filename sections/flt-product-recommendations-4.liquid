@@ -1,311 +1,91 @@
-{% comment %}
-  sections/products.liquid
-  FLT Hemp Provisions — Products Grid
-  Source: frontend/src/App.jsx → ProductsSection + ProductCard
-  Requires: snippets/product-card.liquid, snippets/mustang-svg.liquid
-  Products pulled from a Shopify collection. JS handles type-based filter client-side.
-{% endcomment %}
+{%- comment -%}
+  sections/flt-product-recommendations-4.liquid
+  FLT Hemp Provisions — Same-Collection Related Products
+  Finds up to 4 products from the current product's primary collection.
+  Renders nothing when no related products exist.
+{%- endcomment -%}
+
+{%- comment -%} Find the first real collection this product belongs to (skip 'all' / 'frontpage'). {%- endcomment -%}
+{%- assign flt_primary_col = nil -%}
+{%- for col in product.collections -%}
+  {%- if flt_primary_col == nil and col.handle != 'all' and col.handle != 'frontpage' -%}
+    {%- assign flt_primary_col = col -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- comment -%} Pre-count related products so we can hide the section entirely when empty. {%- endcomment -%}
+{%- assign flt_rel_count = 0 -%}
+{%- if flt_primary_col -%}
+  {%- for p in flt_primary_col.products -%}
+    {%- if p.id != product.id -%}
+      {%- assign flt_rel_count = flt_rel_count | plus: 1 -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- if flt_rel_count > 0 -%}
 
 <style>
-  .flt-products {
-    padding: 120px 40px;
+  .flt-related {
+    padding: 60px 40px 80px;
     background: #fff;
-    position: relative; overflow: hidden;
   }
-  .flt-products__bg-mustang {
-    position: absolute; top: 60px; left: 50%;
-    transform: translateX(-50%);
-    pointer-events: none;
+  .flt-related__inner {
+    max-width: 1300px;
+    margin: 0 auto;
   }
-  .flt-products__inner {
-    max-width: 1300px; margin: 0 auto;
-    position: relative; z-index: 1;
+  .flt-related__heading {
+    font-family: var(--head, 'Bebas Neue', sans-serif);
+    font-size: clamp(28px, 3vw, 40px);
+    color: #0B2545;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 32px 0;
+    line-height: 1;
   }
-  .flt-products__heading-wrap { text-align: center; margin-bottom: 56px; }
-  .flt-products__eyebrow {
-    font-family: var(--body); font-size: 13px; color: #64748B;
-    letter-spacing: 0.35em; text-transform: uppercase;
-    margin-bottom: 12px; font-weight: 600;
-  }
-  .flt-products__title {
-    font-family: var(--head);
-    font-size: clamp(40px, 5vw, 68px);
-    color: #0B2545; margin: 0; line-height: 1;
-    letter-spacing: 0.06em; text-transform: uppercase;
-  }
-  .flt-products__filters {
-    display: flex; justify-content: center; gap: 8px;
-    margin-bottom: 48px; flex-wrap: wrap;
-  }
-
-  /* DxB - added per suggestion: gives horizontal scroll filter chips */
-  @media (max-width:768px){
-    .flt-products__filters{
-      overflow-x:auto;
-      flex-wrap:nowrap;
-      padding-bottom:6px;
-    }
-
-    .flt-products__filter{
-      flex:0 0 auto;
-    }
-  }
-
-  .flt-products__filter {
-    background: #F8FAFC; border: 1px solid #E2E8F0;
-    color: #64748B; padding: 10px 30px; border-radius: 30px;
-    font-family: var(--body); font-size: 13px; font-weight: 700;
-    cursor: pointer; letter-spacing: 0.06em; text-transform: uppercase;
-    transition: all 0.3s ease;
-  }
-  .flt-products__filter.active {
-    background: linear-gradient(135deg, #0B2545, #1E3A5F);
-    border-color: transparent; color: #fff;
-  }
-
-  .flt-products__collection{
-    display:none;
-  }
-
-  .flt-products__collection.active{
-    display:block;
-  }
-
-  .flt-products__grid {
+  .flt-related__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 28px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    align-items: start;
   }
-
-  /* scroll reveal */
-  .flt-reveal {
-    opacity: 0; transform: translateY(40px);
-    transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .flt-reveal.in-view { opacity: 1; transform: translateY(0); }
-
   @media (max-width: 768px) {
-    .flt-products { padding: 80px 20px; }
-    .flt-products__grid { grid-template-columns: 1fr; }
+    .flt-related {
+      padding: 48px 20px 60px;
+    }
+    .flt-related__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
   }
 </style>
 
-<section class="flt-products" id="products">
-
-  <div class="flt-products__bg-mustang">
-    {% render 'flt-mustang-svg-1', width: 900, color: '#0B2545', opacity: 0.035 %}
-  </div>
-
-  <div class="flt-products__inner">
-
-    <div class="flt-reveal flt-products__heading-wrap">
-      {% render 'flt-mustang-svg-1', width: 200, color: '#0B2545', opacity: 0.12 %}
-      <div class="flt-products__eyebrow">The Collection</div>
-      <h2 class="flt-products__title">Our Products</h2>
+<section class="flt-related" {{ section.shopify_attributes }}>
+  <div class="flt-related__inner">
+    <h2 class="flt-related__heading">You May Also Like</h2>
+    <div class="flt-related__grid">
+      {%- assign flt_rendered = 0 -%}
+      {%- for p in flt_primary_col.products -%}
+        {%- if p.id != product.id and flt_rendered < 4 -%}
+          {% render 'flt-product-card-1', product: p %}
+          {%- assign flt_rendered = flt_rendered | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
     </div>
-
-    <!-- DxB edit one to dynamically show collections of products -->
-    <div class="flt-reveal flt-products__filters" id="flt-product-filters">
-
-      <!-- Always show -->
-      <button class="flt-products__filter active" data-filter="all">
-        All Products
-      </button>
-
-      {% for collection in collections %}
-        {% if collection.products_count > 0 and collection.handle != 'frontpage' and collection.handle != 'all' %}
-          <button
-            class="flt-products__filter"
-            data-filter="{{ collection.handle }}">
-            {{ collection.title }}
-          </button>
-        {% endif %}
-      {% endfor %}
-
-    </div>
-
-
-<!-- ALL PRODUCTS GRID -->
-
-<div class="flt-products__collection active" data-collection="all">
-
-<div class="flt-products__grid">
-
-{% for product in collections.all.products limit:50 %}
-<div class="flt-reveal">
-{% render 'flt-product-card-1', product: product %}
-</div>
-{% endfor %}
-
-</div>
-</div>
-
-
-<!-- COLLECTION GRIDS -->
-
-{% for collection in collections %}
-{% if collection.products_count > 0 and collection.handle != 'all' %}
-
-<div class="flt-products__collection" data-collection="{{ collection.handle }}">
-
-<div class="flt-products__grid">
-
-{% for product in collection.products limit:50 %}
-<div class="flt-reveal">
-{% render 'flt-product-card-1', product: product %}
-</div>
-{% endfor %}
-
-</div>
-</div>
-
-{% endif %}
-{% endfor %}
-
-<!-- not working 
-    <div class="flt-products__grid" id="flt-product-grid">
-      {% assign col = collections[section.settings.collection] %}
-      {% if col and col.products.size > 0 %}
-        {% for product in col.products %}
-          <div class="flt-reveal" data-collections="{{ product.collections | map: 'handle' | join: ',' }}"
-               style="transition-delay: {{ forloop.index0 | times: 0.12 }}s">
-            {% render 'flt-product-card-1', product: product %}
-          </div>
-        {% endfor %}
-      {% else %}
-        <p style="font-family:var(--body);color:#64748B;grid-column:1/-1;">
-          No collection selected — set one in the theme editor.
-        </p>
-      {% endif %}
-    </div>
--->
-
   </div>
 </section>
-<script>
-(function () {
 
-  function initFltProducts(section) {
-
-    var scope = section || document;
-
-    var filters = scope.querySelectorAll('.flt-products__filter');
-    var sections = scope.querySelectorAll('.flt-products__collection');
-
-    /* COLLECTION FILTER */
-    if (filters.length) {
-
-      filters.forEach(function (btn) {
-
-        btn.addEventListener('click', function () {
-
-          var filter = btn.dataset.filter;
-
-          filters.forEach(function (b) {
-            b.classList.remove('active');
-          });
-
-          btn.classList.add('active');
-
-          sections.forEach(function (section) {
-
-            if (section.dataset.collection === filter) {
-              section.classList.add('active');
-            } else {
-              section.classList.remove('active');
-            }
-
-          });
-
-        });
-
-      });
-
-    }
-
-    /* SCROLL REVEAL */
-    var reveals = scope.querySelectorAll('.flt-reveal');
-
-    if ('IntersectionObserver' in window) {
-
-      var obs = new IntersectionObserver(function (entries) {
-
-        entries.forEach(function (e) {
-
-          if (e.isIntersecting) {
-            e.target.classList.add('in-view');
-            obs.unobserve(e.target);
-          }
-
-        });
-
-      }, { threshold: 0.12 });
-
-      reveals.forEach(function (el) {
-        obs.observe(el);
-      });
-
-    } else {
-
-      reveals.forEach(function (el) {
-        el.classList.add('in-view');
-      });
-
-    }
-
-    /* ── Add to Cart handlers ─────────────────────────────────────────── */
-    scope.querySelectorAll('.flt-add-to-cart-btn').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        var variantId = btn.dataset.variantId;
-        if (!variantId) return;
-        btn.disabled = true;
-        btn.textContent = 'Adding\u2026';
-        fetch('/cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({ id: Number(variantId), quantity: 1 })
-        })
-        .then(function(r) { return r.json(); })
-        .then(function() {
-          btn.textContent = 'Added!';
-          setTimeout(function() { btn.textContent = 'Add to Cart'; btn.disabled = false; }, 2000);
-        })
-        .catch(function() {
-          btn.textContent = 'Error';
-          btn.disabled = false;
-        });
-      });
-    });
-
-  }
-
-  /* INITIAL PAGE LOAD */
-  document.addEventListener('DOMContentLoaded', function () {
-    initFltProducts(document);
-  });
-
-  /* SHOPIFY THEME EDITOR SECTION RELOAD */
-  document.addEventListener('shopify:section:load', function (e) {
-    initFltProducts(e.target);
-  });
-
-})();
-</script>
+{%- endif -%}
 
 {% schema %}
 {
-  "name": "Products",
-  "tag": "section",
-  "class": "flt-products-section",
-  "settings": [
+  "name": "FLT Related Products",
+  "tag": "div",
+  "settings": [],
+  "presets": [
     {
-      "type": "collection",
-      "id": "collection",
-      "label": "Product collection",
-      "info": "Products are filtered client-side by product type (drinks / gummies)."
+      "name": "FLT Related Products"
     }
-  ],
-  "presets": [{ "name": "FLT Product RECommendations" }]
+  ]
 }
 {% endschema %}
