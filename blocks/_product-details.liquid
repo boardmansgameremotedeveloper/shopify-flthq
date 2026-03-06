@@ -21,20 +21,19 @@
     <!-- Featured Product Image & Thumbnails -->
     <div class="product-images-wrapper">
 
-<!-- Featured Image -->
 {% if closest.product.featured_image %}
   <div class="product__media">
-    {{ closest.product.featured_image | img_tag: alt: closest.product.title, class: 'featured-product-image', loading: 'lazy' }}
+    {{ closest.product.featured_image | img_tag: closest.product.title, 'featured-product-image', 'lazy' }}
   </div>
 {% endif %}
 
-<!-- Additional Product Images (Thumbnails) -->
 {% if closest.product.images.size > 1 %}
   <div class="product__thumbnails">
     {% for image in closest.product.images %}
       {% unless image == closest.product.featured_image %}
         <div class="product__thumbnail">
-          {{ image | img_tag: alt: closest.product.title | append: ' thumbnail ' | append: forloop.index, class: 'thumbnail-image', loading: 'lazy' }}
+          {% assign alt_text = closest.product.title | append: " thumbnail " | append: forloop.index %}
+          {{ image | img_tag: alt_text, 'thumbnail-image', 'lazy' }}
         </div>
       {% endunless %}
     {% endfor %}
