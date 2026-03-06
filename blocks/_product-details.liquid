@@ -29,23 +29,33 @@
 }
 
 .flt-pdp__title {
-  /* Changed font from Bebas Neue to Arial (safe sans-serif) */
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif; /* safe sans-serif font */
   font-size: clamp(28px, 3.5vw, 48px);
   color: #0B2545;
-  letter-spacing: 0.03em; /* safe spacing for mobile */
-  text-transform: uppercase;
+  letter-spacing: 0.03em;
   line-height: 1.2;
   margin: 0;
   display: block;
   width: 100%;
+
+  /* KEY FIXES */
+  white-space: normal;       /* allow wrapping */
+  word-break: normal;        /* normal wrapping rules */
+  flex-shrink: 0;            /* prevent container shrink on mobile */
+  text-transform: none;      /* remove uppercase stacking on mobile */
 }
 
-/* Mobile adjustments */
+@media screen and (min-width: 750px) {
+  .flt-pdp__title {
+    text-transform: uppercase; /* keep uppercase on desktop */
+  }
+}
+
 @media screen and (max-width: 749px) {
   .flt-pdp__title {
     font-size: clamp(28px, 4vw, 40px);
-    letter-spacing: 0.02em; /* slightly tighter spacing for smaller screens */
+    letter-spacing: 0.02em;
+    text-transform: none; /* no uppercase for mobile */
   }
 }
 
