@@ -117,17 +117,17 @@
         "collection_color_scheme": "default"
       }
     },
-    "flt_header_1_RmhCkd": {
-      "type": "flt-header-1",
-      "name": "FLT Header",
+    "flt_header_for_pages_1_NFKi6J": {
+      "type": "flt-header-for-pages-1",
+      "name": "FLT Header for pages",
       "settings": {
-        "menu": "flt-header-menu-for-pages"
+        "menu": "main-menu"
       }
     }
   },
   "order": [
     "header_announcements_9jGBFp",
     "header_section",
-    "flt_header_1_RmhCkd"
+    "flt_header_for_pages_1_NFKi6J"
   ]
 }
