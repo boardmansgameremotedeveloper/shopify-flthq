@@ -129,8 +129,8 @@
 
     {% render 'search-modal' %}
 
-    {% comment %} FLT: Cart drawer — rendered via flt-cart-1 section in cart-group (real Shopify section → sections= param valid for Cart Change API) {% endcomment %}
-    {% sections 'cart-group' %}
+    {% comment %} FLT: Cart drawer — static section ({% section %} tag → registered for Cart Change API sections= re-render) {% endcomment %}
+    {% section 'flt-cart-1' %}
 
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
