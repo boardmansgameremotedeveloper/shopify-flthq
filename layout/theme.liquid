@@ -151,6 +151,7 @@
         </div>
       {% endcapture %}
 
+      <div id="shopify-section-flt_cart_1" class="shopify-section flt-cart-section">
       <cart-drawer-component
         class="cart-drawer"
         {% if settings.auto_open_cart_drawer %}auto-open{% endif %}
@@ -165,7 +166,7 @@
           cart-summary-sticky="true"
         >
           <div class="cart-drawer__inner" data-hydration-key="cart-drawer-inner">
-            <cart-items-component class="cart-items-component" data-drawer data-section-id="">
+            <cart-items-component class="cart-items-component" data-drawer data-section-id="flt_cart_1">
               {%- if cart.empty? -%}
                 {{ flt_empty_cart }}
               {%- else -%}
@@ -195,6 +196,7 @@
           </div>
         </dialog>
       </cart-drawer-component>
+      </div>
     {% endif %}
 
     {% if settings.quick_add or settings.mobile_quick_add %}
