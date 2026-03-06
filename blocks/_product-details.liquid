@@ -19,7 +19,6 @@
   gap: 20px;
   padding: 0 0 40px;
   width: 100%;
-  min-width: 100%;
 }
 
 .sticky-content--desktop {
@@ -28,40 +27,41 @@
   z-index: var(--layer-flat, 1);
 }
 
+/* Product Title */
 .flt-pdp__title {
-  font-family: Arial, Helvetica, sans-serif; /* safe sans-serif font */
-  font-size: clamp(28px, 3.5vw, 48px);
+  font-family: Arial, Helvetica, sans-serif; /* Mobile-friendly font */
+  font-size: clamp(28px, 3.5vw, 48px);       /* Responsive scaling */
   color: #0B2545;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;                     /* subtle spacing on desktop */
+  text-transform: uppercase;                  /* Desktop style */
   line-height: 1.2;
   margin: 0;
   display: block;
   width: 100%;
-
-  /* KEY FIXES */
-  white-space: normal;       /* allow wrapping */
-  word-break: normal;        /* normal wrapping rules */
-  flex-shrink: 0;            /* prevent container shrink on mobile */
-  text-transform: none;      /* remove uppercase stacking on mobile */
+  word-break: normal;                         /* prevent breaking letters */
+  overflow-wrap: normal;                      /* modern standard */
 }
 
-@media screen and (min-width: 750px) {
-  .flt-pdp__title {
-    text-transform: uppercase; /* keep uppercase on desktop */
-  }
-}
-
+/* Mobile adjustments to prevent vertical stacking */
 @media screen and (max-width: 749px) {
   .flt-pdp__title {
-    font-size: clamp(28px, 4vw, 40px);
-    letter-spacing: 0.02em;
-    text-transform: none; /* no uppercase for mobile */
+    font-family: Arial, Helvetica, sans-serif; /* ensure readable font on mobile */
+    font-size: clamp(20px, 4vw, 32px);         /* smaller, responsive */
+    letter-spacing: 0.02em;                     /* reduce spacing */
+    text-transform: none;                       /* disable uppercase to prevent stacking */
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+
+  .flt-product-details-panel {
+    padding: 0 0 32px;
+    flex: 1 1 100%;
   }
 }
 
 @media screen and (max-width: 989px) {
-  .flt-product-details-panel {
-    padding: 0 0 32px;
+  .flt-product-details-panel { 
+    padding: 0 0 32px; 
     flex: 1 1 100%;
   }
 }
