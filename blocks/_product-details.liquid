@@ -10,7 +10,7 @@
   "
   style="
     --details-position: {{ block_settings.details_position }};
-    padding-top: {{ block_settings.padding-block-start }}px;
+    --product-details-padding-top: {{ block_settings.padding-block-start }}px;
   "
   data-testid="product-information-details"
   {% if settings.transition_to_main_product %}
@@ -43,6 +43,11 @@
   .view-product-title {
     display: none;
   }
+
+  /* DxB */
+.product-details {
+  padding-top: var(--product-details-padding-top, 20px);
+}  
 
   /* Container styles */
   .product-details {
