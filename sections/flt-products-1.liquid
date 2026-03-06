@@ -255,7 +255,8 @@
 
     /* ── Add to Cart handlers ─────────────────────────────────────────── */
     scope.querySelectorAll('.flt-add-to-cart-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
         var variantId = btn.dataset.variantId;
         if (!variantId) return;
         btn.disabled = true;

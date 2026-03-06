@@ -59,9 +59,28 @@
     transform: translateY(0);
   }
 
+  /* Product card image-wrap rounding scoped to this section */
+  .flt-recs .flt-product-card__image-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  /* Skeleton loading cards */
+  .flt-recs__skeleton-item {
+    height: 320px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: flt-shimmer 1.4s infinite;
+    border-radius: 20px;
+  }
+  @keyframes flt-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
   @media (max-width: 768px) {
     .flt-recs { padding: 60px 20px; }
-    .flt-recs__grid { 
+    .flt-recs__grid {
       grid-template-columns: 1fr; /* Single column on mobile like homepage */
       gap: 24px;
     }
@@ -71,6 +90,11 @@
 <product-recommendations
   id="flt-product-recommendations-{{ section.id }}"
   class="flt-recs-component"
+  data-url="{{ routes.product_recommendations_url }}?limit={{ section.settings.max_products | default: 4 }}"
+  data-section-id="{{ section.id }}"
+  data-product-id="{{ product.id }}"
+  data-intent="related"
+  data-recommendations-performed="{{ recommendations.performed }}"
 >
   <section class="flt-recs">
     <div class="flt-recs__inner">
@@ -81,29 +105,28 @@
         <h2 class="flt-recs__title">Related Products</h2>
       </div>
 
-      {% assign related_products = recommendations.products %}
-
-      {% comment %}
-        Fallback: get products from the first collection if no recommendations
-      {% endcomment %}
-      {% if related_products == empty and product.collections.size > 0 %}
-        {% assign first_collection = product.collections.first %}
-        {% assign related_products = first_collection.products | where: "id", "!=" , product.id | slice: 0, 4 %}
-      {% endif %}
-
-      {% if related_products != blank %}
-        <div class="flt-recs__grid">
-          {% for related_product in related_products %}
-            <div class="flt-reveal" style="transition-delay: {{ forloop.index0 | times: 0.1 }}s">
-              {% render 'flt-product-card-1', product: related_product %}
-            </div>
-          {% endfor %}
+      {%- if recommendations.performed -%}
+        {%- liquid
+          if recommendations.products_count == 0
+            assign related_products = collections.all.products | reject: 'id', product.id
+          else
+            assign related_products = recommendations.products
+          endif
+        -%}
+        {% if related_products != blank %}
+          <div class="flt-recs__grid">
+            {% for related_product in related_products limit: section.settings.max_products | default: 4 %}
+              <div class="flt-reveal" style="transition-delay: {{ forloop.index0 | times: 0.1 }}s">
+                {% render 'flt-product-card-1', product: related_product %}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {%- else -%}
+        <div class="flt-recs__grid flt-recs__skeleton">
+          {% for i in (1..4) %}<div class="flt-recs__skeleton-item"></div>{% endfor %}
         </div>
-      {% else %}
-        <div style="text-align:center; color:#888; margin-top:20px;">
-          No related products found.
-        </div>
-      {% endif %}
+      {%- endif -%}
 
     </div>
   </section>
@@ -128,28 +151,25 @@
         reveals.forEach(function(el) { el.classList.add('in-view'); });
       }
 
-      /* ── Add to Cart handlers ─────────────────────────────────────── */
-      scope.querySelectorAll('.flt-add-to-cart-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var variantId = btn.dataset.variantId;
-          if (!variantId) return;
-          btn.disabled = true;
-          btn.textContent = 'Adding\u2026';
-          fetch('/cart/add.js', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify({ id: Number(variantId), quantity: 1 })
-          })
-          .then(function(r) { return r.json(); })
-          .then(function() {
-            btn.textContent = 'Added!';
-            setTimeout(function() { btn.textContent = 'Add to Cart'; btn.disabled = false; }, 2000);
-          })
-          .catch(function() {
-            btn.textContent = 'Error';
-            btn.disabled = false;
-          });
-        });
+      /* ── Add to Cart — delegated on outer element (survives innerHTML replacement) ── */
+      scope.addEventListener('click', function(e) {
+        var btn = e.target.closest('.flt-add-to-cart-btn');
+        if (!btn) return;
+        var variantId = btn.dataset.variantId;
+        if (!variantId) return;
+        btn.disabled = true;
+        btn.textContent = 'Adding\u2026';
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ id: Number(variantId), quantity: 1 })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function() {
+          btn.textContent = 'Added!';
+          setTimeout(function() { btn.textContent = 'Add to Cart'; btn.disabled = false; }, 2000);
+        })
+        .catch(function() { btn.textContent = 'Error'; btn.disabled = false; });
       });
     })();
   </script>
@@ -161,6 +181,17 @@
   "tag": "div",
   "class": "flt-recs-section",
   "limit": 1,
+  "settings": [
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "Max products",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    }
+  ],
   "presets": [
     {
       "name": "FLT Related Products"
