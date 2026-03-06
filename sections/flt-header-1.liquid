@@ -293,8 +293,23 @@
     var nav = document.getElementById('flt-nav');
     if (!nav) return;
 
-    /* ── 1. Scroll glass effect (unchanged) ─────────────────────────── */
-    function tick() { nav.classList.toggle('scrolled', window.scrollY > 60); }
+    /* ── 0. Sync --header-height for Horizon sticky components ─────────── */
+    /* product-information-content.liquid sets:                              */
+    /*   --sticky-header-offset: var(--header-height)                        */
+    /* Without this, sticky details stick at top: 0 behind our fixed nav.   */
+    function setNavHeightVar() {
+      var h = nav.offsetHeight;
+      document.body.style.setProperty('--header-height', h + 'px');
+      document.body.style.setProperty('--header-group-height', h + 'px');
+    }
+    setNavHeightVar();
+    window.addEventListener('resize', setNavHeightVar, { passive: true });
+
+    /* ── 1. Scroll glass effect ──────────────────────────────────────── */
+    function tick() {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+      setNavHeightVar(); /* keep var in sync as nav shrinks/grows on scroll */
+    }
     window.addEventListener('scroll', tick, { passive: true });
     tick();
 
