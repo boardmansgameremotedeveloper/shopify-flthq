@@ -16,12 +16,12 @@
     <div class="flt-product-card__badge">{{ badge }}</div>
   {% endif %}
 
-  <div class="flt-product-card__image-wrap">
+  <div class="flt-product-card__image-wrap" style="border-radius:12px;overflow:hidden;">
     {% if product.featured_image %}
-      {{ product.featured_image | image_url: width: 500 | image_tag: 
-        class: 'flt-product-card__img', 
-        loading: 'lazy', 
-        alt: product.featured_image.alt | default: product.title 
+      {{ product.featured_image | image_url: width: 500 | image_tag:
+        class: 'flt-product-card__img',
+        loading: 'lazy',
+        alt: product.featured_image.alt | default: product.title
       }}
     {% endif %}
   </div>
@@ -42,7 +42,12 @@
 
     <div class="flt-product-card__footer">
       <div class="flt-product-card__price">{{ product.price | money }}</div>
-      <a href="{{ product.url }}" class="flt-product-card__btn">View Details</a>
+      <button
+        class="flt-product-card__btn flt-add-to-cart-btn"
+        type="button"
+        data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+        data-product-title="{{ product.title | escape }}"
+      >Add to Cart</button>
     </div>
   </div>
 

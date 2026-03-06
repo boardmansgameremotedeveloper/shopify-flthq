@@ -278,7 +278,7 @@
         onclick="(function(){var d=document.querySelector('cart-drawer-component');if(!d){window.location.href='{{ routes.cart_url }}';return;}if(typeof d.open==='function'){d.open();}else{customElements.whenDefined('cart-drawer-component').then(function(){d.open();});}})();return false;"
         aria-label="Open cart, {{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }}"
       >
-        Cart ({{ cart.item_count }})
+        Cart (<span id="flt-cart-count">{{ cart.item_count }}</span>)
         {% if cart.item_count > 0 %}
           <span class="flt-nav__cart-badge" aria-hidden="true"></span>
         {% endif %}
@@ -361,6 +361,31 @@
 
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll(); /* run once on load */
+  })();
+
+  /* ── 6. Real-time cart count sync ─────────────────────────────────────── */
+  /* Exposed globally so recommendation/product sections can call it directly. */
+  window.fltSyncCartCount = function() {
+    fetch('/cart.js')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var el = document.getElementById('flt-cart-count');
+        if (el) el.textContent = data.item_count;
+        var badge = document.querySelector('.flt-nav__cart-badge');
+        if (badge) badge.style.display = data.item_count > 0 ? '' : 'none';
+      });
+  };
+
+  /* Patch fetch to auto-sync on any /cart/add call (covers Horizon buy-buttons) */
+  (function() {
+    var _fetch = window.fetch;
+    window.fetch = function(url) {
+      var p = _fetch.apply(this, arguments);
+      if (typeof url === 'string' && url.indexOf('/cart/add') !== -1) {
+        p.then(function(r) { if (r.ok) window.fltSyncCartCount(); });
+      }
+      return p;
+    };
   })();
 
   /* ── 5. Anchor scroll on homepage from external navigation ──────────── */

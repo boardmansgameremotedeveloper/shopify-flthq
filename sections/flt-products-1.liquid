@@ -253,6 +253,30 @@
 
     }
 
+    /* ── Add to Cart handlers ─────────────────────────────────────────── */
+    scope.querySelectorAll('.flt-add-to-cart-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var variantId = btn.dataset.variantId;
+        if (!variantId) return;
+        btn.disabled = true;
+        btn.textContent = 'Adding\u2026';
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ id: Number(variantId), quantity: 1 })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function() {
+          btn.textContent = 'Added!';
+          setTimeout(function() { btn.textContent = 'Add to Cart'; btn.disabled = false; }, 2000);
+        })
+        .catch(function() {
+          btn.textContent = 'Error';
+          btn.disabled = false;
+        });
+      });
+    });
+
   }
 
   /* INITIAL PAGE LOAD */
