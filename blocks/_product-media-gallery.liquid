@@ -1,9 +1,14 @@
+<!-- DxB debugging 
+
 <div style="background: #fff3cd; color: #856404; padding: 10px; border: 1px solid #ffeeba; font-family: monospace; font-size: 12px; z-index: 9999; position: relative;">
   <b>Debug Info:</b><br>
   - Global Product Title: {{ product.title | default: 'NOT FOUND' }}<br>
   - Closest Product Title: {{ closest.product.title | default: 'NOT FOUND' }}<br>
   - Media Count: {{ closest.product.media.size | default: 0 }}
 </div>
+
+-->
+
 
 {%- comment -%} Determine which product object to use {%- endcomment -%}
 {%- assign current_product = closest.product | default: product -%}
