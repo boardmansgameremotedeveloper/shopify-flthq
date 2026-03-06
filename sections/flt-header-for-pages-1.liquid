@@ -1,0 +1,406 @@
+{% comment %}
+  flt-header-for-pages-1 CUSTOM
+  FLT Hemp Provisions — Storefront Header
+  Source: frontend/src/App.jsx → Navbar
+  Shopify vars: shop.name, linklists, cart.item_count, routes.*
+{% endcomment %}
+
+<style>
+  :root {
+    --head: 'Bebas Neue', sans-serif;
+    --body: 'Source Sans 3', sans-serif;
+  }
+  .flt-nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: transparent;
+    transition: all 0.5s ease;
+    padding: 16px 0;
+  }
+  .flt-nav.scrolled {
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(11,37,69,0.08);
+    padding: 8px 0;
+  }
+  .flt-nav__inner {
+    max-width: 1300px; margin: 0 auto;
+    padding: 0 40px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .flt-nav__logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none;
+  }
+  .flt-nav__logo-name {
+    font-family: var(--head); font-size: 28px;
+    color: #0B2545; letter-spacing: 0.15em; line-height: 1;
+    transition: font-size 0.4s ease;
+  }
+  .flt-nav.scrolled .flt-nav__logo-name { font-size: 24px; }
+  .flt-nav__logo-sub {
+    font-family: var(--body); font-size: 8px;
+    color: #64748B; letter-spacing: 0.25em; text-transform: uppercase;
+  }
+  .flt-nav__links { display: flex; gap: 4px; align-items: center; }
+  .flt-nav__link {
+    background: none; border: none; border-radius: 24px;
+    color: #64748B; font-family: var(--body); font-size: 14px; font-weight: 600;
+    cursor: pointer; padding: 8px 18px;
+    transition: all 0.3s ease; text-decoration: none; display: inline-block;
+  }
+  .flt-nav__link:hover { background: rgba(11,37,69,0.08); color: #0B2545; }
+  .flt-nav__link--active,
+  .flt-nav__link[aria-current] { background: rgba(11,37,69,0.08); color: #0B2545; }
+  button.flt-nav__logo { background: none; border: none; padding: 0; cursor: pointer; }
+  .flt-nav__cart {
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    border: none; color: #fff; padding: 10px 24px; border-radius: 30px;
+    margin-left: 8px; font-family: var(--body); font-size: 13px; font-weight: 700;
+    cursor: pointer; position: relative; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .flt-nav__cart-badge {
+    position: absolute; top: -4px; right: -4px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #EF4444; border: 2px solid #fff;
+  }
+  @media (max-width: 768px) {
+    .flt-nav__inner { padding: 0 20px; }
+    .flt-nav__link { display: none; }
+    .flt-nav__logo-name { font-size: 22px; }
+  }
+
+  /* ── Product page: push content below fixed nav ────────────────────── */
+  #MainContent[data-template="product"] {
+    padding-top: 80px;
+  }
+  @media (max-width: 768px) {
+    #MainContent[data-template="product"] {
+      padding-top: 68px;
+    }
+  }
+
+  /* ── Global product card styles ─────────────────────────────────────── */
+  /* Used on homepage (flt-products-1) and product recommendations.        */
+  .flt-product-card {
+    background: #fff; border-radius: 20px;
+    border: 1px solid #E2E8F0; overflow: hidden;
+    cursor: pointer; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+  .flt-product-card:hover {
+    border-color: #93C5FD;
+    transform: translateY(-12px);
+    box-shadow: 0 28px 60px rgba(11,37,69,0.15);
+  }
+  .flt-product-card__badge {
+    position: absolute; top: 16px; left: 16px; z-index: 5;
+    background: linear-gradient(135deg, #0B2545, #1B3A5C);
+    color: #fff; font-size: 10px; font-family: var(--body);
+    font-weight: 700; padding: 5px 14px; border-radius: 20px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .flt-product-card__image-wrap {
+    display: flex; justify-content: center; align-items: center;
+    padding: 36px 24px 16px; min-height: 280px;
+    background: linear-gradient(180deg, #F0F7FF 0%, #fff 100%);
+  }
+  .flt-product-card__img {
+    max-height: 250px; max-width: 80%; object-fit: contain;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: drop-shadow(0 4px 12px rgba(11,37,69,0.08));
+  }
+  .flt-product-card:hover .flt-product-card__img {
+    filter: drop-shadow(0 12px 30px rgba(11,37,69,0.18));
+    transform: scale(1.06) rotate(-1deg);
+  }
+  .flt-product-card__body { padding: 8px 24px 24px; }
+  .flt-product-card__name {
+    font-family: var(--head); font-size: 22px;
+    color: #0B2545; margin: 0 0 6px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .flt-product-card__desc {
+    font-family: var(--body); font-size: 13px; color: #64748B;
+    margin: 0 0 4px; line-height: 1.5;
+  }
+  .flt-product-card__tagline {
+    font-family: var(--body); font-size: 11px; color: #94A3B8;
+    margin: 0 0 12px; letter-spacing: 0.04em;
+  }
+  .flt-product-card__footer {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-top: 16px;
+  }
+  .flt-product-card__price {
+    font-family: var(--head); font-size: 28px; color: #0B2545;
+  }
+  .flt-product-card__btn {
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    border: none; color: #fff; padding: 10px 24px; border-radius: 30px;
+    font-family: var(--body); font-size: 13px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase;
+    transition: all 0.3s ease; text-decoration: none; display: inline-block;
+  }
+
+  /* ── Cart Drawer — base structural styles ──────────────────────────── */
+  /* These live here because header-actions.liquid is disabled (native header off). */
+  .cart-drawer {
+    --cart-drawer-padding: 24px;
+    --cart-drawer-padding-desktop: 24px 32px;
+  }
+  .cart-drawer__dialog {
+    position: fixed; overflow: hidden; border-radius: 0;
+    width: 100%; height: 100%; margin: 0 0 0 auto; padding: 0;
+    background-color: var(--color-background, #fff);
+    border-left: 1px solid rgba(11,37,69,0.08);
+    box-shadow: -8px 0 40px rgba(11,37,69,0.12);
+  }
+  .cart-drawer__dialog:modal { max-height: 100dvh; overflow-y: hidden; }
+  @media screen and (min-width: 750px) {
+    .cart-drawer__dialog { width: var(--sidebar-width, 420px); max-width: 95vw; }
+  }
+  .cart-drawer__inner { height: 100%; overflow: hidden; }
+  .cart-drawer__content {
+    height: calc(100% - 72px); display: flex; flex-direction: column;
+    padding: 0; flex-grow: 1; overflow-y: auto;
+    background-color: var(--color-background, #fff);
+  }
+  .cart-drawer__header {
+    background-color: var(--color-background, #fff);
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; padding: var(--cart-drawer-padding);
+    border-bottom: 1px solid rgba(11,37,69,0.08);
+    position: sticky; top: 0; z-index: 1;
+  }
+  @media screen and (min-width: 750px) {
+    .cart-drawer__header { padding-inline: var(--cart-drawer-padding-desktop); }
+  }
+  .cart-drawer__heading {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 0;
+  }
+  .cart-drawer__items {
+    display: flex; flex-direction: column;
+    padding-inline: var(--cart-drawer-padding); overflow-y: auto;
+  }
+  @media screen and (min-width: 750px) {
+    .cart-drawer__items { padding-inline: var(--cart-drawer-padding-desktop); }
+  }
+  .cart-drawer__items .cart-items__table-row {
+    padding-bottom: 24px; border-bottom: 1px solid rgba(11,37,69,0.06);
+    margin-bottom: 24px;
+  }
+  .cart-drawer__items .cart-items__table-row:last-child {
+    border-bottom: none; padding-bottom: 0; margin-bottom: 0;
+  }
+  .cart-drawer__summary {
+    position: sticky; bottom: 0; z-index: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    padding: var(--cart-drawer-padding); margin-top: auto;
+    background-color: var(--color-background, #fff);
+    border-top: 1px solid rgba(11,37,69,0.08);
+  }
+  @media screen and (min-width: 750px) {
+    .cart-drawer__summary { padding: var(--cart-drawer-padding-desktop); }
+  }
+  .cart-drawer--empty .cart-drawer__inner {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; height: 100dvh;
+  }
+  .cart-drawer--empty .cart-drawer__heading { text-align: center; }
+
+  /* ── Cart Drawer — FLT brand overrides ─────────────────────────────── */
+  .cart-drawer__heading {
+    font-family: var(--head, 'Bebas Neue', sans-serif);
+    font-size: 28px; color: #0B2545;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .cart-drawer__close-button {
+    color: #64748B; background: none; border: none;
+    cursor: pointer; padding: 8px; border-radius: 8px;
+    transition: background 0.2s ease;
+  }
+  .cart-drawer__close-button:hover { background: rgba(11,37,69,0.06); color: #0B2545; }
+  .cart-drawer .cart__checkout-button,
+  .cart-drawer .cart__checkout-button[type="submit"] {
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    border: none; color: #fff; border-radius: 14px;
+    font-family: var(--head, 'Bebas Neue', sans-serif);
+    font-size: 18px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 14px 24px; width: 100%; cursor: pointer;
+  }
+</style>
+
+<nav class="flt-nav" id="flt-nav" role="navigation" aria-label="Main navigation">
+  <div class="flt-nav__inner">
+
+    {% comment %} Logo: scroll to #home on home page; link elsewhere {% endcomment %}
+    {% if template.name == 'index' %}
+      <button class="flt-nav__logo" data-anchor="home" aria-label="{{ shop.name }}">
+        {% render 'flt-plane-icon-1', size: 36, color: '#0B2545' %}
+        <div>
+          <div class="flt-nav__logo-name">FLT</div>
+          <div class="flt-nav__logo-sub">Hemp Provisions</div>
+        </div>
+      </button>
+    {% else %}
+      <a href="{{ routes.root_url }}" class="flt-nav__logo" aria-label="{{ shop.name }}">
+        {% render 'flt-plane-icon-1', size: 36, color: '#0B2545' %}
+        <div>
+          <div class="flt-nav__logo-name">FLT</div>
+          <div class="flt-nav__logo-sub">Hemp Provisions</div>
+        </div>
+      </a>
+    {% endif %}
+
+    <div class="flt-nav__links">
+      {% for link in section.settings.menu.links %}
+        {% assign anchor_id = '' %}
+        {% if link.url contains '#' %}
+          {% assign anchor_id = link.url | split: '#' | last %}
+        {% endif %}
+
+        {% if template.name == 'index' and anchor_id != '' %}
+          <button class="flt-nav__link" data-anchor="{{ anchor_id }}">
+            {{ link.title }}
+          </button>
+        {% else %}
+          <a href="{{ link.url }}" class="flt-nav__link"
+             {% if link.active %}aria-current="page"{% endif %}>
+            {{ link.title }}
+          </a>
+        {% endif %}
+      {% endfor %}
+      <button
+        class="flt-nav__cart"
+        onclick="(function(){var d=document.querySelector('cart-drawer-component');if(!d){window.location.href='{{ routes.cart_url }}';return;}if(typeof d.open==='function'){d.open();}else{customElements.whenDefined('cart-drawer-component').then(function(){d.open();});}})();return false;"
+        aria-label="Open cart, {{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }}"
+      >
+        Cart ({{ cart.item_count }})
+        {% if cart.item_count > 0 %}
+          <span class="flt-nav__cart-badge" aria-hidden="true"></span>
+        {% endif %}
+      </button>
+    </div>
+
+  </div>
+</nav>
+
+<script>
+  (function () {
+    var nav = document.getElementById('flt-nav');
+    if (!nav) return;
+
+    /* ── 0. Sync --header-height for Horizon sticky components ─────────── */
+    /* product-information-content.liquid sets:                              */
+    /*   --sticky-header-offset: var(--header-height)                        */
+    /* Without this, sticky details stick at top: 0 behind our fixed nav.   */
+    function setNavHeightVar() {
+      var h = nav.offsetHeight;
+      document.body.style.setProperty('--header-height', h + 'px');
+      document.body.style.setProperty('--header-group-height', h + 'px');
+    }
+    setNavHeightVar();
+    window.addEventListener('resize', setNavHeightVar, { passive: true });
+
+    /* ── 1. Scroll glass effect ──────────────────────────────────────── */
+    function tick() {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+      setNavHeightVar(); /* keep var in sync as nav shrinks/grows on scroll */
+    }
+    window.addEventListener('scroll', tick, { passive: true });
+    tick();
+
+    /* ── 2. Collect anchor elements ─────────────────────────────────── */
+    var anchorEls = Array.prototype.slice.call(nav.querySelectorAll('[data-anchor]'));
+    if (!anchorEls.length) return;
+
+    /* ── 3. Smooth scroll on click ───────────────────────────────────── */
+    anchorEls.forEach(function (el) {
+      el.addEventListener('click', function () {
+        var id = el.dataset.anchor;
+        var target = document.getElementById(id);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    /* ── 4. Active section tracking (matches React logic exactly) ────── */
+    var sectionIds = [];
+    anchorEls.forEach(function (el) {
+      if (el.dataset.anchor && sectionIds.indexOf(el.dataset.anchor) === -1) {
+        sectionIds.push(el.dataset.anchor);
+      }
+    });
+
+    function setActive(id) {
+      anchorEls.forEach(function (el) {
+        el.classList.toggle('flt-nav__link--active', el.dataset.anchor === id);
+      });
+    }
+
+    function onScroll() {
+      for (var i = 0; i < sectionIds.length; i++) {
+        var el = document.getElementById(sectionIds[i]);
+        if (el) {
+          var rect = el.getBoundingClientRect();
+          if (rect.top <= 200 && rect.bottom > 200) {
+            setActive(sectionIds[i]);
+            return;
+          }
+        }
+      }
+      /* Before first section or after last: highlight first if near top */
+      if (window.scrollY < 100 && sectionIds.length) {
+        setActive(sectionIds[0]);
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); /* run once on load */
+  })();
+
+  /* ── 5. Anchor scroll on homepage from external navigation ──────────── */
+  /* Handles: /products/x → /#products (full-page load with hash)          */
+  if ({{ template.name | json }} === 'index') {
+    (function () {
+      function scrollToHash() {
+        var hash = window.location.hash;
+        if (!hash) return;
+        var target = document.getElementById(hash.slice(1));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () {
+          setTimeout(scrollToHash, 300);
+        });
+      } else {
+        setTimeout(scrollToHash, 300);
+      }
+    })();
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "tag": "section",
+  "class": "flt-header-section",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Navigation menu",
+      "default": "main-menu"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FLT Header for pages"
+    }
+  ]
+}
+{% endschema %}
