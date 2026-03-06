@@ -123,11 +123,26 @@
       "settings": {
         "menu": "flt-header-menu-for-pages"
       }
+    },
+    "divider_AfDtai": {
+      "type": "divider",
+      "name": "t:names.divider_section",
+      "settings": {
+        "color_scheme": "",
+        "section_width": "full-width",
+        "thickness": 1,
+        "corner_radius": "square",
+        "width_percent": 100,
+        "alignment_horizontal": "center",
+        "padding-block-start": 16,
+        "padding-block-end": 16
+      }
     }
   },
   "order": [
     "header_announcements_9jGBFp",
     "header_section",
-    "flt_header_1_hFYDid"
+    "flt_header_1_hFYDid",
+    "divider_AfDtai"
   ]
 }
