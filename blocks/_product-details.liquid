@@ -42,6 +42,15 @@
   /* Extra safety for the title specifically */
   display: block;
   width: 100%;  
+
+    word-break: break-word; /* or break-all */
+    overflow-wrap: anywhere; /* modern equivalent */  
+}
+
+@media screen and (max-width: 749px) {
+  .flt-pdp__title {
+    letter-spacing: 0.02em; /* smaller spacing on mobile */
+  }
 }
 
 @media screen and (max-width: 989px) {
