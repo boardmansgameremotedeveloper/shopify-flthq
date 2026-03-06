@@ -371,7 +371,7 @@
         "padding-block-end": 48
       }
     },
-    "flt_product_recommendations_1_reX9K4": {
+    "flt_product_recommendations_1_9kncDD": {
       "type": "flt-product-recommendations-1",
       "name": "FLT Related Products",
       "settings": {}
@@ -380,6 +380,6 @@
   "order": [
     "main",
     "product_recommendations_qggXJq",
-    "flt_product_recommendations_1_reX9K4"
+    "flt_product_recommendations_1_9kncDD"
   ]
 }
