@@ -75,7 +75,7 @@
 >
   <pre>{{ recommendations | json }}</pre>
 
-  
+
   {% if recommendations.performed and recommendations.products_count > 0 %}
     <section class="flt-recs">
       <div class="flt-recs__inner">
@@ -117,6 +117,12 @@
         }
       })();
     </script>
+  {% else %}
+    
+    <div style="text-align:center; color:#888; margin-top:20px;">
+      No related products found.
+    </div>
+
   {% endif %}
 </product-recommendations>
 
