@@ -13,13 +13,24 @@
 </div>
 
 {% stylesheet %}
+/* ── Shopify wrapper grid placement (mobile) ──────────────────────────
+   Shopify injects a div.shopify-block around block content. On mobile,
+   product-information__grid has 3 subgrid columns: [margin][content][margin].
+   Without explicit placement, the wrapper auto-places in col 1 (16px margin).
+   This forces it into col 2 (the content column). ── */
+@media screen and (max-width: 749px) {
+  .product-information__grid > .shopify-block:has(.flt-product-details-panel) {
+    grid-column: 2 / 3;
+  }
+}
+
 .flt-product-details-panel {
   display: flex;
   flex-direction: column;
   gap: 20px;
   padding: 0 0 40px;
   width: 100%;
-  min-width: 100%;
+  min-width: 0;
 }
 
 .sticky-content--desktop {
@@ -29,41 +40,21 @@
 }
 
 .flt-pdp__title {
-  font-family: Arial, Helvetica, sans-serif; /* safe sans-serif font */
+  font-family: var(--head, 'Bebas Neue', sans-serif);
   font-size: clamp(28px, 3.5vw, 48px);
   color: #0B2545;
-  letter-spacing: 0.03em;
-  line-height: 1.2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.1;
   margin: 0;
   display: block;
   width: 100%;
-
-  /* KEY FIXES */
-  white-space: normal;       /* allow wrapping */
-  word-break: normal;        /* normal wrapping rules */
-  flex-shrink: 0;            /* prevent container shrink on mobile */
-  text-transform: none;      /* remove uppercase stacking on mobile */
-}
-
-@media screen and (min-width: 750px) {
-  .flt-pdp__title {
-    text-transform: uppercase; /* keep uppercase on desktop */
-  }
-}
-
-@media screen and (max-width: 749px) {
-  .flt-pdp__title {
-    font-size: clamp(28px, 4vw, 40px);
-    letter-spacing: 0.02em;
-    text-transform: none; /* no uppercase for mobile */
-  }
+  white-space: normal;
+  word-break: normal;
 }
 
 @media screen and (max-width: 989px) {
-  .flt-product-details-panel {
-    padding: 0 0 32px;
-    flex: 1 1 100%;
-  }
+  .flt-product-details-panel { padding: 0 0 32px; }
 }
 {% endstylesheet %}
 
