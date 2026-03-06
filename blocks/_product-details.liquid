@@ -19,10 +19,7 @@
   gap: 20px;
   padding: 0 0 40px;
   width: 100%;
-  /* Fix: prevent the container from collapsing to a single letter width */
-  min-width: 100%; 
-  word-break: normal;
-  overflow-wrap: break-word;
+  min-width: 100%;
 }
 
 .sticky-content--desktop {
@@ -32,34 +29,29 @@
 }
 
 .flt-pdp__title {
-  font-family: var(--head, 'Bebas Neue', sans-serif);
+  /* Changed font from Bebas Neue to Arial (safe sans-serif) */
+  font-family: Arial, Helvetica, sans-serif;
   font-size: clamp(28px, 3.5vw, 48px);
   color: #0B2545;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em; /* safe spacing for mobile */
   text-transform: uppercase;
-  line-height: 1.1;
+  line-height: 1.2;
   margin: 0;
-  /* Extra safety for the title specifically */
   display: block;
-  width: 100%;  
-
-    word-break: break-word; /* or break-all */
-    overflow-wrap: anywhere; /* modern equivalent */  
+  width: 100%;
 }
 
+/* Mobile adjustments */
 @media screen and (max-width: 749px) {
   .flt-pdp__title {
-    letter-spacing: 0.02em;
-    word-break: break-word;
-    overflow-wrap: anywhere;
     font-size: clamp(28px, 4vw, 40px);
+    letter-spacing: 0.02em; /* slightly tighter spacing for smaller screens */
   }
 }
 
 @media screen and (max-width: 989px) {
-  .flt-product-details-panel { 
-    padding: 0 0 32px; 
-    /* Ensure the panel doesn't try to sit side-by-side with anything on small screens */
+  .flt-product-details-panel {
+    padding: 0 0 32px;
     flex: 1 1 100%;
   }
 }
