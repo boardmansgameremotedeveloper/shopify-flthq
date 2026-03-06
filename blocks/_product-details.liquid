@@ -16,29 +16,28 @@
     data-view-transition-type="product-details"
   {% endif %}
 >
+  
   {% capture children %}
 
     <!-- Featured Product Image & Thumbnails -->
     <div class="product-images-wrapper">
 
 {% if closest.product.featured_image %}
-  <div class="product__media">
-    {{ closest.product.featured_image | img_tag: closest.product.title, 'featured-product-image', 'lazy' }}
-  </div>
-{% endif %}
+        <div class="product__media-main">
+          {{ closest.product.featured_image | img_tag: closest.product.title, 'featured-product-image', 'lazy' }}
+        </div>
+      {% endif %}
 
 {% if closest.product.images.size > 1 %}
-  <div class="product__thumbnails">
-    {% for image in closest.product.images %}
-      {% unless image == closest.product.featured_image %}
-        <div class="product__thumbnail">
-          {% assign alt_text = closest.product.title | append: " thumbnail " | append: forloop.index %}
-          {{ image | img_tag: alt_text, 'thumbnail-image', 'lazy' }}
+        <div class="product__media-grid">
+          {% for image in closest.product.images %}
+            <div class="product__media-item {% if image == closest.product.featured_image %}is-active{% endif %}">
+              {% assign alt_text = closest.product.title | append: " - view " | append: forloop.index %}
+              {{ image | img_tag: alt_text, 'gallery-thumb-image', 'lazy' }}
+            </div>
+          {% endfor %}
         </div>
-      {% endunless %}
-    {% endfor %}
-  </div>
-{% endif %}
+      {% endif %}
 
     </div>
 
@@ -111,7 +110,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   width: 100%;
 }
 
