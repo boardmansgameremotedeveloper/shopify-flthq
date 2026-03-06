@@ -73,6 +73,9 @@
   class="flt-recs-component"
   data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit=4"
 >
+  <pre>{{ recommendations | json }}</pre>
+
+  
   {% if recommendations.performed and recommendations.products_count > 0 %}
     <section class="flt-recs">
       <div class="flt-recs__inner">
