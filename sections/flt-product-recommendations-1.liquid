@@ -67,24 +67,24 @@
     }
   }
 </style>
-
 <product-recommendations
   id="flt-product-recommendations-{{ section.id }}"
   class="flt-recs-component"
   data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit=4"
 >
+  <!-- Debug output to see what Shopify is returning -->
   <pre>{{ recommendations | json }}</pre>
 
+  <section class="flt-recs">
+    <div class="flt-recs__inner">
 
-  {% if recommendations.performed and recommendations.products_count > 0 %}
-    <section class="flt-recs">
-      <div class="flt-recs__inner">
-        
-        <div class="flt-recs__heading-wrap flt-reveal">
-          <div class="flt-recs__eyebrow">Handpicked for you</div>
-          <h2 class="flt-recs__title">You May Also Like</h2>
-        </div>
+      <!-- Heading always visible -->
+      <div class="flt-recs__heading-wrap flt-reveal">
+        <div class="flt-recs__eyebrow">Handpicked for you</div>
+        <h2 class="flt-recs__title">Related Products</h2>
+      </div>
 
+      {% if recommendations.performed and recommendations.products_count > 0 %}
         <div class="flt-recs__grid">
           {% for product in recommendations.products %}
             <div class="flt-reveal" style="transition-delay: {{ forloop.index0 | times: 0.1 }}s">
@@ -92,38 +92,37 @@
             </div>
           {% endfor %}
         </div>
-        
-      </div>
-    </section>
+      {% else %}
+        <div style="text-align:center; color:#888; margin-top:20px;">
+          No related products found.
+        </div>
+      {% endif %}
 
-    <script>
-      (function() {
-        // Re-initialize the reveal observer for dynamically loaded content
-        var scope = document.querySelector('#flt-product-recommendations-{{ section.id }}');
-        var reveals = scope.querySelectorAll('.flt-reveal');
-        
-        if ('IntersectionObserver' in window) {
-          var obs = new IntersectionObserver(function(entries) {
-            entries.forEach(function(e) {
-              if (e.isIntersecting) {
-                e.target.classList.add('in-view');
-                obs.unobserve(e.target);
-              }
-            });
-          }, { threshold: 0.1 });
-          reveals.forEach(function(el) { obs.observe(el); });
-        } else {
-          reveals.forEach(function(el) { el.classList.add('in-view'); });
-        }
-      })();
-    </script>
-  {% else %}
-    
-    <div style="text-align:center; color:#888; margin-top:20px;">
-      No related products found.
     </div>
+  </section>
 
-  {% endif %}
+  <!-- Scroll reveal JS -->
+  <script>
+    (function() {
+      var scope = document.querySelector('#flt-product-recommendations-{{ section.id }}');
+      if (!scope) return;
+
+      var reveals = scope.querySelectorAll('.flt-reveal');
+      if ('IntersectionObserver' in window) {
+        var obs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(e) {
+            if (e.isIntersecting) {
+              e.target.classList.add('in-view');
+              obs.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.1 });
+        reveals.forEach(function(el) { obs.observe(el); });
+      } else {
+        reveals.forEach(function(el) { el.classList.add('in-view'); });
+      }
+    })();
+  </script>
 </product-recommendations>
 
 {% schema %}
