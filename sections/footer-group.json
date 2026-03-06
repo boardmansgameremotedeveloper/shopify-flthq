@@ -206,6 +206,7 @@
         "footer_policy_list_VCdnpa",
         "social_links_Ew63Kq"
       ],
+      "disabled": true,
       "name": "t:names.utilities",
       "settings": {
         "section_width": "page-width",
