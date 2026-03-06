@@ -230,16 +230,14 @@
         "padding-block-end": 0
       }
     },
-    "flt_product_recommendations_4_EGymXD": {
+    "flt_product_recommendations_4_TgUNLw": {
       "type": "flt-product-recommendations-4",
-      "name": "FLT Product RECommendations",
-      "settings": {
-        "collection": ""
-      }
+      "name": "FLT Related Products",
+      "settings": {}
     }
   },
   "order": [
     "main",
-    "flt_product_recommendations_4_EGymXD"
+    "flt_product_recommendations_4_TgUNLw"
   ]
 }
