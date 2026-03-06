@@ -1,163 +1,43 @@
 {%- assign block_settings = block.settings -%}
 
-<div class="flt-product-layout">
-  
-<div class="flt-product-media">
-  <div class="product-images-wrapper">
-    
-    {%- comment -%} 1. Main Media Display {%- endcomment -%}
-    <div class="product__media-main">
-      {%- if closest.product.selected_or_first_available_variant.featured_media != null -%}
-        {%- assign featured_media = closest.product.selected_or_first_available_variant.featured_media -%}
-      {%- else -%}
-        {%- assign featured_media = closest.product.featured_media -%}
-      {%- endif -%}
-
-      <div id="MainProductMedia-{{ section.id }}" class="main-media-container">
-        {{ featured_media | image_url: width: 1200 | image_tag: 
-          id: "MainProductImage",
-          loading: 'eager', 
-          class: 'main-img-element',
-          widths: '400, 600, 800, 1200',
-          alt: featured_media.alt | escape 
-        }}
-      </div>
-    </div>
-
-    {%- comment -%} 2. Thumbnail Grid {%- endcomment -%}
-    {%- if closest.product.media.size > 1 -%}
-      <div class="product__media-grid">
-        {%- for media in closest.product.media -%}
-          <button 
-            type="button"
-            class="product__media-item {% if media == featured_media %}is-active{% endif %}" 
-            data-media-id="{{ media.id }}"
-            data-large-src="{{ media | image_url: width: 1200 }}"
-            aria-label="{{ 'products.thumbnail_loop' | t: number: forloop.index }}"
-            onclick="swapProductImage(this)"
-          >
-            {{ media.preview_image | image_url: width: 200 | image_tag: 
-              loading: 'lazy', 
-              sizes: '100px',
-              widths: '100, 200',
-              alt: media.alt | escape 
-            }}
-          </button>
-        {%- endfor -%}
-      </div>
-    {%- endif -%}
-
+<div
+  id="ProductInformation-{{ section.id }}"
+  class="flt-product-details-panel{% if block_settings.sticky_details_desktop %} sticky-content--desktop{% endif %}"
+  {{ block.shopify_attributes }}
+>
+  <div class="flt-pdp__title-wrap">
+    <h1 class="flt-pdp__title">{{ closest.product.title }}</h1>
   </div>
+
+  {% content_for 'blocks' %}
 </div>
-
-  <div
-    id="ProductInformation-{{ section.id }}"
-    class="product-details {% if block_settings.sticky_details_desktop %} sticky-content--desktop{% endif %}"
-    style="--product-details-padding-top: {{ block_settings.gap }}px;"
-  >
-    {% capture children %}
-      <div class="view-product-title">
-        <h1 class="h2">{{ closest.product.title }}</h1>
-      </div>
-      {% content_for 'blocks' %}
-    {% endcapture %}
-
-    {% render 'group', children: children, settings: block_settings, shopify_attributes: block.shopify_attributes %}
-  </div>
-</div>
-
-<script>
-  function swapProductImage(element, newSrc) {
-    // 1. Update the Main Image
-    const mainImg = document.getElementById('MainProductImage-{{ section.id }}');
-    if(mainImg) mainImg.src = newSrc;
-
-    // 2. Update Active Thumbnail Styling
-    const allThumbs = element.parentElement.querySelectorAll('.product__media-item');
-    allThumbs.forEach(thumb => thumb.classList.remove('is-active'));
-    element.classList.add('is-active');
-  }
-</script>
 
 {% stylesheet %}
-/* 1. Layout Structure: Side-by-Side */
-.flt-product-layout {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr; /* Media takes slightly more room than text */
-  gap: 60px;
-  align-items: start;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 40px;
-}
-
-/* 2. Media Styles (Left Side) */
-.flt-product-media {
-  width: 100%;
-}
-
-.product__media-main {
-  width: 100%;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-  margin-bottom: 16px;
-  background: #f8f8f8;
-}
-
-.product__media-main img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.product__media-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 12px;
-}
-
-.product__media-item {
-  aspect-ratio: 1 / 1;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.product__media-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.product__media-item.is-active {
-  border-color: #0B2545;
-}
-
-/* 3. Details Styles (Right Side) */
-.product-details {
+.flt-product-details-panel {
   display: flex;
   flex-direction: column;
+  gap: 20px;
+  padding: 0 0 40px;
 }
 
 .sticky-content--desktop {
   position: sticky;
   top: calc(var(--header-group-height, 80px) + 20px);
+  z-index: var(--layer-flat, 1);
 }
 
-/* 4. Mobile Responsiveness */
+.flt-pdp__title {
+  font-family: var(--head, 'Bebas Neue', sans-serif);
+  font-size: clamp(28px, 3.5vw, 48px);
+  color: #0B2545;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin: 0;
+}
+
 @media screen and (max-width: 989px) {
-  .flt-product-layout {
-    grid-template-columns: 1fr; /* Stack on tablet/mobile */
-    gap: 32px;
-    padding: 0 20px;
-  }
-  
-  .product__media-grid {
-    grid-template-columns: repeat(5, 1fr); /* 5 thumbs across on mobile */
-  }
+  .flt-product-details-panel { padding: 0 0 32px; }
 }
 {% endstylesheet %}
 
@@ -173,8 +53,12 @@
     { "type": "group" }
   ],
   "settings": [
-    { "type": "checkbox", "id": "sticky_details_desktop", "label": "Sticky Details on Desktop", "default": true },
-    { "type": "range", "id": "gap", "label": "Top Padding", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 20 }
+    {
+      "type": "checkbox",
+      "id": "sticky_details_desktop",
+      "label": "Sticky Details on Desktop",
+      "default": true
+    }
   ]
 }
 {% endschema %}
