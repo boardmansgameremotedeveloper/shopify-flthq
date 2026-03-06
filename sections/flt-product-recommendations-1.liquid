@@ -82,16 +82,16 @@
       </div>
 
       {% assign related_products = recommendations.products %}
-      
+
       {% comment %}
-        If Shopify recommendations returned nothing, fallback to products in the same collection
+        Fallback: get products from the first collection if no recommendations
       {% endcomment %}
       {% if related_products == empty and product.collections.size > 0 %}
         {% assign first_collection = product.collections.first %}
         {% assign related_products = first_collection.products | where: "id", "!=" , product.id | slice: 0, 4 %}
       {% endif %}
 
-      {% if related_products.size > 0 %}
+      {% if related_products != blank %}
         <div class="flt-recs__grid">
           {% for related_product in related_products %}
             <div class="flt-reveal" style="transition-delay: {{ forloop.index0 | times: 0.1 }}s">
