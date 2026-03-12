@@ -1,0 +1,645 @@
+{% comment %}
+  flt-header-2 CUSTOM
+  FLT Hemp Provisions — Consolidated Storefront Header
+  Combines flt-header-1 + flt-header-for-pages-1 into a single section.
+  Features:
+    - Transparent → glass-morphism on scroll (home page)
+    - Solid background on non-home page templates
+    - Mobile hamburger menu (pure CSS/JS, no libraries)
+    - Logo: image (Shopify media library) or text toggle
+    - Configurable header background color
+  Shopify vars: shop.name, linklists, cart.item_count, routes.*, template.name
+{% endcomment %}
+
+<style>
+  :root {
+    --head: 'Bebas Neue', sans-serif;
+    --body: 'Source Sans 3', sans-serif;
+  }
+
+  /* ── Base nav ─────────────────────────────────────────────────────────── */
+  .flt-nav2 {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: transparent;
+    transition: background 0.5s ease, padding 0.5s ease, box-shadow 0.3s ease;
+    padding: 16px 0;
+  }
+
+  /* ── Scroll glass (home page) ──────────────────────────────────────────── */
+  .flt-nav2.scrolled {
+    background: {{ section.settings.header_bg | color_modify: 'alpha', 0.93 }};
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(11,37,69,0.08);
+    box-shadow: 0 2px 20px rgba(11,37,69,0.06);
+    padding: 8px 0;
+  }
+
+  /* ── Solid on non-home pages ───────────────────────────────────────────── */
+  .flt-nav2--solid {
+    background: {{ section.settings.header_bg }};
+    border-bottom: 1px solid rgba(11,37,69,0.1);
+    box-shadow: 0 2px 20px rgba(11,37,69,0.08);
+    padding: 10px 0;
+  }
+  .flt-nav2--solid.scrolled {
+    padding: 8px 0;
+  }
+
+  /* ── Inner layout ──────────────────────────────────────────────────────── */
+  .flt-nav2__inner {
+    max-width: 1300px; margin: 0 auto;
+    padding: 0 40px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  /* ── Logo ─────────────────────────────────────────────────────────────── */
+  .flt-nav2__logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none;
+    background: none; border: none; padding: 0; cursor: pointer;
+  }
+  .flt-nav2__logo-img {
+    max-height: 44px; width: auto; object-fit: contain;
+    display: block;
+  }
+  .flt-nav2__logo-name {
+    font-family: var(--head); font-size: 28px;
+    color: #0B2545; letter-spacing: 0.15em; line-height: 1;
+    transition: font-size 0.4s ease;
+  }
+  .flt-nav2.scrolled .flt-nav2__logo-name,
+  .flt-nav2--solid .flt-nav2__logo-name { font-size: 24px; }
+  .flt-nav2__logo-sub {
+    font-family: var(--body); font-size: 8px;
+    color: #64748B; letter-spacing: 0.25em; text-transform: uppercase;
+  }
+
+  /* ── Desktop links ─────────────────────────────────────────────────────── */
+  .flt-nav2__links { display: flex; gap: 4px; align-items: center; }
+  .flt-nav2__link {
+    background: none; border: none; border-radius: 24px;
+    color: #64748B; font-family: var(--body); font-size: 14px; font-weight: 600;
+    cursor: pointer; padding: 8px 18px;
+    transition: all 0.3s ease; text-decoration: none; display: inline-block;
+  }
+  .flt-nav2__link:hover { background: rgba(11,37,69,0.08); color: #0B2545; }
+  .flt-nav2__link--active,
+  .flt-nav2__link[aria-current] { background: rgba(11,37,69,0.08); color: #0B2545; }
+
+  /* ── Cart button ───────────────────────────────────────────────────────── */
+  .flt-nav2__cart {
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    border: none; color: #fff; padding: 10px 24px; border-radius: 30px;
+    margin-left: 8px; font-family: var(--body); font-size: 13px; font-weight: 700;
+    cursor: pointer; position: relative; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .flt-nav2__cart-badge {
+    position: absolute; top: -4px; right: -4px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #EF4444; border: 2px solid #fff;
+  }
+
+  /* ── Hamburger button (mobile only) ───────────────────────────────────── */
+  .flt-nav2__hamburger {
+    display: none;
+    flex-direction: column; justify-content: center; align-items: center;
+    gap: 5px;
+    background: none; border: none; cursor: pointer;
+    padding: 8px; border-radius: 8px;
+    width: 40px; height: 40px;
+    transition: background 0.2s ease;
+    margin-left: 8px;
+  }
+  .flt-nav2__hamburger:hover { background: rgba(11,37,69,0.06); }
+  .flt-nav2__hamburger span {
+    display: block;
+    width: 22px; height: 2px;
+    background: #0B2545;
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform-origin: center;
+  }
+  /* X state */
+  .flt-nav2__hamburger--open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .flt-nav2__hamburger--open span:nth-child(2) {
+    opacity: 0; transform: scaleX(0);
+  }
+  .flt-nav2__hamburger--open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* ── Mobile menu dropdown ──────────────────────────────────────────────── */
+  .flt-nav2__mobile-menu {
+    display: none;
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: {{ section.settings.header_bg }};
+    border-top: 1px solid rgba(11,37,69,0.08);
+    border-bottom: 1px solid rgba(11,37,69,0.08);
+    box-shadow: 0 8px 24px rgba(11,37,69,0.12);
+    padding: 12px 20px 20px;
+    flex-direction: column; gap: 4px;
+  }
+  .flt-nav2__mobile-menu--open { display: flex; }
+  .flt-nav2__mobile-link {
+    background: none; border: none;
+    color: #64748B; font-family: var(--body); font-size: 15px; font-weight: 600;
+    cursor: pointer; padding: 12px 16px; border-radius: 12px;
+    text-align: left; text-decoration: none; display: block; width: 100%;
+    transition: all 0.2s ease;
+  }
+  .flt-nav2__mobile-link:hover { background: rgba(11,37,69,0.06); color: #0B2545; }
+  .flt-nav2__mobile-link[aria-current] { background: rgba(11,37,69,0.08); color: #0B2545; }
+
+  /* ── Responsive ────────────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .flt-nav2__inner { padding: 0 20px; }
+    .flt-nav2__logo-name { font-size: 22px; }
+    /* Hide desktop nav links; show hamburger */
+    .flt-nav2__links .flt-nav2__link { display: none; }
+    .flt-nav2__hamburger { display: flex; }
+  }
+
+  /* ── Content push for non-home pages ──────────────────────────────────── */
+  /* Covers all page types (product, collection, page, blog, etc.) */
+  body:not(.template-index) #MainContent {
+    padding-top: 80px;
+  }
+  @media (max-width: 768px) {
+    body:not(.template-index) #MainContent {
+      padding-top: 68px;
+    }
+  }
+
+  /* ── Global product card styles ─────────────────────────────────────────── */
+  /* Used on homepage (flt-products-1) and product recommendations.           */
+  .flt-product-card {
+    background: #fff; border-radius: 20px;
+    border: 1px solid #E2E8F0; overflow: hidden;
+    cursor: pointer; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+  .flt-product-card:hover {
+    border-color: #93C5FD;
+    transform: translateY(-12px);
+    box-shadow: 0 28px 60px rgba(11,37,69,0.15);
+  }
+  .flt-product-card__badge {
+    position: absolute; top: 16px; left: 16px; z-index: 5;
+    background: linear-gradient(135deg, #0B2545, #1B3A5C);
+    color: #fff; font-size: 10px; font-family: var(--body);
+    font-weight: 700; padding: 5px 14px; border-radius: 20px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .flt-product-card__image-wrap {
+    display: flex; justify-content: center; align-items: center;
+    padding: 36px 24px 16px; min-height: 280px;
+    background: linear-gradient(180deg, #F0F7FF 0%, #fff 100%);
+  }
+  .flt-product-card__img {
+    max-height: 250px; max-width: 80%; object-fit: contain;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: drop-shadow(0 4px 12px rgba(11,37,69,0.08));
+  }
+  .flt-product-card:hover .flt-product-card__img {
+    filter: drop-shadow(0 12px 30px rgba(11,37,69,0.18));
+    transform: scale(1.06) rotate(-1deg);
+  }
+  .flt-product-card__body { padding: 8px 24px 24px; }
+  .flt-product-card__name {
+    font-family: var(--head); font-size: 22px;
+    color: #0B2545; margin: 0 0 6px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .flt-product-card__desc {
+    font-family: var(--body); font-size: 13px; color: #64748B;
+    margin: 0 0 4px; line-height: 1.5;
+  }
+  .flt-product-card__tagline {
+    font-family: var(--body); font-size: 11px; color: #94A3B8;
+    margin: 0 0 12px; letter-spacing: 0.04em;
+  }
+  .flt-product-card__footer {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-top: 16px;
+  }
+  .flt-product-card__price {
+    font-family: var(--head); font-size: 28px; color: #0B2545;
+  }
+  .flt-product-card__btn {
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    border: none; color: #fff; padding: 10px 24px; border-radius: 30px;
+    font-family: var(--body); font-size: 13px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase;
+    transition: all 0.3s ease; text-decoration: none; display: inline-block;
+  }
+
+  /* ── Cart Drawer — base structural styles ──────────────────────────────── */
+  /* These live here because header-actions.liquid is disabled (native header off). */
+  .cart-drawer {
+    --cart-drawer-padding: 24px;
+    --cart-drawer-padding-desktop: 24px 32px;
+  }
+  .cart-drawer__dialog {
+    position: fixed; overflow: hidden; border-radius: 0;
+    width: 100%; height: 100%; margin: 0 0 0 auto; padding: 0;
+    background-color: var(--color-background, #fff);
+    border-left: 1px solid rgba(11,37,69,0.08);
+    box-shadow: -8px 0 40px rgba(11,37,69,0.12);
+  }
+  .cart-drawer__dialog:modal { max-height: 100dvh; overflow-y: hidden; }
+  @media screen and (min-width: 750px) {
+    .cart-drawer__dialog { width: var(--sidebar-width, 420px); max-width: 95vw; }
+  }
+  .cart-drawer__inner { height: 100%; overflow: hidden; }
+  .cart-drawer__content {
+    height: calc(100% - 72px); display: flex; flex-direction: column;
+    padding: 0; flex-grow: 1; overflow-y: auto;
+    background-color: var(--color-background, #fff);
+  }
+  .cart-drawer__header {
+    background-color: var(--color-background, #fff);
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; padding: var(--cart-drawer-padding);
+    border-bottom: 1px solid rgba(11,37,69,0.08);
+    position: sticky; top: 0; z-index: 1;
+  }
+  @media screen and (min-width: 750px) {
+    .cart-drawer__header { padding-inline: var(--cart-drawer-padding-desktop); }
+  }
+  .cart-drawer__heading {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 0;
+  }
+  .cart-drawer__items {
+    display: flex; flex-direction: column;
+    padding-inline: var(--cart-drawer-padding); overflow-y: auto;
+  }
+  @media screen and (min-width: 750px) {
+    .cart-drawer__items { padding-inline: var(--cart-drawer-padding-desktop); }
+  }
+  .cart-drawer__items .cart-items__table-row {
+    padding-bottom: 24px; border-bottom: 1px solid rgba(11,37,69,0.06);
+    margin-bottom: 24px;
+  }
+  .cart-drawer__items .cart-items__table-row:last-child {
+    border-bottom: none; padding-bottom: 0; margin-bottom: 0;
+  }
+  .cart-drawer__summary {
+    position: sticky; bottom: 0; z-index: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    padding: var(--cart-drawer-padding); margin-top: auto;
+    background-color: var(--color-background, #fff);
+    border-top: 1px solid rgba(11,37,69,0.08);
+  }
+  @media screen and (min-width: 750px) {
+    .cart-drawer__summary { padding: var(--cart-drawer-padding-desktop); }
+  }
+  .cart-drawer--empty .cart-drawer__inner {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; height: 100dvh;
+  }
+  .cart-drawer--empty .cart-drawer__heading { text-align: center; }
+
+  /* ── Cart Drawer — FLT brand overrides ─────────────────────────────────── */
+  .cart-drawer__heading {
+    font-family: var(--head, 'Bebas Neue', sans-serif);
+    font-size: 28px; color: #0B2545;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .cart-drawer__close-button {
+    color: #64748B; background: none; border: none;
+    cursor: pointer; padding: 8px; border-radius: 8px;
+    transition: background 0.2s ease;
+  }
+  .cart-drawer__close-button:hover { background: rgba(11,37,69,0.06); color: #0B2545; }
+  .cart-drawer .cart__checkout-button,
+  .cart-drawer .cart__checkout-button[type="submit"] {
+    background: linear-gradient(135deg, #0B2545, #1E3A5F);
+    border: none; color: #fff; border-radius: 14px;
+    font-family: var(--head, 'Bebas Neue', sans-serif);
+    font-size: 18px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 14px 24px; width: 100%; cursor: pointer;
+  }
+</style>
+
+{%- assign flt_is_home = false -%}
+{%- if template.name == 'index' -%}
+  {%- assign flt_is_home = true -%}
+{%- endif -%}
+
+<nav class="flt-nav2{% unless flt_is_home %} flt-nav2--solid{% endunless %}"
+     id="flt-nav2"
+     role="navigation"
+     aria-label="Main navigation"
+     {{ section.shopify_attributes }}>
+  <div class="flt-nav2__inner">
+
+    {%- comment -%} ── Logo ──────────────────────────────────────────────── {%- endcomment -%}
+    {%- if flt_is_home -%}
+      <button class="flt-nav2__logo" data-anchor="home" aria-label="{{ shop.name }}">
+        {%- if section.settings.logo_type == 'image' and section.settings.logo_image != blank -%}
+          {{ section.settings.logo_image | image_url: width: 320 | image_tag: class: 'flt-nav2__logo-img', loading: 'eager', alt: shop.name }}
+        {%- else -%}
+          {% render 'flt-plane-icon-1', size: 36, color: '#0B2545' %}
+          <div>
+            <div class="flt-nav2__logo-name">{{ section.settings.logo_text }}</div>
+            <div class="flt-nav2__logo-sub">{{ section.settings.logo_subtext }}</div>
+          </div>
+        {%- endif -%}
+      </button>
+    {%- else -%}
+      <a href="{{ routes.root_url }}" class="flt-nav2__logo" aria-label="{{ shop.name }}">
+        {%- if section.settings.logo_type == 'image' and section.settings.logo_image != blank -%}
+          {{ section.settings.logo_image | image_url: width: 320 | image_tag: class: 'flt-nav2__logo-img', loading: 'eager', alt: shop.name }}
+        {%- else -%}
+          {% render 'flt-plane-icon-1', size: 36, color: '#0B2545' %}
+          <div>
+            <div class="flt-nav2__logo-name">{{ section.settings.logo_text }}</div>
+            <div class="flt-nav2__logo-sub">{{ section.settings.logo_subtext }}</div>
+          </div>
+        {%- endif -%}
+      </a>
+    {%- endif -%}
+
+    {%- comment -%} ── Desktop links + cart + hamburger ─────────────────── {%- endcomment -%}
+    <div class="flt-nav2__links">
+      {% for link in section.settings.menu.links %}
+        {%- assign anchor_id = '' -%}
+        {%- if link.url contains '#' -%}
+          {%- assign anchor_id = link.url | split: '#' | last -%}
+        {%- endif -%}
+
+        {%- if flt_is_home and anchor_id != '' -%}
+          <button class="flt-nav2__link" data-anchor="{{ anchor_id }}">
+            {{ link.title }}
+          </button>
+        {%- else -%}
+          <a href="{{ link.url }}" class="flt-nav2__link"
+             {% if link.active %}aria-current="page"{% endif %}>
+            {{ link.title }}
+          </a>
+        {%- endif -%}
+      {% endfor %}
+
+      <button
+        class="flt-nav2__cart"
+        onclick="(function(){var d=document.querySelector('cart-drawer-component');if(!d){window.location.href='{{ routes.cart_url }}';return;}if(typeof d.open==='function'){d.open();}else{customElements.whenDefined('cart-drawer-component').then(function(){d.open();});}})();return false;"
+        aria-label="Open cart, {{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }}"
+      >
+        Cart (<span id="flt-cart-count">{{ cart.item_count }}</span>)
+        {% if cart.item_count > 0 %}
+          <span class="flt-nav2__cart-badge" aria-hidden="true"></span>
+        {% endif %}
+      </button>
+
+      <button class="flt-nav2__hamburger" id="flt-nav2-hamburger"
+              aria-label="Toggle navigation" aria-expanded="false"
+              aria-controls="flt-nav2-mobile">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+  </div>
+
+  {%- comment -%} ── Mobile menu ───────────────────────────────────────── {%- endcomment -%}
+  <div class="flt-nav2__mobile-menu" id="flt-nav2-mobile" role="menu">
+    {% for link in section.settings.menu.links %}
+      {%- assign anchor_id = '' -%}
+      {%- if link.url contains '#' -%}
+        {%- assign anchor_id = link.url | split: '#' | last -%}
+      {%- endif -%}
+
+      {%- if flt_is_home and anchor_id != '' -%}
+        <button class="flt-nav2__mobile-link" data-anchor="{{ anchor_id }}" role="menuitem">
+          {{ link.title }}
+        </button>
+      {%- else -%}
+        <a href="{{ link.url }}" class="flt-nav2__mobile-link" role="menuitem"
+           {% if link.active %}aria-current="page"{% endif %}>
+          {{ link.title }}
+        </a>
+      {%- endif -%}
+    {% endfor %}
+  </div>
+
+</nav>
+
+<script>
+  (function () {
+    var nav       = document.getElementById('flt-nav2');
+    var hamburger = document.getElementById('flt-nav2-hamburger');
+    var mobileMenu = document.getElementById('flt-nav2-mobile');
+    if (!nav) return;
+
+    /* ── 0. Sync --header-height for Horizon sticky components ─────────── */
+    function setNavHeightVar() {
+      var h = nav.offsetHeight;
+      document.body.style.setProperty('--header-height', h + 'px');
+      document.body.style.setProperty('--header-group-height', h + 'px');
+    }
+    setNavHeightVar();
+    window.addEventListener('resize', setNavHeightVar, { passive: true });
+
+    /* ── 1. Scroll glass effect (home page only) ────────────────────────── */
+    function tick() {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+      setNavHeightVar();
+    }
+    window.addEventListener('scroll', tick, { passive: true });
+    tick();
+
+    /* ── 2. Hamburger / mobile menu ─────────────────────────────────────── */
+    function openMenu() {
+      mobileMenu.classList.add('flt-nav2__mobile-menu--open');
+      hamburger.classList.add('flt-nav2__hamburger--open');
+      hamburger.setAttribute('aria-expanded', 'true');
+    }
+    function closeMenu() {
+      mobileMenu.classList.remove('flt-nav2__mobile-menu--open');
+      hamburger.classList.remove('flt-nav2__hamburger--open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+    function isMenuOpen() {
+      return mobileMenu.classList.contains('flt-nav2__mobile-menu--open');
+    }
+
+    hamburger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      isMenuOpen() ? closeMenu() : openMenu();
+    });
+
+    /* Close on outside click */
+    document.addEventListener('click', function (e) {
+      if (isMenuOpen() && !nav.contains(e.target)) {
+        closeMenu();
+      }
+    });
+
+    /* Close on Escape */
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && isMenuOpen()) {
+        closeMenu();
+        hamburger.focus();
+      }
+    });
+
+    /* Close when a mobile link is clicked */
+    var mobileLinks = mobileMenu.querySelectorAll('.flt-nav2__mobile-link');
+    mobileLinks.forEach(function (link) {
+      link.addEventListener('click', function () {
+        closeMenu();
+      });
+    });
+
+    /* ── 3. Collect all anchor elements (desktop + mobile) ──────────────── */
+    var anchorEls = Array.prototype.slice.call(
+      nav.querySelectorAll('[data-anchor]')
+    );
+    if (!anchorEls.length) return;
+
+    /* ── 4. Smooth scroll on click ───────────────────────────────────────── */
+    anchorEls.forEach(function (el) {
+      el.addEventListener('click', function () {
+        var id = el.dataset.anchor;
+        var target = document.getElementById(id);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    /* ── 5. Active section tracking ─────────────────────────────────────── */
+    var sectionIds = [];
+    anchorEls.forEach(function (el) {
+      if (el.dataset.anchor && sectionIds.indexOf(el.dataset.anchor) === -1) {
+        sectionIds.push(el.dataset.anchor);
+      }
+    });
+
+    function setActive(id) {
+      anchorEls.forEach(function (el) {
+        el.classList.toggle('flt-nav2__link--active', el.dataset.anchor === id);
+      });
+    }
+
+    function onScroll() {
+      for (var i = 0; i < sectionIds.length; i++) {
+        var el = document.getElementById(sectionIds[i]);
+        if (el) {
+          var rect = el.getBoundingClientRect();
+          if (rect.top <= 200 && rect.bottom > 200) {
+            setActive(sectionIds[i]);
+            return;
+          }
+        }
+      }
+      if (window.scrollY < 100 && sectionIds.length) {
+        setActive(sectionIds[0]);
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+
+  /* ── 6. Real-time cart count sync ───────────────────────────────────────── */
+  window.fltSyncCartCount = function () {
+    fetch('/cart.js')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var el = document.getElementById('flt-cart-count');
+        if (el) el.textContent = data.item_count;
+        var badge = document.querySelector('.flt-nav2__cart-badge');
+        if (badge) badge.style.display = data.item_count > 0 ? '' : 'none';
+      });
+  };
+
+  /* Patch fetch to auto-sync on any /cart/add call */
+  (function () {
+    var _fetch = window.fetch;
+    window.fetch = function (url) {
+      var p = _fetch.apply(this, arguments);
+      if (typeof url === 'string' && url.indexOf('/cart/add') !== -1) {
+        p.then(function (r) { if (r.ok) window.fltSyncCartCount(); });
+      }
+      return p;
+    };
+  })();
+
+  /* ── 7. Anchor scroll on home page from external navigation ─────────────── */
+  if ({{ template.name | json }} === 'index') {
+    (function () {
+      function scrollToHash() {
+        var hash = window.location.hash;
+        if (!hash) return;
+        var target = document.getElementById(hash.slice(1));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () {
+          setTimeout(scrollToHash, 300);
+        });
+      } else {
+        setTimeout(scrollToHash, 300);
+      }
+    })();
+  }
+</script>
+
+{% schema %}
+{
+  "name": "FLT Header 2",
+  "tag": "section",
+  "class": "flt-header-2-section",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Navigation menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "select",
+      "id": "logo_type",
+      "label": "Logo display",
+      "options": [
+        { "value": "text", "label": "Text" },
+        { "value": "image", "label": "Image" }
+      ],
+      "default": "text"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image (when display = Image)"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo text (when display = Text)",
+      "default": "FLT"
+    },
+    {
+      "type": "text",
+      "id": "logo_subtext",
+      "label": "Logo subtext",
+      "default": "Hemp Provisions"
+    },
+    {
+      "type": "color",
+      "id": "header_bg",
+      "label": "Header background color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    { "name": "FLT Header 2" }
+  ]
+}
+{% endschema %}
