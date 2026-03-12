@@ -1,0 +1,255 @@
+{% comment %}
+  sections/flt-story-2.liquid
+  FLT Hemp Provisions — Our Story (variant 2)
+  Content sourced from flthq.com/new-page.
+  4 story beat cards in 2×2 grid + mission pull-quote + optional Read More button.
+  Namespace: flt-story2__ (collision-safe alongside flt-story-1.liquid)
+{% endcomment %}
+
+<style>
+  .flt-story2 {
+    padding: 120px 40px;
+    background: linear-gradient(180deg, #0B2545 0%, #13315C 50%, #0B2545 100%);
+    position: relative; overflow: hidden;
+  }
+  .flt-story2__bg {
+    position: absolute; top: 5%; right: -8%;
+    transform: rotate(-5deg); pointer-events: none; opacity: 1;
+  }
+  .flt-story2__inner {
+    max-width: 1200px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+
+  /* Header */
+  .flt-story2__header {
+    text-align: center; margin-bottom: 72px;
+  }
+  .flt-story2__icon { margin-bottom: 8px; }
+  .flt-story2__eyebrow {
+    font-family: var(--body); font-size: 13px; color: #93C5FD;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    margin-bottom: 16px; font-weight: 600;
+  }
+  .flt-story2__heading {
+    font-family: var(--head);
+    font-size: clamp(36px, 5vw, 64px);
+    color: #fff; margin: 0 0 24px; line-height: 1.05;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .flt-story2__intro {
+    font-family: var(--body); font-size: 17px;
+    color: rgba(255,255,255,0.55); line-height: 1.8;
+    max-width: 680px; margin: 0 auto;
+  }
+
+  /* Beat cards grid */
+  .flt-story2__beats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 56px;
+  }
+  .flt-story2__beat {
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 36px 36px 32px;
+    position: relative;
+  }
+  .flt-story2__beat-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(147,197,253,0.12);
+    border: 1px solid rgba(147,197,253,0.25);
+    font-family: var(--body); font-size: 11px; color: #93C5FD;
+    font-weight: 700; letter-spacing: 0.06em;
+    margin-bottom: 20px;
+  }
+  .flt-story2__beat-title {
+    font-family: var(--head);
+    font-size: clamp(20px, 2.2vw, 26px);
+    color: #fff; margin: 0 0 12px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .flt-story2__beat-body {
+    font-family: var(--body); font-size: 15px;
+    color: rgba(255,255,255,0.5); line-height: 1.75;
+    margin: 0;
+  }
+
+  /* Mission pull-quote */
+  .flt-story2__mission {
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 48px 40px;
+    margin-bottom: 48px;
+  }
+  .flt-story2__mission-mark {
+    font-family: var(--head); font-size: 48px;
+    color: #93C5FD; line-height: 1; margin-bottom: 8px;
+    opacity: 0.5;
+  }
+  .flt-story2__mission-text {
+    font-family: var(--body);
+    font-size: clamp(17px, 2vw, 22px);
+    color: rgba(255,255,255,0.75);
+    line-height: 1.7; font-style: italic;
+    max-width: 760px; margin: 0 auto;
+  }
+
+  /* Read More button */
+  .flt-story2__cta {
+    text-align: center;
+  }
+  .flt-story2__btn {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(147,197,253,0.4);
+    color: #93C5FD;
+    padding: 15px 52px; border-radius: 40px;
+    font-family: var(--head); font-size: 17px; letter-spacing: 0.12em;
+    cursor: pointer; text-transform: uppercase;
+    text-decoration: none; display: inline-block;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .flt-story2__btn:hover {
+    background: rgba(147,197,253,0.12);
+    border-color: rgba(147,197,253,0.7);
+  }
+
+  /* Scroll reveal */
+  .flt-story2-reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .flt-story2-reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    .flt-story2 { padding: 80px 20px; }
+    .flt-story2__beats { grid-template-columns: 1fr; }
+    .flt-story2__mission { padding: 36px 20px; }
+  }
+</style>
+
+<section class="flt-story2" id="flt-story2">
+
+  <div class="flt-story2__bg" aria-hidden="true">
+    {% render 'flt-mustang-svg-1', width: 560, color: '#ffffff', opacity: 0.04 %}
+  </div>
+
+  <div class="flt-story2__inner">
+
+    <!-- Header -->
+    <div class="flt-story2__header flt-story2-reveal">
+      <div class="flt-story2__icon">
+        {% render 'flt-plane-icon-1', size: 32, color: '#93C5FD' %}
+      </div>
+      <div class="flt-story2__eyebrow">{{ section.settings.eyebrow }}</div>
+      <h2 class="flt-story2__heading">{{ section.settings.heading }}</h2>
+      {%- if section.settings.intro != blank -%}
+        <p class="flt-story2__intro">{{ section.settings.intro }}</p>
+      {%- endif -%}
+    </div>
+
+    <!-- Story beats -->
+    <div class="flt-story2__beats">
+
+      <div class="flt-story2__beat flt-story2-reveal" style="transition-delay:0.1s">
+        <div class="flt-story2__beat-num">01</div>
+        <h3 class="flt-story2__beat-title">{{ section.settings.beat_1_title }}</h3>
+        <p class="flt-story2__beat-body">{{ section.settings.beat_1_body }}</p>
+      </div>
+
+      <div class="flt-story2__beat flt-story2-reveal" style="transition-delay:0.2s">
+        <div class="flt-story2__beat-num">02</div>
+        <h3 class="flt-story2__beat-title">{{ section.settings.beat_2_title }}</h3>
+        <p class="flt-story2__beat-body">{{ section.settings.beat_2_body }}</p>
+      </div>
+
+      <div class="flt-story2__beat flt-story2-reveal" style="transition-delay:0.3s">
+        <div class="flt-story2__beat-num">03</div>
+        <h3 class="flt-story2__beat-title">{{ section.settings.beat_3_title }}</h3>
+        <p class="flt-story2__beat-body">{{ section.settings.beat_3_body }}</p>
+      </div>
+
+      <div class="flt-story2__beat flt-story2-reveal" style="transition-delay:0.4s">
+        <div class="flt-story2__beat-num">04</div>
+        <h3 class="flt-story2__beat-title">{{ section.settings.beat_4_title }}</h3>
+        <p class="flt-story2__beat-body">{{ section.settings.beat_4_body }}</p>
+      </div>
+
+    </div>
+
+    <!-- Mission pull-quote -->
+    <blockquote class="flt-story2__mission flt-story2-reveal" style="transition-delay:0.5s">
+      <div class="flt-story2__mission-mark">&ldquo;</div>
+      <p class="flt-story2__mission-text">{{ section.settings.mission }}</p>
+    </blockquote>
+
+    <!-- Read More button (toggleable) -->
+    {%- if section.settings.show_read_more -%}
+    <div class="flt-story2__cta flt-story2-reveal" style="transition-delay:0.6s">
+      <a href="{{ section.settings.read_more_url }}" class="flt-story2__btn">
+        {{ section.settings.read_more_label }}
+      </a>
+    </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+  (function () {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.flt-story2-reveal').forEach(function (el) { el.classList.add('in-view'); });
+      return;
+    }
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in-view'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.flt-story2-reveal').forEach(function (el) { obs.observe(el); });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "FLT Story 2",
+  "tag": "section",
+  "class": "flt-story2-section",
+  "settings": [
+    { "type": "text",     "id": "eyebrow",  "label": "Eyebrow text",  "default": "Our Story" },
+    { "type": "text",     "id": "heading",  "label": "Section heading", "default": "Built for Those Who Soar" },
+    { "type": "textarea", "id": "intro",    "label": "Intro paragraph", "default": "FLT was born long before the first can was cracked. It began in the sky — and in the values of those who flew." },
+
+    { "type": "header",   "content": "Story Beat 1" },
+    { "type": "text",     "id": "beat_1_title", "label": "Title", "default": "FLT's Roots" },
+    { "type": "textarea", "id": "beat_1_body",  "label": "Body",  "default": "FLT was born long before the first can was cracked or the first gummy was nibbled on. It all began in the sky — with three generations of military aviators who served in World War II, the Korean War, and Vietnam, earning Purple Hearts, a Distinguished Flying Cross, and a Silver Star. Their values: respect the craft, respect the body, and never cut corners." },
+
+    { "type": "header",   "content": "Story Beat 2" },
+    { "type": "text",     "id": "beat_2_title", "label": "Title", "default": "A New Kind of Flight" },
+    { "type": "textarea", "id": "beat_2_body",  "label": "Body",  "default": "Our products feature nanosized THC technology for faster onset, greater consistency, and lower required doses than traditional edibles. Our beverages are zero sugar, zero calories, electrolyte infused — clean, minimal ingredients engineered for rapid hydration and effect." },
+
+    { "type": "header",   "content": "Story Beat 3" },
+    { "type": "text",     "id": "beat_3_title", "label": "Title", "default": "Gummies, Refined" },
+    { "type": "textarea", "id": "beat_3_body",  "label": "Body",  "default": "All-natural fruit gummies with no added sugar. Vegan friendly. Rapid-release absorption. Clean, transparent ingredients you can read and trust. No fillers, no shortcuts." },
+
+    { "type": "header",   "content": "Story Beat 4" },
+    { "type": "text",     "id": "beat_4_title", "label": "Title", "default": "Giving Back" },
+    { "type": "textarea", "id": "beat_4_body",  "label": "Body",  "default": "A portion of all proceeds are donated to non-profit organizations that assist veterans. This isn't a marketing initiative — it's a family commitment carried forward from the people who built FLT." },
+
+    { "type": "header",   "content": "Mission Statement" },
+    { "type": "textarea", "id": "mission", "label": "Mission pull-quote", "default": "FLT exists at the intersection of heritage and innovation — where the discipline of military aviation meets modern cannabinoid science." },
+
+    { "type": "header",   "content": "Read More Button" },
+    { "type": "checkbox", "id": "show_read_more",  "label": "Show button",   "default": true },
+    { "type": "text",     "id": "read_more_label", "label": "Button label",  "default": "Read More" },
+    { "type": "url",      "id": "read_more_url",   "label": "Button link" }
+  ],
+  "presets": [{ "name": "FLT Story 2" }]
+}
+{% endschema %}
