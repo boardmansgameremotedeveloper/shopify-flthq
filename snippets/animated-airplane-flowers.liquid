@@ -1,13 +1,6 @@
 {%- comment %}
   snippets/animated-airplane-flowers.liquid
-  FLT Hemp Provisions — Animated airplane (RTL) with flower-of-life snowflake trail
-  Pure CSS animation, no JS. Airplane flies right → left.
-  Flowers (snowflakes) drift downward 70vh from plane altitude.
-
-  Usage:
-    {%- render 'animated-airplane-flowers' %}
-    {%- render 'animated-airplane-flowers', count: 25 %}
-    {%- render 'animated-airplane-flowers', min: 15, max: 30 %}
+  Sequential airplane flower trail (RTL)
 {%- endcomment %}
 
 {%- comment %}-- Resolve flower count --{% endcomment -%}
@@ -19,99 +12,120 @@
 {%- endif -%}
 
 <style>
-  .flt-aaf-stage {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
 
-  /* Airplane: right → left (nose-left SVG, starts off-screen right) */
-  @keyframes flt-aaf-fly {
-    0%   { transform: translateX(calc(100vw + 120px)); }
-    100% { transform: translateX(-120px); }
-  }
-  /* Airplane blink color cycle: blue → green → blue → red → blue */
-  @keyframes flt-aaf-plane-blink {
-    0%,  22% { color: #1E90FF; filter: drop-shadow(0 0 12px rgba(30,144,255,0.95)) drop-shadow(0 0 26px rgba(30,144,255,0.55)); }
-    27%       { color: #00E676; filter: drop-shadow(0 0 12px rgba(0,230,118,0.95)) drop-shadow(0 0 26px rgba(0,230,118,0.55)); }
-    32%,  68% { color: #1E90FF; filter: drop-shadow(0 0 12px rgba(30,144,255,0.95)) drop-shadow(0 0 26px rgba(30,144,255,0.55)); }
-    73%       { color: #FF1744; filter: drop-shadow(0 0 12px rgba(255,23,68,0.95))  drop-shadow(0 0 26px rgba(255,23,68,0.55)); }
-    78%, 100% { color: #1E90FF; filter: drop-shadow(0 0 12px rgba(30,144,255,0.95)) drop-shadow(0 0 26px rgba(30,144,255,0.55)); }
-  }
+.flt-aaf-stage{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
 
-  .flt-aaf-plane {
-    position: absolute;
-    top: 28%;
-    left: 0;
-    z-index: 2;
-    animation: flt-aaf-fly 18s linear infinite -4s{%- if blink != false %}, flt-aaf-plane-blink 4s ease-in-out infinite{%- else %};
-    color: #1E90FF;
-    filter: drop-shadow(0 0 12px rgba(30,144,255,0.9)) drop-shadow(0 0 24px rgba(30,144,255,0.5)){%- endif %};
-  }
+/* Plane fly animation */
+@keyframes flt-aaf-fly{
+  0%{transform:translateX(calc(100vw + 120px));}
+  100%{transform:translateX(-120px);}
+}
 
-  /* Flower snowflake: spawns at plane altitude, drifts 70vh down */
-  @keyframes flt-aaf-flower-drift {
-    0%   { opacity: 0;   transform: translateY(0)     rotate(0deg)   scale(0.35); }
-    10%  { opacity: 0.9; transform: translateY(5vh)   rotate(18deg)  scale(0.75); }
-    75%  { opacity: 0.65; transform: translateY(58vh) rotate(140deg) scale(0.6);  }
-    100% { opacity: 0;   transform: translateY(70vh)  rotate(185deg) scale(0.35); }
-  }
-  .flt-aaf-flower {
-    position: absolute;
-    z-index: 1;
-    filter: drop-shadow(0 0 7px rgba(255,255,255,0.95))
-            drop-shadow(0 0 18px rgba(135,206,235,0.85));
-    pointer-events: none;
-  }
+/* Plane blink */
+@keyframes flt-aaf-plane-blink{
+  0%,22%{color:#1E90FF;filter:drop-shadow(0 0 12px rgba(30,144,255,.95)) drop-shadow(0 0 26px rgba(30,144,255,.55));}
+  27%{color:#00E676;filter:drop-shadow(0 0 12px rgba(0,230,118,.95)) drop-shadow(0 0 26px rgba(0,230,118,.55));}
+  32%,68%{color:#1E90FF;filter:drop-shadow(0 0 12px rgba(30,144,255,.95)) drop-shadow(0 0 26px rgba(30,144,255,.55));}
+  73%{color:#FF1744;filter:drop-shadow(0 0 12px rgba(255,23,68,.95)) drop-shadow(0 0 26px rgba(255,23,68,.55));}
+  78%,100%{color:#1E90FF;filter:drop-shadow(0 0 12px rgba(30,144,255,.95)) drop-shadow(0 0 26px rgba(30,144,255,.55));}
+}
 
-  @media (max-width: 768px) {
-    .flt-aaf-plane svg  { width: 84px; height: 42px; }
-    .flt-aaf-flower svg { width: 38px; height: 38px; }
-  }
+.flt-aaf-plane{
+  position:absolute;
+  top:28%;
+  left:0;
+  z-index:2;
+  animation:flt-aaf-fly 18s linear infinite -4s, flt-aaf-plane-blink 4s ease-in-out infinite;
+  color:#1E90FF;
+  filter:drop-shadow(0 0 12px rgba(30,144,255,.9)) drop-shadow(0 0 24px rgba(30,144,255,.5));
+}
+
+/* Flower drift */
+@keyframes flt-aaf-flower-drift{
+  0%{opacity:0;transform:translateY(0) rotate(0deg) scale(.35);}
+  10%{opacity:.9;transform:translateY(5vh) rotate(18deg) scale(.75);}
+  75%{opacity:.65;transform:translateY(58vh) rotate(140deg) scale(.6);}
+  100%{opacity:0;transform:translateY(70vh) rotate(185deg) scale(.35);}
+}
+
+.flt-aaf-flower{
+  position:absolute;
+  z-index:1;
+  filter:
+    drop-shadow(0 0 7px rgba(255,255,255,.95))
+    drop-shadow(0 0 18px rgba(135,206,235,.85));
+}
+
+@media (max-width:768px){
+  .flt-aaf-plane svg{width:84px;height:42px;}
+  .flt-aaf-flower svg{width:38px;height:38px;}
+}
+
 </style>
+
 
 <div class="flt-aaf-stage" aria-hidden="true">
 
-  <!-- Airplane (RTL — nose left, travels right→left) -->
-  <div class="flt-aaf-plane">
-    {%- render 'flt-plane-svg-aircraft1' -%}
-  </div>
+<!-- Airplane -->
+<div class="flt-aaf-plane">
+{%- render 'flt-plane-svg-aircraft1' -%}
+</div>
 
-  <!-- {{ flt_count }} flower snowflakes with staggered position + timing -->
-  {%- for i in (1..flt_count) -%}
-    {%- comment %}Distribute left% across 3–97% with pseudo-random jitter{%- endcomment -%}
-    {%- assign left_base = i | times: 94 | divided_by: flt_count | plus: 3 -%}
-    {%- assign left_jitter = i | times: 13 | modulo: 19 | minus: 9 -%}
-    {%- assign left_pct = left_base | plus: left_jitter | at_least: 2 | at_most: 97 -%}
-    {%- comment %}Vary top 22–31% around plane altitude{%- endcomment -%}
-    {%- assign top_pct = i | times: 7  | modulo: 7  | plus: 25 -%}
-    {%- comment %}Duration 5–8s per flower{%- endcomment -%}
-    {%- assign duration = i | times: 7 | modulo: 4 | plus: 5 -%}
-    {%- comment %}RTL: plane reaches left:N% at t ≈ (100-N)/100 * 18s{%- endcomment -%}
-    {%- assign t_pass_tenths = left_pct | times: 18 | divided_by: 10 -%}
-    {%- assign dur_tenths = duration | times: 10 -%}
-    {%- assign delay_mod = t_pass_tenths | modulo: dur_tenths -%}
-    {%- if delay_mod == 0 -%}
-      {%- assign delay_neg = 0 -%}
-    {%- else -%}
-      {%- assign delay_neg = dur_tenths | minus: delay_mod -%}
-    {%- endif -%}
-    {%- assign delay_s = delay_neg | divided_by: 10 -%}
-    {%- assign delay_d = delay_neg | modulo: 10 -%}
-    <div class="flt-aaf-flower" style="left:{{ left_pct }}%;top:{{ top_pct }}%;animation:flt-aaf-flower-drift {{ duration }}s ease-in-out -{{ delay_s }}.{{ delay_d }}s infinite;">
-      <svg width="56" height="56" viewBox="0 0 500 500" aria-hidden="true">
-        <defs><style>.flt-aaf-c{fill:none;stroke:rgba(255,255,255,0.9);stroke-width:3}</style></defs>
-        <g transform="translate(250,250)">
-          <circle class="flt-aaf-c" r="50"/>
-          <circle class="flt-aaf-c" cx="50" cy="0" r="50"/>
-          <circle class="flt-aaf-c" cx="-50" cy="0" r="50"/>
-          <circle class="flt-aaf-c" cx="25" cy="43.3" r="50"/>
-          <circle class="flt-aaf-c" cx="-25" cy="43.3" r="50"/>
-          <circle class="flt-aaf-c" cx="25" cy="-43.3" r="50"/>
-          <circle class="flt-aaf-c" cx="-25" cy="-43.3" r="50"/>
-        </g>
-      </svg>
-    </div>
-  {%- endfor -%}
+
+<!-- Sequential flower trail -->
+{%- for i in (1..flt_count) -%}
+
+  {%- comment %}position trail from right→left{% endcomment -%}
+  {%- assign left_pct = 100 | minus: i | times: 95 | divided_by: flt_count -%}
+
+  {%- comment %}slight altitude variation{% endcomment -%}
+  {%- assign top_pct = i | modulo: 6 | plus: 25 -%}
+
+  {%- comment %}fall duration{% endcomment -%}
+  {%- assign duration = i | times: 7 | modulo: 4 | plus: 5 -%}
+
+  {%- comment %}sequential emission delay{% endcomment -%}
+  {%- assign delay = i | times: 0.35 -%}
+
+<div
+class="flt-aaf-flower"
+style="
+left:{{left_pct}}%;
+top:{{top_pct}}%;
+animation:flt-aaf-flower-drift {{duration}}s ease-in-out {{delay}}s infinite;
+">
+
+<svg width="56" height="56" viewBox="0 0 500 500">
+
+<defs>
+<style>
+.flt-aaf-c{
+fill:none;
+stroke:rgba(255,255,255,.9);
+stroke-width:3;
+}
+</style>
+</defs>
+
+<g transform="translate(250,250)">
+
+<circle class="flt-aaf-c" r="50"/>
+<circle class="flt-aaf-c" cx="50" cy="0" r="50"/>
+<circle class="flt-aaf-c" cx="-50" cy="0" r="50"/>
+<circle class="flt-aaf-c" cx="25" cy="43.3" r="50"/>
+<circle class="flt-aaf-c" cx="-25" cy="43.3" r="50"/>
+<circle class="flt-aaf-c" cx="25" cy="-43.3" r="50"/>
+<circle class="flt-aaf-c" cx="-25" cy="-43.3" r="50"/>
+
+</g>
+</svg>
+
+</div>
+
+{%- endfor -%}
 
 </div>
