@@ -35,19 +35,6 @@
   100% {opacity:0;}
 }
 
-/* Mobile adjustments */
-@media (max-width:768px) {
-  .flt-hero2__cloud {
-    animation: flt-aaf-cloud-fade 12s ease-in-out forwards;
-  }
-  /* Optional: different delays per cloud */
-  .flt-hero2__cloud:nth-child(1) { animation-delay: 0.5s; }
-  .flt-hero2__cloud:nth-child(2) { animation-delay: 1.0s; }
-  .flt-hero2__cloud:nth-child(3) { animation-delay: 1.5s; }
-  .flt-hero2__cloud:nth-child(4) { animation-delay: 2.0s; }
-  .flt-hero2__cloud:nth-child(5) { animation-delay: 2.5s; }
-}
-
 .flt-aaf-flower {
   position:absolute;
   z-index:1;
@@ -79,7 +66,7 @@
       Calculate delay: fraction of plane_duration
       plane goes from 100% to -120px → 0%..100% in plane_duration seconds
     {% endcomment -%}
-    {%- assign delay = (100 | minus: left_pct) | times: plane_duration | divided_by: 100.0 | plus: dev_delay -%}
+    {%- assign delay = 100 | minus: left_pct | times: plane_duration | divided_by: 100.0 | plus: dev_delay -%}
 
     <div
       class="flt-aaf-flower"
