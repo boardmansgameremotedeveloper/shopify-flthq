@@ -17,18 +17,19 @@
     --body: 'Source Sans 3', sans-serif;
   }
 
-  /* ── Base nav ─────────────────────────────────────────────────────────── */
+  /* ── Base nav — always uses header_bg from page load ─────────────────── */
   .flt-nav2 {
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 1000;
-    background: transparent;
+    background: {{ section.settings.header_bg }};
+    border-bottom: 1px solid rgba(11,37,69,0.06);
     transition: background 0.5s ease, padding 0.5s ease, box-shadow 0.3s ease;
     padding: 16px 0;
   }
 
-  /* ── Scroll glass (home page) ──────────────────────────────────────────── */
+  /* ── Scroll state — switches to header_bg_scroll ──────────────────────── */
   .flt-nav2.scrolled {
-    background: {{ section.settings.header_bg | color_modify: 'alpha', 0.93 }};
+    background: {{ section.settings.header_bg_scroll | color_modify: 'alpha', 0.95 }};
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(11,37,69,0.08);
@@ -44,7 +45,15 @@
     padding: 10px 0;
   }
   .flt-nav2--solid.scrolled {
+    background: {{ section.settings.header_bg_scroll | color_modify: 'alpha', 0.95 }};
     padding: 8px 0;
+  }
+
+  /* ── Kill Horizon's default section background behind the nav ─────────── */
+  .flt-header-2-section {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   /* ── Inner layout ──────────────────────────────────────────────────────── */
@@ -62,7 +71,7 @@
   }
   .flt-nav2__logo-img {
     max-height: 44px; width: auto; object-fit: contain;
-    display: block;
+    display: block; background: transparent;
   }
   .flt-nav2__logo-name {
     font-family: var(--head); font-size: 28px;
@@ -635,6 +644,12 @@
       "type": "color",
       "id": "header_bg",
       "label": "Header background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "header_bg_scroll",
+      "label": "Header background on scroll",
       "default": "#ffffff"
     }
   ],
