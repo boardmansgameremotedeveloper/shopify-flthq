@@ -116,17 +116,30 @@
       </div>
 
     </div>
-
+    
     <div class="flt-footer__bottom">
       <div class="flt-footer__copy">
         &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved. Must be 21+.
       </div>
-      <div class="flt-footer__payments">
+      <div class="flt-footer__payments" style="align-items:center; gap:8px;">
         <span class="flt-footer__pay-label">Secured by</span>
         <span class="flt-footer__pay-authnet">AUTHORIZE.NET</span>
-        <span class="flt-footer__pay-card">VISA</span>
-        <span class="flt-footer__pay-card">MC</span>
-        <span class="flt-footer__pay-ssl">
+        
+        <!-- Visa logo -->
+        <img 
+          src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" 
+          alt="Visa" 
+          style="width:40px; height:auto;"
+        />
+        
+        <!-- MasterCard logo -->
+        <img 
+          src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.svg" 
+          alt="MasterCard" 
+          style="width:40px; height:auto;"
+        />
+        
+        <span class="flt-footer__pay-ssl" style="display:flex; align-items:center; gap:5px;">
           <svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <rect x="1" y="5.5" width="9" height="7" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
             <path d="M3 5.5V3.5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
@@ -136,6 +149,7 @@
         </span>
       </div>
     </div>
+
   </div>
 </footer>
 
