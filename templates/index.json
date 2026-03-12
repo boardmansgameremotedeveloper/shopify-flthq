@@ -371,11 +371,33 @@
         "stat_hjUdiD",
         "stat_JGf8PY"
       ],
+      "disabled": true,
       "name": "FLT Story",
       "settings": {
         "heading": "Built for Those Who Soar",
         "body_html": "<p>FLT was born from a belief that wellness shouldn't weigh you down. Our founders — athletes, entrepreneurs, and wellness enthusiasts — wanted something better: clean, effective, and enjoyable hemp-derived products.</p><p>Using nanosized THC technology, our beverages and gummies deliver rapid, consistent absorption. No added sugar. No artificial junk. Just premium hemp, functional mushrooms, adaptogens, and real fruit.</p><p>Every product is vegan friendly, lab tested, and made with clean ingredients you can trust. Welcome aboard.</p>",
         "tags": "🌿 Vegan, 🧪 Lab Tested, ⚡ Rapid Release, ❤️ Sugar Free"
+      }
+    },
+    "flt_story_2_HBnmqX": {
+      "type": "flt-story-2",
+      "name": "FLT Story 2",
+      "settings": {
+        "eyebrow": "Our Story",
+        "heading": "Built for Those Who Soar",
+        "intro": "FLT was born long before the first can was cracked. It began in the sky — and in the values of those who flew.",
+        "beat_1_title": "FLT's Roots",
+        "beat_1_body": "FLT was born long before the first can was cracked or the first gummy was nibbled on. It all began in the sky — with three generations of military aviators who served in World War II, the Korean War, and Vietnam, earning Purple Hearts, a Distinguished Flying Cross, and a Silver Star. Their values: respect the craft, respect the body, and never cut corners.",
+        "beat_2_title": "A New Kind of Flight",
+        "beat_2_body": "Our products feature nanosized THC technology for faster onset, greater consistency, and lower required doses than traditional edibles. Our beverages are zero sugar, zero calories, electrolyte infused — clean, minimal ingredients engineered for rapid hydration and effect.",
+        "beat_3_title": "Gummies, Refined",
+        "beat_3_body": "All-natural fruit gummies with no added sugar. Vegan friendly. Rapid-release absorption. Clean, transparent ingredients you can read and trust. No fillers, no shortcuts.",
+        "beat_4_title": "Giving Back",
+        "beat_4_body": "A portion of all proceeds are donated to non-profit organizations that assist veterans. This isn't a marketing initiative — it's a family commitment carried forward from the people who built FLT.",
+        "mission": "FLT exists at the intersection of heritage and innovation — where the discipline of aviation meets modern cannabinoid science.",
+        "show_read_more": true,
+        "read_more_label": "Read More",
+        "read_more_url": "shopify://pages/our-story"
       }
     },
     "flt_contact_1_RiJCT3": {
@@ -397,6 +419,7 @@
     "flt_hero_1_WG4yqz",
     "flt_products_1_tRGfG9",
     "flt_story_1_tVX6z6",
+    "flt_story_2_HBnmqX",
     "flt_contact_1_RiJCT3"
   ]
 }
