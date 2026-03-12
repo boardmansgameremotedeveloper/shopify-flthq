@@ -1,12 +1,10 @@
 {%- comment %}
   snippets/animated-airplane-flowers.liquid
-  Flowers appear behind airplane based on plane position
-  No falling animation yet — appear then disappear
+  Flowers appear once behind airplane, then stay hidden until next plane loop
 {%- endcomment %}
 
 {%- assign flt_count = count | default: 20 -%}
-
-{%- comment %} developer tweak delay (seconds) {% endcomment -%}
+{%- assign plane_duration = 18 -%}
 {%- assign dev_delay = 1 -%}
 
 <style>
@@ -28,18 +26,19 @@
   top:28%;
   left:0;
   z-index:2;
-  animation:flt-aaf-fly 18s linear infinite;
+  animation:flt-aaf-fly {{plane_duration}}s linear infinite;
   color:#1E90FF;
   filter:
     drop-shadow(0 0 12px rgba(30,144,255,.9))
     drop-shadow(0 0 24px rgba(30,144,255,.5));
 }
 
-/* flower appear → fade */
-@keyframes flt-aaf-flower-show{
+/* flower lifecycle inside the 18s loop */
+@keyframes flt-aaf-flower-cycle{
   0%   {opacity:0; transform:scale(.3);}
-  15%  {opacity:1; transform:scale(.9);}
-  70%  {opacity:1;}
+  5%   {opacity:1; transform:scale(.9);}
+  12%  {opacity:1;}
+  18%  {opacity:0;}
   100% {opacity:0;}
 }
 
@@ -56,7 +55,6 @@
 </style>
 
 
-
 <div class="flt-aaf-stage" aria-hidden="true">
 
 <!-- airplane -->
@@ -68,21 +66,14 @@
 <!-- flowers -->
 {%- for i in (1..flt_count) -%}
 
-  {%- comment %}
-    distribute flowers across screen
-  {%- endcomment -%}
   {%- assign left_pct = i | times: 90 | divided_by: flt_count | plus: 5 -%}
-
   {%- assign top_pct = 28 -%}
 
   {%- comment %}
-    calculate delay based on when plane reaches that x position
-  {%- endcomment -%}
-  {%- assign delay = 100 | minus: left_pct | times: 18 | divided_by: 100.0 -%}
+  calculate when plane reaches this x position
+  {% endcomment -%}
 
-  {%- comment %}
-    apply developer tweak delay
-  {%- endcomment -%}
+  {%- assign delay = 100 | minus: left_pct | times: plane_duration | divided_by: 100.0 -%}
   {%- assign final_delay = delay | plus: dev_delay -%}
 
 <div
@@ -90,7 +81,8 @@ class="flt-aaf-flower"
 style="
 left:{{left_pct}}%;
 top:{{top_pct}}%;
-animation:flt-aaf-flower-show 3s ease-out {{final_delay}}s infinite;
+animation:flt-aaf-flower-cycle {{plane_duration}}s linear infinite;
+animation-delay: {{final_delay}}s;
 ">
 
 <svg width="56" height="56" viewBox="0 0 500 500">
