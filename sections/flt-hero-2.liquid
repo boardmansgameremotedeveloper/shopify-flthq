@@ -68,11 +68,31 @@
     border-bottom: 2px solid rgba(11,37,69,0.2); padding-bottom: 4px; opacity: 0.6;
   }
   .flt-hero2__announcement {
-    position: absolute; bottom: 0; left: 0; right: 0;
     background: linear-gradient(135deg, #0B2545, #1E3A5F);
-    padding: 12px 20px; text-align: center;
     font-family: var(--body); font-size: 13px; color: #fff;
     font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    position: absolute; z-index: 2;
+  }
+  /* position variants */
+  .flt-hero2__announcement--bottom {
+    bottom: 0; left: 0; right: 0;
+    padding: 12px 20px; text-align: center;
+  }
+  .flt-hero2__announcement--top {
+    top: 0; left: 0; right: 0;
+    padding: 12px 20px; text-align: center;
+  }
+  .flt-hero2__announcement--right {
+    right: 0; top: 0; bottom: 0;
+    width: 44px; padding: 20px 12px;
+    writing-mode: vertical-rl;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flt-hero2__announcement--left {
+    left: 0; top: 0; bottom: 0;
+    width: 44px; padding: 20px 12px;
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    display: flex; align-items: center; justify-content: center;
   }
   .flt-hero2__aaf-wrapper {
     position: absolute;
@@ -103,8 +123,7 @@
   .flt-hero2__bg-slide--3 { animation: flt-hero2-bg-fade 12s ease-in-out infinite; animation-delay: 8s; }
   /* ensure content sits above bg layer */
   .flt-hero2__cloud,
-  .flt-hero2__content,
-  .flt-hero2__announcement { position: relative; z-index: 1; }
+  .flt-hero2__content { position: relative; z-index: 1; }
 
   /* entrance animation */
   .flt-hero2__content > * {
@@ -189,7 +208,7 @@
   </div>
 
   {%- if section.settings.show_announcement -%}
-  <div class="flt-hero2__announcement">
+  <div class="flt-hero2__announcement flt-hero2__announcement--{{ section.settings.announcement_position }}">
     {{ section.settings.announcement_text }}
   </div>
   {%- endif -%}
@@ -221,6 +240,14 @@
     { "type": "text",     "id": "pills",               "label": "Attribute pills (comma-separated)", "default": "No Added Sugar, Vegan Friendly, Clean Ingredients, Rapid Release" },
     { "type": "text",     "id": "announcement_text",   "label": "Announcement bar text",            "default": "✈ First Class Deal — 20% OFF with Code FLT20 — Free Shipping $50+" },
     { "type": "checkbox", "id": "show_announcement",  "label": "Show announcement bar",             "default": true },
+    { "type": "select",   "id": "announcement_position", "label": "Announcement position", "default": "bottom",
+      "options": [
+        { "value": "bottom", "label": "Bottom (full-width bar)" },
+        { "value": "top",    "label": "Top (full-width bar)" },
+        { "value": "right",  "label": "Right side" },
+        { "value": "left",   "label": "Left side" }
+      ]
+    },
     { "type": "header",       "content": "Background Images" },
     { "type": "checkbox",     "id": "show_bg_images", "label": "Show background images", "default": false },
     { "type": "image_picker", "id": "bg_image_1",     "label": "Background image 1" },
