@@ -1,108 +1,106 @@
-{%- comment %}
-  snippets/animated-airplane-flowers.liquid
-  Flowers appear once behind airplane, then stay hidden until next plane loop
-{%- endcomment %}
-
 {%- assign flt_count = count | default: 20 -%}
 {%- assign plane_duration = 18 -%}
 {%- assign dev_delay = 1 -%}
 
 <style>
-
-.flt-aaf-stage{
+.flt-aaf-stage {
   position:absolute;
   inset:0;
   pointer-events:none;
 }
 
-/* plane movement */
-@keyframes flt-aaf-fly{
-  0%{transform:translateX(calc(100vw + 120px));}
-  100%{transform:translateX(-120px);}
+/* Plane fly animation */
+@keyframes flt-aaf-fly {
+  0%   {transform:translateX(calc(100vw + 120px));}
+  100% {transform:translateX(-120px);}
 }
 
-.flt-aaf-plane{
+.flt-aaf-plane {
   position:absolute;
   top:8%;
   left:0;
   z-index:2;
-  animation:flt-aaf-fly {{plane_duration}}s linear infinite;
+  animation: flt-aaf-fly {{plane_duration}}s linear infinite;
   color:#1E90FF;
-  filter:
-    drop-shadow(0 0 12px rgba(30,144,255,.9))
-    drop-shadow(0 0 24px rgba(30,144,255,.5));
+  filter: drop-shadow(0 0 12px rgba(30,144,255,.9))
+          drop-shadow(0 0 24px rgba(30,144,255,.5));
 }
 
-/* flower lifecycle inside the 18s loop */
-@keyframes flt-aaf-flower-cycle{
-  0%   {opacity:0; transform:scale(.3);}
-  5%   {opacity:1; transform:scale(.9);}
-  12%  {opacity:1;}
-  18%  {opacity:0;}
+/* Flower fade in/out cycle */
+@keyframes flt-aaf-flower-cycle {
+  0%   {opacity:0; transform:scale(0.3);}
+  5%   {opacity:1; transform:scale(0.9);}
+  15%  {opacity:1;}
+  20%  {opacity:0;}
   100% {opacity:0;}
 }
 
-.flt-aaf-flower{
+/* Mobile adjustments */
+@media (max-width:768px) {
+  .flt-hero2__cloud {
+    animation: flt-aaf-cloud-fade 12s ease-in-out forwards;
+  }
+  /* Optional: different delays per cloud */
+  .flt-hero2__cloud:nth-child(1) { animation-delay: 0.5s; }
+  .flt-hero2__cloud:nth-child(2) { animation-delay: 1.0s; }
+  .flt-hero2__cloud:nth-child(3) { animation-delay: 1.5s; }
+  .flt-hero2__cloud:nth-child(4) { animation-delay: 2.0s; }
+  .flt-hero2__cloud:nth-child(5) { animation-delay: 2.5s; }
+}
+
+.flt-aaf-flower {
   position:absolute;
   z-index:1;
   opacity:0;
-
-  filter:
-    drop-shadow(0 0 7px rgba(255,255,255,.95))
-    drop-shadow(0 0 18px rgba(135,206,235,.85));
+  filter: drop-shadow(0 0 7px rgba(255,255,255,.95))
+          drop-shadow(0 0 18px rgba(135,206,235,.85));
 }
 
+@media (max-width:768px) {
+  .flt-aaf-plane { animation-duration: 12s; }
+  .flt-aaf-flower { animation-duration: 12s; }
+}
 </style>
-
 
 <div class="flt-aaf-stage" aria-hidden="true">
 
-<!-- airplane -->
-<div class="flt-aaf-plane">
-{%- render 'flt-plane-svg-aircraft1' -%}
-</div>
+  <!-- Airplane -->
+  <div class="flt-aaf-plane">
+    {%- render 'flt-plane-svg-aircraft1' -%}
+  </div>
 
+  <!-- Sequential flowers -->
+  {%- for i in (1..flt_count) -%}
+    {%- assign left_pct = 5 | plus: i | times: 90 | divided_by: flt_count -%}
 
-<!-- flowers -->
-{%- for i in (1..flt_count) -%}
+    {%- assign top_pct = 8 | plus: i | modulo: 6 -%}
 
-  {%- assign left_pct = i | times: 90 | divided_by: flt_count | plus: 5 -%}
-  {%- assign top_pct = 8 -%}
+    {%- comment %}
+      Calculate delay: fraction of plane_duration
+      plane goes from 100% to -120px → 0%..100% in plane_duration seconds
+    {% endcomment -%}
+    {%- assign delay = (100 | minus: left_pct) | times: plane_duration | divided_by: 100.0 | plus: dev_delay -%}
 
-  {%- comment %}
-  calculate when plane reaches this x position
-  {% endcomment -%}
-
-  {%- assign delay = 100 | minus: left_pct | times: plane_duration | divided_by: 100.0 -%}
-  {%- assign final_delay = delay | plus: dev_delay -%}
-
-<div
-class="flt-aaf-flower"
-style="
-left:{{left_pct}}%;
-top:{{top_pct}}%;
-animation:flt-aaf-flower-cycle {{plane_duration}}s linear infinite;
-animation-delay: {{final_delay}}s;
-">
-
-<svg width="56" height="56" viewBox="0 0 500 500">
-
-<g transform="translate(250,250)" stroke="white" stroke-width="3" fill="none">
-
-<circle r="50"/>
-<circle cx="50" cy="0" r="50"/>
-<circle cx="-50" cy="0" r="50"/>
-<circle cx="25" cy="43.3" r="50"/>
-<circle cx="-25" cy="43.3" r="50"/>
-<circle cx="25" cy="-43.3" r="50"/>
-<circle cx="-25" cy="-43.3" r="50"/>
-
-</g>
-
-</svg>
-
-</div>
-
-{%- endfor -%}
-
+    <div
+      class="flt-aaf-flower"
+      style="
+        left:{{left_pct}}%;
+        top:{{top_pct}}%;
+        animation: flt-aaf-flower-cycle {{plane_duration}}s linear infinite;
+        animation-delay: {{delay}}s;
+      "
+    >
+      <svg width="56" height="56" viewBox="0 0 500 500">
+        <g transform="translate(250,250)" stroke="white" stroke-width="3" fill="none">
+          <circle r="50"/>
+          <circle cx="50" cy="0" r="50"/>
+          <circle cx="-50" cy="0" r="50"/>
+          <circle cx="25" cy="43.3" r="50"/>
+          <circle cx="-25" cy="43.3" r="50"/>
+          <circle cx="25" cy="-43.3" r="50"/>
+          <circle cx="-25" cy="-43.3" r="50"/>
+        </g>
+      </svg>
+    </div>
+  {%- endfor -%}
 </div>
