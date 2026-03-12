@@ -1,77 +1,84 @@
-{% comment %}
+{%- comment %}
   snippets/animated-airplane-flowers.liquid
-  FLT Hemp Provisions — Animated airplane with flower-of-life trail
-  Pure CSS animation, no JS, no external libraries.
-  Usage: {% render 'animated-airplane-flowers' %}
-{% endcomment %}
+  FLT Hemp Provisions — Animated airplane (RTL) with flower-of-life snowflake trail
+  Pure CSS animation, no JS. Airplane flies right → left.
+  Flowers (snowflakes) drift downward 70vh from plane altitude.
+
+  Usage:
+    {%- render 'animated-airplane-flowers' %}
+    {%- render 'animated-airplane-flowers', count: 25 %}
+    {%- render 'animated-airplane-flowers', min: 15, max: 30 %}
+{%- endcomment %}
+
+{%- comment %}-- Resolve flower count --{% endcomment -%}
+{%- assign flt_count = count | default: 20 -%}
+{%- if min != blank and max != blank -%}
+  {%- assign flt_seed = 'now' | date: '%s' | modulo: 100 -%}
+  {%- assign flt_range = max | minus: min | plus: 1 -%}
+  {%- assign flt_count = flt_seed | modulo: flt_range | plus: min -%}
+{%- endif -%}
 
 <style>
-  /* ── Stage ── */
   .flt-aaf-stage {
-    position: relative;
-    width: 100%;
-    height: 120px;
-    overflow: hidden;
+    position: absolute;
+    inset: 0;
     pointer-events: none;
   }
 
-  /* ── Airplane ── */
+  /* Airplane: right → left */
   @keyframes flt-aaf-fly {
-    0%   { transform: translateX(-120px); }
-    100% { transform: translateX(calc(100vw + 120px)); }
+    0%   { transform: translateX(calc(100vw + 120px)); }
+    100% { transform: translateX(-120px); }
+  }
+  /* Airplane blink color cycle: blue → green → blue → red → blue */
+  @keyframes flt-aaf-plane-blink {
+    0%,  22% { color: #1E90FF; filter: drop-shadow(0 0 12px rgba(30,144,255,0.95)) drop-shadow(0 0 26px rgba(30,144,255,0.55)); }
+    27%       { color: #00E676; filter: drop-shadow(0 0 12px rgba(0,230,118,0.95)) drop-shadow(0 0 26px rgba(0,230,118,0.55)); }
+    32%,  68% { color: #1E90FF; filter: drop-shadow(0 0 12px rgba(30,144,255,0.95)) drop-shadow(0 0 26px rgba(30,144,255,0.55)); }
+    73%       { color: #FF1744; filter: drop-shadow(0 0 12px rgba(255,23,68,0.95))  drop-shadow(0 0 26px rgba(255,23,68,0.55)); }
+    78%, 100% { color: #1E90FF; filter: drop-shadow(0 0 12px rgba(30,144,255,0.95)) drop-shadow(0 0 26px rgba(30,144,255,0.55)); }
   }
   .flt-aaf-plane {
     position: absolute;
     top: 28%;
     left: 0;
-    animation: flt-aaf-fly 18s linear infinite;
-    animation-delay: -4s;
-    filter: drop-shadow(0 2px 8px rgba(11,37,69,0.18));
+    animation: flt-aaf-fly 18s linear infinite -4s{%- if blink != false %}, flt-aaf-plane-blink 4s ease-in-out infinite{%- else %};
+    color: #1E90FF;
+    filter: drop-shadow(0 0 12px rgba(30,144,255,0.9)) drop-shadow(0 0 24px rgba(30,144,255,0.5)){%- endif %};
+  }
+  .flt-aaf-plane-flip {
+    display: inline-block;
+    transform: scaleX(-1);
   }
 
-  /* ── Flower drift ── */
+  /* Flower snowflake: spawns at plane altitude, drifts 70vh down */
   @keyframes flt-aaf-flower-drift {
-    0%   { opacity: 0;   transform: translateY(0)     rotate(0deg)   scale(0.4); }
-    15%  { opacity: 0.7; transform: translateY(20px)  rotate(15deg)  scale(0.7); }
-    85%  { opacity: 0.4; transform: translateY(160px) rotate(120deg) scale(0.55); }
-    100% { opacity: 0;   transform: translateY(200px) rotate(180deg) scale(0.4); }
+    0%   { opacity: 0;   transform: translateY(0)     rotate(0deg)   scale(0.35); }
+    10%  { opacity: 0.9; transform: translateY(5vh)   rotate(18deg)  scale(0.75); }
+    75%  { opacity: 0.65; transform: translateY(58vh) rotate(140deg) scale(0.6);  }
+    100% { opacity: 0;   transform: translateY(70vh)  rotate(185deg) scale(0.35); }
   }
   .flt-aaf-flower {
     position: absolute;
-    top: 18%;
-    animation: flt-aaf-flower-drift 6s ease-in-out infinite;
-    filter: drop-shadow(0 0 6px rgba(135,206,235,0.7)) drop-shadow(0 0 14px rgba(30,58,95,0.3));
+    filter: drop-shadow(0 0 7px rgba(255,255,255,0.95))
+            drop-shadow(0 0 18px rgba(135,206,235,0.85));
     pointer-events: none;
   }
 
-  /*
-    Delay math:
-    Plane travels 100vw+240px in 18s. Flower at left:N% is where the plane is at t = N/100 * 18s.
-    Negative delay = -(6s - (trigger_time mod 6s)) so animation is mid-cycle from page load.
-    Plane delay: -4s (plane is 22% across screen on load).
-  */
-  .flt-aaf-flower:nth-child(2) { left:  8%; animation-delay: -4.6s; }
-  .flt-aaf-flower:nth-child(3) { left: 22%; animation-delay: -2.0s; }
-  .flt-aaf-flower:nth-child(4) { left: 38%; animation-delay: -5.2s; }
-  .flt-aaf-flower:nth-child(5) { left: 55%; animation-delay: -2.1s; }
-  .flt-aaf-flower:nth-child(6) { left: 71%; animation-delay: -5.2s; }
-  .flt-aaf-flower:nth-child(7) { left: 86%; animation-delay: -2.5s; }
-
-  /* ── Responsive ── */
   @media (max-width: 768px) {
-    .flt-aaf-stage { height: 80px; }
-    .flt-aaf-plane svg { width: 84px; height: 42px; }
-    .flt-aaf-flower svg { width: 40px; height: 40px; }
+    .flt-aaf-plane svg  { width: 84px; height: 42px; }
+    .flt-aaf-flower svg { width: 38px; height: 38px; }
   }
 </style>
 
 <div class="flt-aaf-stage" aria-hidden="true">
 
-  <!-- Airplane -->
+  <!-- Airplane (RTL — flipped via inner wrapper) -->
   <div class="flt-aaf-plane">
-    <svg width="120" height="60" viewBox="0 0 1280 640" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <div class="flt-aaf-plane-flip">
+      <svg width="120" height="60" viewBox="0 0 1280 640" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <g transform="translate(0.000000,640.000000) scale(0.100000,-0.100000)"
-    fill="#0B2545" stroke="none">
+    fill="currentColor" stroke="none">
     <path d="M11645 5051 c-180 -51 -352 -171 -523 -364 -207 -232 -330 -442 -533
     -899 -44 -101 -85 -187 -89 -192 -5 -5 -44 -8 -87 -7 -93 2 -562 35 -793 56
     -353 31 -1148 85 -1785 121 -159 9 -293 19 -297 23 -4 3 2 150 12 326 31 524
@@ -533,169 +540,44 @@
     -12 -4 -9 -10z"/>
     </g>
     </svg>
+    </div>
   </div>
 
-  <!-- 6 Flower of Life instances — nth-child starts at 2 (plane is child 1) -->
-  <div class="flt-aaf-flower">
-    <svg width="60" height="60" viewBox="0 0 500 500" aria-hidden="true">
-      <defs><style>.flt-aaf-circle{fill:none;stroke:rgba(30,58,95,0.5);stroke-width:2}</style></defs>
-      <g transform="translate(250,250)">
-        <circle class="flt-aaf-circle" r="50"/>
-        <circle class="flt-aaf-circle" cx="50" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="-50" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="25" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-25" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="25" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-25" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="75" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="-75" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="37.5" cy="64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="-37.5" cy="64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="37.5" cy="-64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="-37.5" cy="-64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="0" cy="86.6" r="50"/>
-        <circle class="flt-aaf-circle" cx="0" cy="-86.6" r="50"/>
-        <circle class="flt-aaf-circle" cx="62.5" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-62.5" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="62.5" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-62.5" cy="-43.3" r="50"/>
-      </g>
-    </svg>
-  </div>
-
-  <div class="flt-aaf-flower">
-    <svg width="60" height="60" viewBox="0 0 500 500" aria-hidden="true">
-      <defs><style>.flt-aaf-circle{fill:none;stroke:rgba(30,58,95,0.5);stroke-width:2}</style></defs>
-      <g transform="translate(250,250)">
-        <circle class="flt-aaf-circle" r="50"/>
-        <circle class="flt-aaf-circle" cx="50" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="-50" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="25" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-25" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="25" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-25" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="75" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="-75" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="37.5" cy="64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="-37.5" cy="64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="37.5" cy="-64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="-37.5" cy="-64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="0" cy="86.6" r="50"/>
-        <circle class="flt-aaf-circle" cx="0" cy="-86.6" r="50"/>
-        <circle class="flt-aaf-circle" cx="62.5" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-62.5" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="62.5" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-62.5" cy="-43.3" r="50"/>
-      </g>
-    </svg>
-  </div>
-
-  <div class="flt-aaf-flower">
-    <svg width="60" height="60" viewBox="0 0 500 500" aria-hidden="true">
-      <defs><style>.flt-aaf-circle{fill:none;stroke:rgba(30,58,95,0.5);stroke-width:2}</style></defs>
-      <g transform="translate(250,250)">
-        <circle class="flt-aaf-circle" r="50"/>
-        <circle class="flt-aaf-circle" cx="50" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="-50" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="25" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-25" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="25" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-25" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="75" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="-75" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="37.5" cy="64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="-37.5" cy="64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="37.5" cy="-64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="-37.5" cy="-64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="0" cy="86.6" r="50"/>
-        <circle class="flt-aaf-circle" cx="0" cy="-86.6" r="50"/>
-        <circle class="flt-aaf-circle" cx="62.5" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-62.5" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="62.5" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-62.5" cy="-43.3" r="50"/>
-      </g>
-    </svg>
-  </div>
-
-  <div class="flt-aaf-flower">
-    <svg width="60" height="60" viewBox="0 0 500 500" aria-hidden="true">
-      <defs><style>.flt-aaf-circle{fill:none;stroke:rgba(30,58,95,0.5);stroke-width:2}</style></defs>
-      <g transform="translate(250,250)">
-        <circle class="flt-aaf-circle" r="50"/>
-        <circle class="flt-aaf-circle" cx="50" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="-50" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="25" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-25" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="25" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-25" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="75" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="-75" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="37.5" cy="64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="-37.5" cy="64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="37.5" cy="-64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="-37.5" cy="-64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="0" cy="86.6" r="50"/>
-        <circle class="flt-aaf-circle" cx="0" cy="-86.6" r="50"/>
-        <circle class="flt-aaf-circle" cx="62.5" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-62.5" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="62.5" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-62.5" cy="-43.3" r="50"/>
-      </g>
-    </svg>
-  </div>
-
-  <div class="flt-aaf-flower">
-    <svg width="60" height="60" viewBox="0 0 500 500" aria-hidden="true">
-      <defs><style>.flt-aaf-circle{fill:none;stroke:rgba(30,58,95,0.5);stroke-width:2}</style></defs>
-      <g transform="translate(250,250)">
-        <circle class="flt-aaf-circle" r="50"/>
-        <circle class="flt-aaf-circle" cx="50" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="-50" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="25" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-25" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="25" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-25" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="75" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="-75" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="37.5" cy="64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="-37.5" cy="64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="37.5" cy="-64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="-37.5" cy="-64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="0" cy="86.6" r="50"/>
-        <circle class="flt-aaf-circle" cx="0" cy="-86.6" r="50"/>
-        <circle class="flt-aaf-circle" cx="62.5" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-62.5" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="62.5" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-62.5" cy="-43.3" r="50"/>
-      </g>
-    </svg>
-  </div>
-
-  <div class="flt-aaf-flower">
-    <svg width="60" height="60" viewBox="0 0 500 500" aria-hidden="true">
-      <defs><style>.flt-aaf-circle{fill:none;stroke:rgba(30,58,95,0.5);stroke-width:2}</style></defs>
-      <g transform="translate(250,250)">
-        <circle class="flt-aaf-circle" r="50"/>
-        <circle class="flt-aaf-circle" cx="50" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="-50" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="25" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-25" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="25" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-25" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="75" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="-75" cy="0" r="50"/>
-        <circle class="flt-aaf-circle" cx="37.5" cy="64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="-37.5" cy="64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="37.5" cy="-64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="-37.5" cy="-64.95" r="50"/>
-        <circle class="flt-aaf-circle" cx="0" cy="86.6" r="50"/>
-        <circle class="flt-aaf-circle" cx="0" cy="-86.6" r="50"/>
-        <circle class="flt-aaf-circle" cx="62.5" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-62.5" cy="43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="62.5" cy="-43.3" r="50"/>
-        <circle class="flt-aaf-circle" cx="-62.5" cy="-43.3" r="50"/>
-      </g>
-    </svg>
-  </div>
+  <!-- {{ flt_count }} flower snowflakes with staggered position + timing -->
+  {%- for i in (1..flt_count) -%}
+    {%- comment %}Distribute left% across 3–97% with pseudo-random jitter{%- endcomment -%}
+    {%- assign left_base = i | times: 94 | divided_by: flt_count | plus: 3 -%}
+    {%- assign left_jitter = i | times: 13 | modulo: 19 | minus: 9 -%}
+    {%- assign left_pct = left_base | plus: left_jitter | at_least: 2 | at_most: 97 -%}
+    {%- comment %}Vary top 22–31% around plane altitude{%- endcomment -%}
+    {%- assign top_pct = i | times: 11 | modulo: 10 | plus: 22 -%}
+    {%- comment %}Duration 5–8s per flower{%- endcomment -%}
+    {%- assign duration = i | times: 7 | modulo: 4 | plus: 5 -%}
+    {%- comment %}RTL: plane reaches left:N% at t ≈ (100-N)/100 * 18s{%- endcomment -%}
+    {%- assign t_pass_tenths = 100 | minus: left_pct | times: 18 | divided_by: 10 -%}
+    {%- assign dur_tenths = duration | times: 10 -%}
+    {%- assign delay_mod = t_pass_tenths | modulo: dur_tenths -%}
+    {%- if delay_mod == 0 -%}
+      {%- assign delay_neg = 0 -%}
+    {%- else -%}
+      {%- assign delay_neg = dur_tenths | minus: delay_mod -%}
+    {%- endif -%}
+    {%- assign delay_s = delay_neg | divided_by: 10 -%}
+    {%- assign delay_d = delay_neg | modulo: 10 -%}
+    <div class="flt-aaf-flower" style="left:{{ left_pct }}%;top:{{ top_pct }}%;animation:flt-aaf-flower-drift {{ duration }}s ease-in-out -{{ delay_s }}.{{ delay_d }}s infinite;">
+      <svg width="56" height="56" viewBox="0 0 500 500" aria-hidden="true">
+        <defs><style>.flt-aaf-c{fill:none;stroke:rgba(255,255,255,0.9);stroke-width:3}</style></defs>
+        <g transform="translate(250,250)">
+          <circle class="flt-aaf-c" r="50"/>
+          <circle class="flt-aaf-c" cx="50" cy="0" r="50"/>
+          <circle class="flt-aaf-c" cx="-50" cy="0" r="50"/>
+          <circle class="flt-aaf-c" cx="25" cy="43.3" r="50"/>
+          <circle class="flt-aaf-c" cx="-25" cy="43.3" r="50"/>
+          <circle class="flt-aaf-c" cx="25" cy="-43.3" r="50"/>
+          <circle class="flt-aaf-c" cx="-25" cy="-43.3" r="50"/>
+        </g>
+      </svg>
+    </div>
+  {%- endfor -%}
 
 </div>
