@@ -302,7 +302,7 @@
         "announcement_text": "✈ First Class Deal — 5% OFF with Code DXB417 — Free Shipping $70+",
         "show_announcement": true,
         "announcement_position": "bottom",
-        "show_bg_images": true,
+        "show_bg_images": false,
         "bg_image_1": "shopify://shop_images/hero_background_pexels-suzyhazelwood-5460312.jpg",
         "bg_image_2": "shopify://shop_images/hero_background_pexels-clickerhappy-9241.jpg",
         "bg_image_3": "shopify://shop_images/hero_background_pexels-mtyutina-249581.jpg",
