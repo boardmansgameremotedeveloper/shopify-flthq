@@ -129,11 +129,11 @@
       "type": "flt-header-2",
       "name": "FLT Header 2",
       "settings": {
-        "menu": "main-menu",
+        "menu": "flt-header-menu",
         "logo_type": "text",
         "logo_text": "FLT",
         "logo_subtext": "Hemp Provisions",
-        "header_bg": "#ffffff"
+        "header_bg": "#1e3a5f"
       }
     }
   },
