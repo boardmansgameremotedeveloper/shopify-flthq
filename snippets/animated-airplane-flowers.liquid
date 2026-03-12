@@ -25,10 +25,10 @@
     pointer-events: none;
   }
 
-  /* Airplane: right → left */
+  /* Airplane: right → left (nose-left SVG, starts off-screen right) */
   @keyframes flt-aaf-fly {
-    0%   { transform: translateX(-120px); }
-    100% { transform: translateX(calc(100vw + 120px)); }
+    0%   { transform: translateX(calc(100vw + 120px)); }
+    100% { transform: translateX(-120px); }
   }
   /* Airplane blink color cycle: blue → green → blue → red → blue */
   @keyframes flt-aaf-plane-blink {
@@ -38,6 +38,7 @@
     73%       { color: #FF1744; filter: drop-shadow(0 0 12px rgba(255,23,68,0.95))  drop-shadow(0 0 26px rgba(255,23,68,0.55)); }
     78%, 100% { color: #1E90FF; filter: drop-shadow(0 0 12px rgba(30,144,255,0.95)) drop-shadow(0 0 26px rgba(30,144,255,0.55)); }
   }
+
   .flt-aaf-plane {
     position: absolute;
     top: 28%;
@@ -71,9 +72,9 @@
 
 <div class="flt-aaf-stage" aria-hidden="true">
 
-  <!-- Airplane (LTR — nose right, travels left→right) -->
+  <!-- Airplane (RTL — nose left, travels right→left) -->
   <div class="flt-aaf-plane">
-    {%- render 'flt-plane-svg-aircraft1' -%}
+    {%- render 'flt-plane-svg-aircraft1-left' -%}
   </div>
 
   <!-- {{ flt_count }} flower snowflakes with staggered position + timing -->

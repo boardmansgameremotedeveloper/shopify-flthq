@@ -21,6 +21,7 @@
   .flt-hero2__content {
     text-align: center; padding: 0 40px;
     position: relative; z-index: 1; max-width: 1000px;
+    width: 100%; margin: 0 auto;
   }
   .flt-hero2__eyebrow {
     font-family: var(--body); font-size: 13px; color: #0B2545;
@@ -120,9 +121,8 @@
   .flt-hero2__bg-slide--1 { animation: flt-hero2-bg-fade 12s ease-in-out infinite; animation-delay: 0s; }
   .flt-hero2__bg-slide--2 { animation: flt-hero2-bg-fade 12s ease-in-out infinite; animation-delay: 4s; }
   .flt-hero2__bg-slide--3 { animation: flt-hero2-bg-fade 12s ease-in-out infinite; animation-delay: 8s; }
-  /* ensure content sits above bg layer */
-  .flt-hero2__cloud,
-  .flt-hero2__content { position: relative; z-index: 1; }
+  /* ensure clouds sit above bg layer */
+  .flt-hero2__cloud { position: relative; z-index: 1; }
 
   /* entrance animation */
   .flt-hero2__content > * {
