@@ -60,7 +60,11 @@
   <!-- Sequential flowers -->
   {%- for i in (1..flt_count) -%}
     {%- assign left_pct = 5 | plus: i | times: 90 | divided_by: flt_count -%}
-    {%- assign top_pct = 18 | plus: i | modulo: 6 -%}
+
+    {%- comment %}
+      Fixed vertical placement to align with airplane
+    {% endcomment -%}
+    {%- assign top_pct = 8 -%}
 
     {%- comment %}
       Calculate delay so flower appears when plane reaches its horizontal position
