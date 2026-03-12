@@ -286,8 +286,32 @@
         "padding-block-end": 48
       }
     },
+    "flt_hero_3_H9Dy49": {
+      "type": "flt-hero-3",
+      "name": "FLT Hero 3",
+      "settings": {
+        "eyebrow": "Hemp-Derived · Nanosized THC",
+        "heading_line1": "Elevate Your",
+        "heading_line2": "Flight",
+        "subtext": "Premium hemp-derived beverages & wellness gummies. Zero sugar. Clean ingredients. Nanosized for rapid absorption.",
+        "cta_primary_label": "Shop Now",
+        "cta_primary_url": "/#products",
+        "cta_secondary_label": "Our Story",
+        "cta_secondary_url": "/#story",
+        "pills": "No Added Sugar, Vegan Friendly, Clean Ingredients, Rapid Release",
+        "announcement_text": "✈ First Class Deal — 5% OFF with Code DXB417  — Free Shipping $50+",
+        "show_announcement": true,
+        "announcement_position": "bottom",
+        "show_bg_images": true,
+        "bg_image_1": "shopify://shop_images/hero_background_pexels-ingewallu-122110_a3c90111-fbca-4d77-a53e-c18c3a1cc56b.jpg",
+        "bg_image_2": "shopify://shop_images/hero_background_pexels-eduardolimabrport-4006600.jpg",
+        "bg_image_3": "shopify://shop_images/hero_background_pexels-stevecormie-33337421.jpg",
+        "bg_color": "#87CEEB"
+      }
+    },
     "flt_hero_2_KDqCL8": {
       "type": "flt-hero-2",
+      "disabled": true,
       "name": "FLT Hero 2",
       "settings": {
         "eyebrow": "Hemp-Derived · Nanosized THC",
@@ -333,52 +357,6 @@
         "collection": ""
       }
     },
-    "flt_story_1_tVX6z6": {
-      "type": "flt-story-1",
-      "blocks": {
-        "stat_UzRDYh": {
-          "type": "stat",
-          "settings": {
-            "value": "2023",
-            "label": "Founded"
-          }
-        },
-        "stat_UG8VaA": {
-          "type": "stat",
-          "settings": {
-            "value": "10K+",
-            "label": "Happy Customers"
-          }
-        },
-        "stat_hjUdiD": {
-          "type": "stat",
-          "settings": {
-            "value": "100%",
-            "label": "Clean Ingredients"
-          }
-        },
-        "stat_JGf8PY": {
-          "type": "stat",
-          "settings": {
-            "value": "0g",
-            "label": "Added Sugar"
-          }
-        }
-      },
-      "block_order": [
-        "stat_UzRDYh",
-        "stat_UG8VaA",
-        "stat_hjUdiD",
-        "stat_JGf8PY"
-      ],
-      "disabled": true,
-      "name": "FLT Story",
-      "settings": {
-        "heading": "Built for Those Who Soar",
-        "body_html": "<p>FLT was born from a belief that wellness shouldn't weigh you down. Our founders — athletes, entrepreneurs, and wellness enthusiasts — wanted something better: clean, effective, and enjoyable hemp-derived products.</p><p>Using nanosized THC technology, our beverages and gummies deliver rapid, consistent absorption. No added sugar. No artificial junk. Just premium hemp, functional mushrooms, adaptogens, and real fruit.</p><p>Every product is vegan friendly, lab tested, and made with clean ingredients you can trust. Welcome aboard.</p>",
-        "tags": "🌿 Vegan, 🧪 Lab Tested, ⚡ Rapid Release, ❤️ Sugar Free"
-      }
-    },
     "flt_story_2_HBnmqX": {
       "type": "flt-story-2",
       "name": "FLT Story 2",
@@ -415,10 +393,10 @@
   "order": [
     "hero_jVaWmY",
     "product_list_fa6P9H",
+    "flt_hero_3_H9Dy49",
     "flt_hero_2_KDqCL8",
     "flt_hero_1_WG4yqz",
     "flt_products_1_tRGfG9",
-    "flt_story_1_tVX6z6",
     "flt_story_2_HBnmqX",
     "flt_contact_1_RiJCT3"
   ]
