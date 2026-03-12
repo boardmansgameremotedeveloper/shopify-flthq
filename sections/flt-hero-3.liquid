@@ -1,0 +1,372 @@
+{% comment %}
+  sections/flt-hero-3.liquid
+  FLT Hemp Provisions — Hero / Landing Section (variant 3)
+  Source: flt-hero-2.liquid (exact duplicate, collision-safe)
+  All CSS classes and IDs namespaced to flt-hero3 to allow both sections on the same page.
+  Animation: snippets/animated-flowers.liquid (flowers-only RTL cloud drift, no airplane)
+{% endcomment %}
+
+<style>
+  .flt-hero3 {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #87CEEB 0%, #B4DFF7 30%, #DCEEFB 60%, #F0F7FF 100%);
+  }
+
+  .flt-hero3__cloud {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    opacity: 0;
+    transition: opacity 2s ease;
+  }
+
+  .flt-hero3--loaded .flt-hero3__cloud { opacity: 1; }
+
+  /* FIXED CENTERING */
+  .flt-hero3__content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 0 40px;
+    z-index: 2;
+    max-width: 1000px;
+    width: 100%;
+  }
+
+  .flt-hero3__eyebrow {
+    font-family: var(--body);
+    font-size: 13px;
+    color: #0B2545;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    opacity: 0.7;
+  }
+
+  .flt-hero3__rule {
+    width: 50px;
+    height: 1.5px;
+    background: #0B2545;
+    opacity: 0.3;
+  }
+
+  .flt-hero3__heading {
+    font-family: var(--head);
+    font-size: clamp(60px, 10vw, 130px);
+    color: #0B2545;
+    line-height: 0.92;
+    margin: 0 0 20px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .flt-hero3__heading span { color: #1E3A5F; }
+
+  .flt-hero3__body {
+    font-family: var(--body);
+    font-size: 19px;
+    color: #334155;
+    max-width: 560px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+  }
+
+  .flt-hero3__ctas {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .flt-hero3__cta-primary {
+    background: linear-gradient(135deg,#0B2545,#1E3A5F);
+    border: none;
+    color: #fff;
+    padding: 16px 48px;
+    border-radius: 40px;
+    font-family: var(--head);
+    font-size: 17px;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 8px 30px rgba(11,37,69,0.25);
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .flt-hero3__cta-secondary {
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(8px);
+    border: 2px solid #0B2545;
+    color: #0B2545;
+    padding: 14px 48px;
+    border-radius: 40px;
+    font-family: var(--head);
+    font-size: 17px;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .flt-hero3__pills {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    margin-top: 56px;
+    flex-wrap: wrap;
+  }
+
+  .flt-hero3__pill {
+    font-family: var(--body);
+    font-size: 11px;
+    color: #0B2545;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    border-bottom: 2px solid rgba(11,37,69,0.2);
+    padding-bottom: 4px;
+    opacity: 0.6;
+  }
+
+  .flt-hero3__announcement {
+    background: linear-gradient(135deg,#0B2545,#1E3A5F);
+    font-family: var(--body);
+    font-size: 13px;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    position: absolute;
+    z-index: 3;
+  }
+
+  .flt-hero3__announcement--bottom {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 20px;
+    text-align: center;
+  }
+
+  .flt-hero3__announcement--top {
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 20px;
+    text-align: center;
+  }
+
+  .flt-hero3__announcement--right {
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 44px;
+    padding: 20px 12px;
+    writing-mode: vertical-rl;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flt-hero3__announcement--left {
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 44px;
+    padding: 20px 12px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flt-hero3__af-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* background slides */
+
+  .flt-hero3__bg-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .flt-hero3__bg-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+  }
+
+  @keyframes flt-hero3-bg-fade {
+    0%,100% {opacity:0;}
+    8% {opacity:1;}
+    33% {opacity:1;}
+    41% {opacity:0;}
+  }
+
+  .flt-hero3__bg-slide--1 {animation:flt-hero3-bg-fade 12s ease-in-out infinite;}
+  .flt-hero3__bg-slide--2 {animation:flt-hero3-bg-fade 12s ease-in-out infinite 4s;}
+  .flt-hero3__bg-slide--3 {animation:flt-hero3-bg-fade 12s ease-in-out infinite 8s;}
+
+  .flt-hero3__cloud {position:relative;z-index:1;}
+
+  /* entrance animation */
+
+  .flt-hero3__content > * {
+    opacity:0;
+    transform:translateY(30px);
+    transition:all 1s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  .flt-hero3--loaded .flt-hero3__content > * {
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .flt-hero3--loaded .flt-hero3__content > *:nth-child(1){transition-delay:0.3s;}
+  .flt-hero3--loaded .flt-hero3__content > *:nth-child(2){transition-delay:0.6s;}
+  .flt-hero3--loaded .flt-hero3__content > *:nth-child(3){transition-delay:0.8s;}
+  .flt-hero3--loaded .flt-hero3__content > *:nth-child(4){transition-delay:1s;}
+  .flt-hero3--loaded .flt-hero3__content > *:nth-child(5){transition-delay:1.2s;}
+
+  @media (max-width:768px){
+    .flt-hero3__content{padding:0 20px;}
+    .flt-hero3__pills{gap:16px;}
+    .flt-hero3__cta-primary,
+    .flt-hero3__cta-secondary{padding:14px 32px;font-size:15px;}
+  }
+</style>
+
+<section class="flt-hero3" id="flt-hero3"
+  {%- unless section.settings.show_bg_images -%}
+  style="background: {{ section.settings.bg_color }};"
+  {%- endunless -%}>
+
+{%- if section.settings.show_bg_images -%}
+<div class="flt-hero3__bg-layer">
+{% if section.settings.bg_image_1 != blank %}
+<div class="flt-hero3__bg-slide flt-hero3__bg-slide--1" style="background-image:url('{{ section.settings.bg_image_1 | image_url: width:1600 }}');"></div>
+{% endif %}
+{% if section.settings.bg_image_2 != blank %}
+<div class="flt-hero3__bg-slide flt-hero3__bg-slide--2" style="background-image:url('{{ section.settings.bg_image_2 | image_url: width:1600 }}');"></div>
+{% endif %}
+{% if section.settings.bg_image_3 != blank %}
+<div class="flt-hero3__bg-slide flt-hero3__bg-slide--3" style="background-image:url('{{ section.settings.bg_image_3 | image_url: width:1600 }}');"></div>
+{% endif %}
+</div>
+{% endif %}
+
+<div class="flt-hero3__af-wrapper">
+{% render 'animated-flowers' %}
+</div>
+
+<div class="flt-hero3__cloud" style="top:12%;left:5%;width:280px;height:70px;filter:blur(30px);transition-delay:0.5s;"></div>
+<div class="flt-hero3__cloud" style="top:22%;right:10%;width:200px;height:50px;filter:blur(25px);transition-delay:0.8s;"></div>
+<div class="flt-hero3__cloud" style="top:8%;right:30%;width:350px;height:80px;filter:blur(35px);transition-delay:1s;"></div>
+<div class="flt-hero3__cloud" style="bottom:30%;left:15%;width:250px;height:60px;filter:blur(28px);transition-delay:1.2s;"></div>
+
+<div class="flt-hero3__content">
+
+<div class="flt-hero3__eyebrow">
+<span class="flt-hero3__rule"></span>
+{{ section.settings.eyebrow }}
+<span class="flt-hero3__rule"></span>
+</div>
+
+<h1 class="flt-hero3__heading">
+{{ section.settings.heading_line1 }}<br>
+<span>{{ section.settings.heading_line2 }}</span>
+</h1>
+
+<p class="flt-hero3__body">{{ section.settings.subtext }}</p>
+
+<div class="flt-hero3__ctas">
+<a href="{{ section.settings.cta_primary_url }}" class="flt-hero3__cta-primary">
+{{ section.settings.cta_primary_label }}
+</a>
+
+<a href="{{ section.settings.cta_secondary_url }}" class="flt-hero3__cta-secondary">
+{{ section.settings.cta_secondary_label }}
+</a>
+</div>
+
+<div class="flt-hero3__pills">
+{% assign pills = section.settings.pills | split: ',' %}
+{% for pill in pills %}
+<span class="flt-hero3__pill">{{ pill | strip }}</span>
+{% endfor %}
+</div>
+
+</div>
+
+{% if section.settings.show_announcement %}
+<div class="flt-hero3__announcement flt-hero3__announcement--{{ section.settings.announcement_position }}">
+{{ section.settings.announcement_text }}
+</div>
+{% endif %}
+
+</section>
+
+<script>
+(function(){
+var hero=document.querySelector('.flt-hero3');
+if(!hero)return;
+setTimeout(function(){hero.classList.add('flt-hero3--loaded');},150);
+})();
+</script>
+
+{% schema %}
+{
+"name":"FLT Hero 3",
+"tag":"section",
+"class":"flt-hero3-section",
+"settings":[
+{"type":"text","id":"eyebrow","label":"Eyebrow text","default":"Hemp-Derived · Nanosized THC"},
+{"type":"text","id":"heading_line1","label":"Heading line 1","default":"Elevate Your"},
+{"type":"text","id":"heading_line2","label":"Heading line 2","default":"Flight"},
+{"type":"textarea","id":"subtext","label":"Body text","default":"Premium hemp-derived beverages & wellness gummies. Zero sugar. Clean ingredients. Nanosized for rapid absorption."},
+{"type":"text","id":"cta_primary_label","label":"Primary CTA label","default":"Shop Now"},
+{"type":"url","id":"cta_primary_url","label":"Primary CTA link"},
+{"type":"text","id":"cta_secondary_label","label":"Secondary CTA label","default":"Our Story"},
+{"type":"url","id":"cta_secondary_url","label":"Secondary CTA link"},
+{"type":"text","id":"pills","label":"Attribute pills (comma-separated)","default":"No Added Sugar, Vegan Friendly, Clean Ingredients, Rapid Release"},
+{"type":"text","id":"announcement_text","label":"Announcement bar text","default":"✈ First Class Deal — 20% OFF with Code FLT20 — Free Shipping $50+"},
+{"type":"checkbox","id":"show_announcement","label":"Show announcement bar","default":true},
+{"type":"select","id":"announcement_position","label":"Announcement position","default":"bottom",
+"options":[
+{"value":"bottom","label":"Bottom"},
+{"value":"top","label":"Top"},
+{"value":"right","label":"Right"},
+{"value":"left","label":"Left"}
+]},
+{"type":"header","content":"Background Images"},
+{"type":"checkbox","id":"show_bg_images","label":"Show background images","default":false},
+{"type":"image_picker","id":"bg_image_1","label":"Background image 1"},
+{"type":"image_picker","id":"bg_image_2","label":"Background image 2"},
+{"type":"image_picker","id":"bg_image_3","label":"Background image 3"},
+{"type":"color","id":"bg_color","label":"Background color","default":"#87CEEB"}
+],
+"presets":[{"name":"FLT Hero 3"}]
+}
+{% endschema %}
