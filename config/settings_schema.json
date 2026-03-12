@@ -2284,5 +2284,27 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Analytics",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Google Analytics 4"
+      },
+      {
+        "type": "checkbox",
+        "id": "gtag_enabled",
+        "label": "Enable Google Analytics",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "gtag_measurement_id",
+        "label": "GA4 Measurement ID",
+        "info": "Found in Google Analytics → Admin → Data Streams. Format: G-XXXXXXXXXX",
+        "default": "G-SVWD11RPMY"
+      }
+    ]
   }
 ]

@@ -1,0 +1,18 @@
+{% comment %}
+  snippets/flt-google-analytics.liquid
+  FLT Hemp Provisions — Google Analytics 4 (GA4) tag.
+  Measurement ID is configurable via Theme Settings → Analytics → GA4 Measurement ID.
+  Renders nothing if the setting is blank or tracking is disabled.
+{% endcomment %}
+
+{%- if settings.gtag_enabled and settings.gtag_measurement_id != blank -%}
+  {%- assign gtag_id = settings.gtag_measurement_id -%}
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ gtag_id }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '{{ gtag_id }}');
+  </script>
+{%- endif -%}
