@@ -300,8 +300,11 @@
         "cta_secondary_url": "",
         "pills": "No Added Sugar, Vegan Friendly, Clean Ingredients, Rapid Release",
         "announcement_text": "✈ First Class Deal — 20% OFF with Code FLT20 — Free Shipping $50+",
-        "show_bg_images": false,
-        "bg_color": "#87CEEB"
+        "show_bg_images": true,
+        "bg_image_1": "shopify://shop_images/background_hero_3_istockphoto-543055836-1024x1024.jpg",
+        "bg_image_2": "shopify://shop_images/background_hero_2_istockphoto-91436080-1024x1024.jpg",
+        "bg_image_3": "shopify://shop_images/background_hero1_istockphoto-499379305-1024x1024.jpg",
+        "bg_color": "#87ceeb"
       }
     },
     "flt_hero_1_WG4yqz": {
