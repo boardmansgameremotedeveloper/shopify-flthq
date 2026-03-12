@@ -1,6 +1,7 @@
 {%- comment %}
   snippets/animated-airplane-flowers.liquid
-  DEBUG VERSION — flowers appear instantly, no animation
+  Flowers appear behind airplane based on plane position
+  No falling animation yet — appear then disappear
 {%- endcomment %}
 
 {%- assign flt_count = count | default: 20 -%}
@@ -13,7 +14,7 @@
   pointer-events:none;
 }
 
-/* plane animation still allowed */
+/* plane movement */
 @keyframes flt-aaf-fly{
   0%{transform:translateX(calc(100vw + 120px));}
   100%{transform:translateX(-120px);}
@@ -26,19 +27,31 @@
   z-index:2;
   animation:flt-aaf-fly 18s linear infinite;
   color:#1E90FF;
-  filter:drop-shadow(0 0 12px rgba(30,144,255,.9))
-         drop-shadow(0 0 24px rgba(30,144,255,.5));
+  filter:
+    drop-shadow(0 0 12px rgba(30,144,255,.9))
+    drop-shadow(0 0 24px rgba(30,144,255,.5));
+}
+
+/* flower appear → fade */
+@keyframes flt-aaf-flower-show{
+  0%   {opacity:0; transform:scale(.3);}
+  15%  {opacity:1; transform:scale(.9);}
+  70%  {opacity:1;}
+  100% {opacity:0;}
 }
 
 .flt-aaf-flower{
   position:absolute;
   z-index:1;
+  opacity:0;
+
   filter:
     drop-shadow(0 0 7px rgba(255,255,255,.95))
     drop-shadow(0 0 18px rgba(135,206,235,.85));
 }
 
 </style>
+
 
 
 <div class="flt-aaf-stage" aria-hidden="true">
@@ -49,20 +62,27 @@
 </div>
 
 
-<!-- STATIC DEBUG FLOWERS -->
+<!-- flowers -->
 {%- for i in (1..flt_count) -%}
 
-  {%- comment %}spread flowers across screen{% endcomment -%}
+  {%- comment %}
+    distribute flowers across screen
+  {%- endcomment -%}
   {%- assign left_pct = i | times: 90 | divided_by: flt_count | plus: 5 -%}
 
-  {%- comment %}keep them near plane altitude{% endcomment -%}
   {%- assign top_pct = 28 -%}
+
+  {%- comment %}
+    calculate delay based on when plane reaches that x position
+  {%- endcomment -%}
+  {%- assign delay = 100 | minus: left_pct | times: 18 | divided_by: 100.0 -%}
 
 <div
 class="flt-aaf-flower"
 style="
 left:{{left_pct}}%;
 top:{{top_pct}}%;
+animation:flt-aaf-flower-show 3s ease-out {{delay}}s infinite;
 ">
 
 <svg width="56" height="56" viewBox="0 0 500 500">
