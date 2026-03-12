@@ -6,6 +6,9 @@
 
 {%- assign flt_count = count | default: 20 -%}
 
+{%- comment %} developer tweak delay (seconds) {% endcomment -%}
+{%- assign dev_delay = 1 -%}
+
 <style>
 
 .flt-aaf-stage{
@@ -77,12 +80,17 @@
   {%- endcomment -%}
   {%- assign delay = 100 | minus: left_pct | times: 18 | divided_by: 100.0 -%}
 
+  {%- comment %}
+    apply developer tweak delay
+  {%- endcomment -%}
+  {%- assign final_delay = delay | plus: dev_delay -%}
+
 <div
 class="flt-aaf-flower"
 style="
 left:{{left_pct}}%;
 top:{{top_pct}}%;
-animation:flt-aaf-flower-show 3s ease-out {{delay}}s infinite;
+animation:flt-aaf-flower-show 3s ease-out {{final_delay}}s infinite;
 ">
 
 <svg width="56" height="56" viewBox="0 0 500 500">
