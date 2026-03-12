@@ -286,8 +286,27 @@
         "padding-block-end": 48
       }
     },
+    "flt_hero_2_KDqCL8": {
+      "type": "flt-hero-2",
+      "name": "FLT Hero 2",
+      "settings": {
+        "eyebrow": "Hemp-Derived · Nanosized THC",
+        "heading_line1": "Elevate Your",
+        "heading_line2": "Flight",
+        "subtext": "Premium hemp-derived beverages & wellness gummies. Zero sugar. Clean ingredients. Nanosized for rapid absorption.",
+        "cta_primary_label": "Shop Now",
+        "cta_primary_url": "",
+        "cta_secondary_label": "Our Story",
+        "cta_secondary_url": "",
+        "pills": "No Added Sugar, Vegan Friendly, Clean Ingredients, Rapid Release",
+        "announcement_text": "✈ First Class Deal — 20% OFF with Code FLT20 — Free Shipping $50+",
+        "show_bg_images": false,
+        "bg_color": "#87CEEB"
+      }
+    },
     "flt_hero_1_WG4yqz": {
       "type": "flt-hero-1",
+      "disabled": true,
       "name": "FLT Hero",
       "settings": {
         "eyebrow": "Hemp-Derived · Nanosized THC",
@@ -369,6 +388,7 @@
   "order": [
     "hero_jVaWmY",
     "product_list_fa6P9H",
+    "flt_hero_2_KDqCL8",
     "flt_hero_1_WG4yqz",
     "flt_products_1_tRGfG9",
     "flt_story_1_tVX6z6",
