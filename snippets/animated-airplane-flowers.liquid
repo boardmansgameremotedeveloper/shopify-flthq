@@ -4,46 +4,47 @@
 
 <style>
 .flt-aaf-stage {
-  position:absolute;
-  inset:0;
-  pointer-events:none;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
 /* Plane fly animation */
 @keyframes flt-aaf-fly {
-  0%   {transform:translateX(calc(100vw + 120px));}
-  100% {transform:translateX(-120px);}
+  0%   { transform: translateX(calc(100vw + 120px)); }
+  100% { transform: translateX(-120px); }
 }
 
 .flt-aaf-plane {
-  position:absolute;
-  top:8%;
-  left:0;
-  z-index:2;
-  animation: flt-aaf-fly {{plane_duration}}s linear infinite;
-  color:#1E90FF;
+  position: absolute;
+  top: 8%;
+  left: 0;
+  z-index: 2;
+  animation: flt-aaf-fly {{ plane_duration }}s linear infinite;
+  color: #1E90FF;
   filter: drop-shadow(0 0 12px rgba(30,144,255,.9))
           drop-shadow(0 0 24px rgba(30,144,255,.5));
 }
 
 /* Flower fade in/out cycle */
 @keyframes flt-aaf-flower-cycle {
-  0%   {opacity:0; transform:scale(0.3);}
-  5%   {opacity:1; transform:scale(0.9);}
-  15%  {opacity:1;}
-  20%  {opacity:0;}
-  100% {opacity:0;}
+  0%   { opacity: 0; transform: scale(0.3); }
+  5%   { opacity: 1; transform: scale(0.9); }
+  15%  { opacity: 1; }
+  20%  { opacity: 0; }
+  100% { opacity: 0; }
 }
 
 .flt-aaf-flower {
-  position:absolute;
-  z-index:1;
-  opacity:0;
+  position: absolute;
+  z-index: 1;
+  opacity: 0;
   filter: drop-shadow(0 0 7px rgba(255,255,255,.95))
           drop-shadow(0 0 18px rgba(135,206,235,.85));
 }
 
-@media (max-width:768px) {
+/* Mobile adjustments */
+@media (max-width: 768px) {
   .flt-aaf-plane { animation-duration: 12s; }
   .flt-aaf-flower { animation-duration: 12s; }
 }
@@ -59,22 +60,23 @@
   <!-- Sequential flowers -->
   {%- for i in (1..flt_count) -%}
     {%- assign left_pct = 5 | plus: i | times: 90 | divided_by: flt_count -%}
-
     {%- assign top_pct = 8 | plus: i | modulo: 6 -%}
 
     {%- comment %}
-      Calculate delay: fraction of plane_duration
-      plane goes from 100% to -120px → 0%..100% in plane_duration seconds
+      Calculate delay so flower appears when plane reaches its horizontal position
     {% endcomment -%}
-    {%- assign delay = 100 | minus: left_pct | times: plane_duration | divided_by: 100.0 | plus: dev_delay -%}
+    {%- assign tmp1 = 100 | minus: left_pct -%}
+    {%- assign tmp2 = tmp1 | times: plane_duration -%}
+    {%- assign tmp3 = tmp2 | divided_by: 100 -%}
+    {%- assign final_delay = tmp3 | plus: dev_delay -%}
 
     <div
       class="flt-aaf-flower"
       style="
-        left:{{left_pct}}%;
-        top:{{top_pct}}%;
-        animation: flt-aaf-flower-cycle {{plane_duration}}s linear infinite;
-        animation-delay: {{delay}}s;
+        left: {{ left_pct }}%;
+        top: {{ top_pct }}%;
+        animation: flt-aaf-flower-cycle {{ plane_duration }}s linear infinite;
+        animation-delay: {{ final_delay }}s;
       "
     >
       <svg width="56" height="56" viewBox="0 0 500 500">
