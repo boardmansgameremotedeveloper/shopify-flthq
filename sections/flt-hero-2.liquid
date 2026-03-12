@@ -75,6 +75,30 @@
     font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
   }
 
+
+  /* bg image cross-fade layer */
+  .flt-hero2__bg-layer {
+    position: absolute; inset: 0; z-index: 0;
+  }
+  .flt-hero2__bg-slide {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    opacity: 0;
+  }
+  @keyframes flt-hero2-bg-fade {
+    0%, 100%  { opacity: 0; }
+    8%        { opacity: 1; }
+    33%       { opacity: 1; }
+    41%       { opacity: 0; }
+  }
+  .flt-hero2__bg-slide--1 { animation: flt-hero2-bg-fade 12s ease-in-out infinite; animation-delay: 0s; }
+  .flt-hero2__bg-slide--2 { animation: flt-hero2-bg-fade 12s ease-in-out infinite; animation-delay: 4s; }
+  .flt-hero2__bg-slide--3 { animation: flt-hero2-bg-fade 12s ease-in-out infinite; animation-delay: 8s; }
+  /* ensure content sits above bg layer */
+  .flt-hero2__cloud,
+  .flt-hero2__content,
+  .flt-hero2__announcement { position: relative; z-index: 1; }
+
   /* entrance animation */
   .flt-hero2__content > * {
     opacity: 0; transform: translateY(30px);
@@ -95,7 +119,27 @@
   }
 </style>
 
-<section class="flt-hero2" id="flt-hero2">
+<section class="flt-hero2" id="flt-hero2"
+  {%- unless section.settings.show_bg_images -%}
+    style="background: {{ section.settings.bg_color }};"
+  {%- endunless -%}>
+
+{%- if section.settings.show_bg_images -%}
+  <div class="flt-hero2__bg-layer" aria-hidden="true">
+    {%- if section.settings.bg_image_1 != blank -%}
+      <div class="flt-hero2__bg-slide flt-hero2__bg-slide--1"
+           style="background-image: url('{{ section.settings.bg_image_1 | image_url: width: 1600 }}');"></div>
+    {%- endif -%}
+    {%- if section.settings.bg_image_2 != blank -%}
+      <div class="flt-hero2__bg-slide flt-hero2__bg-slide--2"
+           style="background-image: url('{{ section.settings.bg_image_2 | image_url: width: 1600 }}');"></div>
+    {%- endif -%}
+    {%- if section.settings.bg_image_3 != blank -%}
+      <div class="flt-hero2__bg-slide flt-hero2__bg-slide--3"
+           style="background-image: url('{{ section.settings.bg_image_3 | image_url: width: 1600 }}');"></div>
+    {%- endif -%}
+  </div>
+{%- endif -%}
 
   <div class="flt-hero2__cloud" style="top:12%;left:5%;width:280px;height:70px;filter:blur(30px);transition-delay:0.5s;"></div>
   <div class="flt-hero2__cloud" style="top:22%;right:10%;width:200px;height:50px;filter:blur(25px);transition-delay:0.8s;"></div>
@@ -162,7 +206,13 @@
     { "type": "text",     "id": "cta_secondary_label", "label": "Secondary CTA label",              "default": "Our Story" },
     { "type": "url",      "id": "cta_secondary_url",   "label": "Secondary CTA link" },
     { "type": "text",     "id": "pills",               "label": "Attribute pills (comma-separated)", "default": "No Added Sugar, Vegan Friendly, Clean Ingredients, Rapid Release" },
-    { "type": "text",     "id": "announcement_text",   "label": "Announcement bar text",            "default": "✈ First Class Deal — 20% OFF with Code FLT20 — Free Shipping $50+" }
+    { "type": "text",     "id": "announcement_text",   "label": "Announcement bar text",            "default": "✈ First Class Deal — 20% OFF with Code FLT20 — Free Shipping $50+" },
+    { "type": "header",       "content": "Background Images" },
+    { "type": "checkbox",     "id": "show_bg_images", "label": "Show background images", "default": false },
+    { "type": "image_picker", "id": "bg_image_1",     "label": "Background image 1" },
+    { "type": "image_picker", "id": "bg_image_2",     "label": "Background image 2" },
+    { "type": "image_picker", "id": "bg_image_3",     "label": "Background image 3" },
+    { "type": "color",        "id": "bg_color",        "label": "Background color (when images hidden)", "default": "#87CEEB" }
   ],
   "presets": [{ "name": "FLT Hero 2" }]
 }
