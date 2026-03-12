@@ -119,15 +119,28 @@
     },
     "flt_header_for_pages_1_NFKi6J": {
       "type": "flt-header-for-pages-1",
+      "disabled": true,
       "name": "FLT Header for pages",
       "settings": {
         "menu": "flt-header-menu-for-pages"
+      }
+    },
+    "flt_header_2_kyQada": {
+      "type": "flt-header-2",
+      "name": "FLT Header 2",
+      "settings": {
+        "menu": "main-menu",
+        "logo_type": "text",
+        "logo_text": "FLT",
+        "logo_subtext": "Hemp Provisions",
+        "header_bg": "#ffffff"
       }
     }
   },
   "order": [
     "header_announcements_9jGBFp",
     "header_section",
-    "flt_header_for_pages_1_NFKi6J"
+    "flt_header_for_pages_1_NFKi6J",
+    "flt_header_2_kyQada"
   ]
 }
