@@ -131,6 +131,7 @@
       "settings": {
         "menu": "flt-header-menu",
         "logo_type": "text",
+        "logo_image": "shopify://shop_images/flt_logo_300_127_resize.webp",
         "logo_text": "FLT",
         "logo_subtext": "Hemp Provisions",
         "header_bg": "#e1edf5"
