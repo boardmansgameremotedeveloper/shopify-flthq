@@ -74,6 +74,13 @@
     font-family: var(--body); font-size: 13px; color: #fff;
     font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
   }
+  .flt-hero2__aaf-wrapper {
+    position: absolute;
+    top: 30%;
+    left: 0; right: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
 
 
   /* bg image cross-fade layer */
@@ -141,6 +148,10 @@
   </div>
 {%- endif -%}
 
+  <div class="flt-hero2__aaf-wrapper">
+    {% render 'animated-airplane-flowers' %}
+  </div>
+
   <div class="flt-hero2__cloud" style="top:12%;left:5%;width:280px;height:70px;filter:blur(30px);transition-delay:0.5s;"></div>
   <div class="flt-hero2__cloud" style="top:22%;right:10%;width:200px;height:50px;filter:blur(25px);transition-delay:0.8s;"></div>
   <div class="flt-hero2__cloud" style="top:8%;right:30%;width:350px;height:80px;filter:blur(35px);transition-delay:1.0s;"></div>
@@ -177,9 +188,11 @@
     </div>
   </div>
 
+  {%- if section.settings.show_announcement -%}
   <div class="flt-hero2__announcement">
     {{ section.settings.announcement_text }}
   </div>
+  {%- endif -%}
 
 </section>
 
@@ -207,6 +220,7 @@
     { "type": "url",      "id": "cta_secondary_url",   "label": "Secondary CTA link" },
     { "type": "text",     "id": "pills",               "label": "Attribute pills (comma-separated)", "default": "No Added Sugar, Vegan Friendly, Clean Ingredients, Rapid Release" },
     { "type": "text",     "id": "announcement_text",   "label": "Announcement bar text",            "default": "✈ First Class Deal — 20% OFF with Code FLT20 — Free Shipping $50+" },
+    { "type": "checkbox", "id": "show_announcement",  "label": "Show announcement bar",             "default": true },
     { "type": "header",       "content": "Background Images" },
     { "type": "checkbox",     "id": "show_bg_images", "label": "Show background images", "default": false },
     { "type": "image_picker", "id": "bg_image_1",     "label": "Background image 1" },
