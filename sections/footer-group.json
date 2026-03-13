@@ -11,6 +11,15 @@
   "type": "footer",
   "name": "Footer",
   "sections": {
+    "footer_notes_TEPH8h": {
+      "type": "footer-notes",
+      "name": "Footer Notes",
+      "settings": {
+        "font_size": "14px",
+        "text_intro": "The statements made regarding these products have not been evaluated by the Food and Drug Administration. These products are not intended to diagnose, treat, cure or prevent any disease. Please consult your health care professional about potential interactions or possible complications before using any product.",
+        "text_legal": "MUST BE 21+ TO PURCHASE. THE PRODUCTS DISPLAYED AND AVAILABLE FOR SALE ON THIS SITE (1) ARE HEMP-DERIVED CANNABINOID PRODUCTS THAT COMPLY WITH THE FEDERAL LEGAL LIMIT CONTAINING LESS THAN ZERO AND THREE-TENTHS (0.3%) DELTA-9 TETRAHYDROCANNABINOL (THC), (2) DO NOT CLAIM TO DIAGNOSE, TREAT, MITIGATE, CURE, OR PREVENT ANY DISEASE, AND (3) HAVE NOT BEEN EVALUATED OR APPROVED BY THE UNITED STATES FOOD AND DRUG ADMINISTRATION (FDA) FOR SAFETY, EFFICACY, EFFECTIVENESS, OR QUALITY."
+      }
+    },
     "footer_m9NzUG": {
       "type": "footer",
       "blocks": {
@@ -221,6 +230,7 @@
   "order": [
     "footer_m9NzUG",
     "flt_footer_1_GLirdF",
+    "footer_notes_TEPH8h",
     "footer_utilities_jLGE8U"
   ]
 }
