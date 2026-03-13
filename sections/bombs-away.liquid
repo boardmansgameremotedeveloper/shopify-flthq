@@ -11,6 +11,7 @@
   .ba-bunker-layer { position: absolute; bottom: 0; left: 0; right: 0; height: 120px; }
   .ba-bomb { position: absolute; width: 28px; height: 28px; pointer-events: none; }
   .ba-bomb svg { width: 100%; height: 100%; }
+  .ba-bunker { position: absolute; bottom: 0; width: 120px; height: 40px; background: #0B2545; border-radius: 6px; }
 </style>
 
 <section id="bombs-away-section" class="ba-section">
@@ -32,7 +33,9 @@
     </div>
 
     <div id="ba-bomb-layer" class="ba-bomb-layer"></div>
-    <div id="ba-bunker-layer" class="ba-bunker-layer"></div>
+    <div id="ba-bunker-layer" class="ba-bunker-layer">
+      <div id="ba-bunker" class="ba-bunker"></div>
+    </div>
   </div>
 </section>
 
@@ -47,7 +50,11 @@
   var plane       = document.getElementById('ba-plane');
   var spriteRight = document.getElementById('ba-plane-right');
   var spriteLeft  = document.getElementById('ba-plane-left');
-  var hudScore = document.getElementById('ba-score');
+
+  var hudScore      = document.getElementById('ba-score');
+  var hudBlocked    = document.getElementById('ba-blocked');
+  var hudDetonated  = document.getElementById('ba-detonated');
+  var bunkerEl      = document.getElementById('ba-bunker');
 
   var flowerBombSVG = `
     <svg viewBox="0 0 64 64">
@@ -69,19 +76,26 @@
     containerHeight: 0,
     activeBombs: [],
     maxBombs: 8,
-    rafId: null
+    rafId: null,
+    bunker: { x: 0, width: 120, velocity: 3 }
   };
 
   function init() {
     state.containerWidth  = container.offsetWidth;
     state.containerHeight = container.offsetHeight;
+
     state.planeX = Math.floor((state.containerWidth - state.planeWidth) / 2);
     plane.style.left = state.planeX + 'px';
+
+    state.bunker.x = Math.floor((state.containerWidth - state.bunker.width)/2);
+    bunkerEl.style.left = state.bunker.x + 'px';
+
     state.rafId = requestAnimationFrame(loop);
   }
 
   function loop() {
     updatePlane();
+    moveBunker();
     maybeSpawnBomb();
     updateBombs();
     state.rafId = requestAnimationFrame(loop);
@@ -94,6 +108,13 @@
     if (state.planeVelocity > 0) { spriteRight.style.display=''; spriteLeft.style.display='none'; }
     else { spriteRight.style.display='none'; spriteLeft.style.display=''; }
     plane.style.left = state.planeX + 'px';
+  }
+
+  function moveBunker() {
+    state.bunker.x += state.bunker.velocity;
+    if (state.bunker.x + state.bunker.width >= state.containerWidth) state.bunker.velocity = -Math.abs(state.bunker.velocity);
+    if (state.bunker.x <= 0) state.bunker.velocity = Math.abs(state.bunker.velocity);
+    bunkerEl.style.left = state.bunker.x + 'px';
   }
 
   function maybeSpawnBomb() {
@@ -112,7 +133,12 @@
 
     bombLayer.appendChild(bomb);
 
-    state.activeBombs.push({ el: bomb, x: bombX, y: plane.offsetTop + plane.offsetHeight, velocity: 4 + Math.random()*3 });
+    state.activeBombs.push({
+      el: bomb,
+      x: bombX,
+      y: plane.offsetTop + plane.offsetHeight,
+      velocity: 4 + Math.random()*3
+    });
     state.bombsDropped++;
   }
 
@@ -121,13 +147,38 @@
       var bomb = state.activeBombs[i];
       bomb.y += bomb.velocity;
       bomb.el.style.top = bomb.y + 'px';
-      if (bomb.y > state.containerHeight - 120) {
+
+      // Bunker collision detection
+      var bombRect = { x: bomb.x, y: bomb.y, width:28, height:28 };
+      var bunkerRect = { x: state.bunker.x, y: state.containerHeight - 40, width: state.bunker.width, height:40 };
+
+      if (rectIntersect(bombRect, bunkerRect)) {
+        state.bombsBlocked++;
+        hudBlocked.textContent = state.bombsBlocked;
+        bomb.el.remove();
+        state.activeBombs.splice(i,1);
+        continue;
+      }
+
+      // Bottom collision
+      if (bomb.y > state.containerHeight - 28) {
+        state.bombsDetonated++;
+        hudDetonated.textContent = state.bombsDetonated;
         state.score += 10;
         hudScore.textContent = state.score;
         bomb.el.remove();
         state.activeBombs.splice(i,1);
       }
     }
+  }
+
+  function rectIntersect(a, b) {
+    return !(
+      a.x + a.width < b.x ||
+      a.x > b.x + b.width ||
+      a.y + a.height < b.y ||
+      a.y > b.y + b.height
+    );
   }
 
   window.addEventListener('resize', function() {
@@ -137,7 +188,6 @@
 
   if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
   else init();
-
 })();
 </script>
 
