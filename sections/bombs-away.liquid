@@ -1,0 +1,216 @@
+<style>
+  .ba-section {
+    width: 100%;
+  }
+
+  .ba-section-title {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+
+  .ba-game-container {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    overflow: hidden;
+    touch-action: none;
+    background: linear-gradient(
+      180deg,
+      #87CEEB 0%,
+      #B4DFF7 50%,
+      #EAF6FF 100%
+    );
+  }
+
+  .ba-hud {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0B2545;
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 6px 12px;
+    border-radius: 6px;
+  }
+
+  .ba-plane {
+    position: absolute;
+    top: 15%;
+    width: 120px;
+    height: 60px;
+    color: #0B2545;
+  }
+
+  .ba-sprite {
+    position: absolute;
+    inset: 0;
+  }
+
+  .ba-sprite svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ba-sprite--hidden {
+    display: none;
+  }
+
+  .ba-bomb-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .ba-bunker-layer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+  }
+</style>
+
+<section id="bombs-away-section" class="ba-section">
+
+  {%- if section.settings.show_title -%}
+    <h2 class="ba-section-title">{{ section.settings.section_title }}</h2>
+  {%- endif -%}
+
+  <div id="ba-game" class="ba-game-container">
+
+    <div id="ba-hud" class="ba-hud">
+      <span>Level: <strong id="ba-level">1</strong></span>
+      <span>Blocked: <strong id="ba-blocked">0</strong></span>
+      <span>Detonated: <strong id="ba-detonated">0</strong></span>
+      <span>Score: <strong id="ba-score">0</strong></span>
+    </div>
+
+    <div id="ba-plane" class="ba-plane">
+      <div id="ba-plane-right" class="ba-sprite">
+        {%- render 'flt-plane-svg-aircraft1' -%}
+      </div>
+      <div id="ba-plane-left" class="ba-sprite ba-sprite--hidden">
+        {%- render 'flt-plane-svg-aircraft1-left' -%}
+      </div>
+    </div>
+
+    <div id="ba-bomb-layer" class="ba-bomb-layer"></div>
+
+    <div id="ba-bunker-layer" class="ba-bunker-layer"></div>
+
+  </div>
+
+</section>
+
+<script>
+(function () {
+
+  if (typeof Shopify !== 'undefined' && Shopify.designMode) {
+    return;
+  }
+
+  var container = document.getElementById('ba-game');
+  if (!container) return;
+
+  var plane       = document.getElementById('ba-plane');
+  var spriteRight = document.getElementById('ba-plane-right');
+  var spriteLeft  = document.getElementById('ba-plane-left');
+
+  var state = {
+    level:           1,
+    score:           0,
+    bombsDropped:    0,
+    bombsBlocked:    0,
+    bombsDetonated:  0,
+    planeX:          0,
+    planeVelocity:   2,
+    planeWidth:      120,
+    containerWidth:  0,
+    activeBombs:     [],
+    maxBombs:        8,
+    rafId:           null
+  };
+
+  function init() {
+    state.containerWidth = container.offsetWidth;
+    state.planeX = Math.floor((state.containerWidth - state.planeWidth) / 2);
+    plane.style.left = state.planeX + 'px';
+    state.rafId = requestAnimationFrame(loop);
+  }
+
+  function loop() {
+    updatePlane();
+    // updateBombs();
+    // updateBunker();
+    // checkCollisions();
+    state.rafId = requestAnimationFrame(loop);
+  }
+
+  function updatePlane() {
+    state.planeX += state.planeVelocity;
+
+    if (state.planeX + state.planeWidth >= state.containerWidth) {
+      state.planeX = state.containerWidth - state.planeWidth;
+      state.planeVelocity = -Math.abs(state.planeVelocity);
+    }
+
+    if (state.planeX <= 0) {
+      state.planeX = 0;
+      state.planeVelocity = Math.abs(state.planeVelocity);
+    }
+
+    if (state.planeVelocity > 0) {
+      spriteRight.style.display = '';
+      spriteLeft.style.display  = 'none';
+    } else {
+      spriteRight.style.display = 'none';
+      spriteLeft.style.display  = '';
+    }
+
+    plane.style.left = state.planeX + 'px';
+  }
+
+  window.addEventListener('resize', function () {
+    state.containerWidth = container.offsetWidth;
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Bombs Away",
+  "tag": "section",
+  "class": "section-bombs-away",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Bombs Away"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show Title",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bombs Away"
+    }
+  ]
+}
+{% endschema %}

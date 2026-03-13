@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="40" viewBox="0 0 120 40">
+  <!-- Bunker base platform -->
+  <rect x="0" y="28" width="120" height="12" rx="4" ry="4" fill="#0B2545"/>
+  <!-- Bunker shield arch -->
+  <path d="M10,28 L10,16 Q10,4 60,4 Q110,4 110,16 L110,28 Z" fill="#0B2545"/>
+  <!-- Shield embrasure notch (center cutout for visibility) -->
+  <rect x="50" y="10" width="20" height="14" rx="2" ry="2" fill="none" stroke="#0B2545" stroke-width="0"/>
+  <!-- Highlight edge on arch -->
+  <path d="M10,28 L10,16 Q10,4 60,4 Q110,4 110,16 L110,28" fill="none" stroke="#1a3a6b" stroke-width="2"/>
+</svg>
