@@ -306,7 +306,14 @@
         "bg_image_1": "shopify://shop_images/hero_background_pexels-ingewallu-122110_a3c90111-fbca-4d77-a53e-c18c3a1cc56b.jpg",
         "bg_image_2": "shopify://shop_images/hero_background_pexels-eduardolimabrport-4006600.jpg",
         "bg_image_3": "shopify://shop_images/hero_background_pexels-stevecormie-33337421.jpg",
-        "bg_color": "#87CEEB"
+        "bg_color": "#87ceeb",
+        "eyebrow_color": "#0b2545",
+        "heading_line1_color": "#0b2545",
+        "heading_line2_color": "#1e3a5f",
+        "body_text_color": "#ffffff",
+        "show_body_bg": true,
+        "body_bg_color": "#a13535",
+        "body_bg_border": "thick"
       }
     },
     "flt_hero_2_KDqCL8": {
