@@ -1,0 +1,85 @@
+{% comment %}
+  sections/footer-notes.liquid
+  FLT Hemp Provisions — Footer Notes / Legal Disclaimers
+  Age restriction and FDA disclaimer text, fully editable in theme editor.
+  Font size selectable: mini (12px) / small (14px) / medium (16px).
+  Namespace: flt-fnotes__
+{% endcomment %}
+
+<style>
+  .flt-fnotes {
+    background-color: #070E1A;
+    color: rgba(255,255,255,0.65);
+    padding: 30px 20px;
+    font-family: var(--body, 'Source Sans 3', sans-serif);
+  }
+
+  .flt-fnotes__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    line-height: 1.65;
+  }
+
+  .flt-fnotes__intro {
+    margin: 0 0 16px;
+  }
+
+  .flt-fnotes__legal {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    opacity: 0.75;
+  }
+</style>
+
+<section class="flt-fnotes">
+  <div class="flt-fnotes__inner" style="font-size: {{ section.settings.font_size }};">
+
+    {%- if section.settings.text_intro != blank -%}
+      <p class="flt-fnotes__intro">{{ section.settings.text_intro | newline_to_br }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.text_legal != blank -%}
+      <p class="flt-fnotes__legal">{{ section.settings.text_legal | newline_to_br }}</p>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Footer Notes",
+  "tag": "section",
+  "class": "flt-footer-notes-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "font_size",
+      "label": "Font size",
+      "default": "14px",
+      "options": [
+        { "value": "12px", "label": "Mini (12px)" },
+        { "value": "14px", "label": "Small (14px)" },
+        { "value": "16px", "label": "Medium (16px)" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Disclaimer Text"
+    },
+    {
+      "type": "textarea",
+      "id": "text_intro",
+      "label": "Health / FDA disclaimer",
+      "default": "The statements made regarding these products have not been evaluated by the Food and Drug Administration. These products are not intended to diagnose, treat, cure or prevent any disease. Please consult your health care professional about potential interactions or possible complications before using any product."
+    },
+    {
+      "type": "textarea",
+      "id": "text_legal",
+      "label": "Legal block (21+ notice)",
+      "default": "MUST BE 21+ TO PURCHASE. THE PRODUCTS DISPLAYED AND AVAILABLE FOR SALE ON THIS SITE (1) ARE HEMP-DERIVED CANNABINOID PRODUCTS THAT COMPLY WITH THE FEDERAL LEGAL LIMIT CONTAINING LESS THAN ZERO AND THREE-TENTHS (0.3%) DELTA-9 TETRAHYDROCANNABINOL (THC), (2) DO NOT CLAIM TO DIAGNOSE, TREAT, MITIGATE, CURE, OR PREVENT ANY DISEASE, AND (3) HAVE NOT BEEN EVALUATED OR APPROVED BY THE UNITED STATES FOOD AND DRUG ADMINISTRATION (FDA) FOR SAFETY, EFFICACY, EFFECTIVENESS, OR QUALITY."
+    }
+  ],
+  "presets": [{ "name": "Footer Notes" }]
+}
+{% endschema %}
