@@ -83,6 +83,17 @@
     line-height: 1.7;
   }
 
+  .flt-hero3__body-bg {
+    max-width: 560px;
+    margin: 0 auto 40px;
+    border-radius: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .flt-hero3__body-bg .flt-hero3__body {
+    margin: 0;
+  }
+
   .flt-hero3__ctas {
     display: flex;
     gap: 16px;
@@ -288,18 +299,32 @@
 
 <div class="flt-hero3__content">
 
-<div class="flt-hero3__eyebrow">
+<div class="flt-hero3__eyebrow" style="color: {{ section.settings.eyebrow_color }};">
 <span class="flt-hero3__rule"></span>
 {{ section.settings.eyebrow }}
 <span class="flt-hero3__rule"></span>
 </div>
 
-<h1 class="flt-hero3__heading">
+<h1 class="flt-hero3__heading" style="color: {{ section.settings.heading_line1_color }};">
 {{ section.settings.heading_line1 }}<br>
-<span>{{ section.settings.heading_line2 }}</span>
+<span style="color: {{ section.settings.heading_line2_color }};">{{ section.settings.heading_line2 }}</span>
 </h1>
 
-<p class="flt-hero3__body">{{ section.settings.subtext }}</p>
+{%- if section.settings.show_body_bg -%}
+  {%- assign border_style = '' -%}
+  {%- if section.settings.body_bg_border == 'thin' -%}
+    {%- assign border_style = '1px solid rgba(0,0,0,0.3)' -%}
+  {%- elsif section.settings.body_bg_border == 'medium' -%}
+    {%- assign border_style = '2px solid rgba(0,0,0,0.3)' -%}
+  {%- elsif section.settings.body_bg_border == 'thick' -%}
+    {%- assign border_style = '4px solid rgba(0,0,0,0.3)' -%}
+  {%- endif -%}
+<div class="flt-hero3__body-bg" style="background-color: {{ section.settings.body_bg_color | color_modify: 'alpha', 0.6 }};{% if border_style != '' %} border: {{ border_style }};{% endif %} padding: 20px;">
+<p class="flt-hero3__body" style="color: {{ section.settings.body_text_color }}; position: relative; z-index: 2;">{{ section.settings.subtext }}</p>
+</div>
+{%- else -%}
+<p class="flt-hero3__body" style="color: {{ section.settings.body_text_color }};">{{ section.settings.subtext }}</p>
+{%- endif -%}
 
 <div class="flt-hero3__ctas">
 <a href="{{ section.settings.cta_primary_url }}" class="flt-hero3__cta-primary">
@@ -365,7 +390,22 @@ setTimeout(function(){hero.classList.add('flt-hero3--loaded');},150);
 {"type":"image_picker","id":"bg_image_1","label":"Background image 1"},
 {"type":"image_picker","id":"bg_image_2","label":"Background image 2"},
 {"type":"image_picker","id":"bg_image_3","label":"Background image 3"},
-{"type":"color","id":"bg_color","label":"Background color","default":"#87CEEB"}
+{"type":"color","id":"bg_color","label":"Background color","default":"#87CEEB"},
+{"type":"header","content":"Text Colors"},
+{"type":"color","id":"eyebrow_color","label":"Eyebrow text color","default":"#0B2545"},
+{"type":"color","id":"heading_line1_color","label":"Heading line 1 color","default":"#0B2545"},
+{"type":"color","id":"heading_line2_color","label":"Heading line 2 color","default":"#1E3A5F"},
+{"type":"color","id":"body_text_color","label":"Body text color","default":"#334155"},
+{"type":"header","content":"Body Text Background"},
+{"type":"checkbox","id":"show_body_bg","label":"Show background behind body text","default":false},
+{"type":"color","id":"body_bg_color","label":"Background color","default":"#FFFFFF","info":"Applied at 60% opacity"},
+{"type":"select","id":"body_bg_border","label":"Border thickness","default":"none",
+"options":[
+{"value":"none","label":"None"},
+{"value":"thin","label":"Thin (1px)"},
+{"value":"medium","label":"Medium (2px)"},
+{"value":"thick","label":"Thick (4px)"}
+]}
 ],
 "presets":[{"name":"FLT Hero 3"}]
 }
